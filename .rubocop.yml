@@ -1,0 +1,22 @@
+AllCops:
+  TargetRubyVersion: 2.1
+  NewCops: enable
+
+Layout/LineLength:
+  Max: 120
+
+Metrics/LineLength:
+  Exclude:
+    - "spec/**/*.rb"
+
+Metrics/ParameterLists:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/BlockLength:
+  ExcludedMethods: ['describe', 'context']
