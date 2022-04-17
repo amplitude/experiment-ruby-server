@@ -1,6 +1,7 @@
 require 'net/http'
 require 'json'
 require 'uri'
+require 'logger'
 
 module Experiment
   # Main client for fetching variant data.
@@ -12,6 +13,12 @@ module Experiment
     def initialize(api_key, config = nil)
       @api_key = api_key
       @config = config || Config.new
+      @logger = Logger.new($stdout)
+      @logger.level = if @config.debug
+                        Logger::DEBUG
+                      else
+                        Logger::INFO
+                      end
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
 
@@ -21,15 +28,13 @@ module Experiment
     # @param [User] user
     def fetch(user, &callback)
       thread = Thread.new do
-        begin
-          variants = fetch_internal(user)
-          yield(user, variants) unless callback.nil?
-          return variants
-        rescue StandardError => error
-          p "[Experiment] Failed to fetch variants: #{error.message}"
-          yield(user, {}) unless callback.nil?
-          return {}
-        end
+        variants = fetch_internal(user)
+        yield(user, variants) unless callback.nil?
+        return variants
+      rescue StandardError => e
+        @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
+        yield(user, {}) unless callback.nil?
+        return {}
       end
       thread.begin
     end
@@ -38,31 +43,32 @@ module Experiment
 
     # @param [User] user
     def fetch_internal(user)
-      return do_fetch(user, @config.fetch_timeout_millis)
-    rescue StandardError => error
-      p error.message
+      @logger.debug("[Experiment] Fetching variants for user: #{user}")
+      do_fetch(user, @config.fetch_timeout_millis)
+    rescue StandardError => e
+      @logger.error("[Experiment] Fetch failed: #{e.message}")
       begin
-        variants = retry_fetch(user)
-        callback.call(user, variants) unless callback.nil?
-        return variants
+        return retry_fetch(user)
       rescue StandardError => err
-        p err.message
+        @logger.error(err.message)
       end
-      throw error
+      throw e
     end
 
     # @param [User] user
     def retry_fetch(user)
       return {} if @config.fetch_retries.zero?
+
+      @logger.debug('[Experiment] Retrying fetch')
       delay_millis = @config.fetch_retry_backoff_min_millis
       err = nil
       @config.fetch_retries.times do
         sleep(delay_millis)
         begin
           return do_fetch(user, @config.fetch_retry_timeout_millis)
-        rescue StandardError => error
-          p "[Experiment] Retry failed: #{error.message}"
-          err = error
+        rescue StandardError => e
+          @logger.error("[Experiment] Retry failed: #{e.message}")
+          err = e
         end
         delay_millis = [delay_millis * @config.fetch_retry_backoff_scalar, @config.fetch_retry_backoff_max_millis].min
       end
@@ -72,6 +78,7 @@ module Experiment
     # @param [User] user
     # @param [Integer] timeout_millis
     def do_fetch(user, timeout_millis)
+      start_time = Time.now
       user_context = add_context(user)
       endpoint = "#{@config.server_url}/sdk/vardata"
       headers = {
@@ -81,12 +88,21 @@ module Experiment
       uri = URI(endpoint)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
-      http.read_timeout = timeout_millis / 1000 if timeout_millis / 1000 > 0
+      http.read_timeout = timeout_millis / 1000 if (timeout_millis / 1000) > 0
       request = Net::HTTP::Post.new(uri, headers)
       request.body = user_context.to_json
+      if request.body.length > 8000
+        @logger.warn("[Experiment] encoded user object length #{request.body.length} cannot be cached by CDN; must be < 8KB")
+      end
+      @logger.debug("[Experiment] Fetch variants for user: #{request.body}")
       response = http.request(request)
+      end_time = Time.now
+      elapsed = (end_time - start_time) * 1000.0
+      @logger.debug("[Experiment] Fetch complete in #{elapsed.round(3)} ms")
       json = JSON.parse(response.body)
-      parse_json_variants(json)
+      variants = parse_json_variants(json)
+      @logger.debug("[Experiment] Fetched variants: #{variants}")
+      variants
     end
 
     # Parse JSON response hash
