@@ -1,0 +1,9 @@
+Mon, 18 Apr 2022 18:18:47 +0000
+README.md	Mon, 18 Apr 2022 18:18:39 +0000
+lib/experiment.rb	Mon, 18 Apr 2022 18:18:39 +0000
+lib/experiment/client.rb	Mon, 18 Apr 2022 18:18:39 +0000
+lib/experiment/config.rb	Mon, 18 Apr 2022 18:18:39 +0000
+lib/experiment/factory.rb	Mon, 18 Apr 2022 18:18:39 +0000
+lib/experiment/user.rb	Mon, 18 Apr 2022 18:18:39 +0000
+lib/experiment/variant.rb	Mon, 18 Apr 2022 18:18:39 +0000
+lib/experiment/version.rb	Mon, 18 Apr 2022 18:18:39 +0000
