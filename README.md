@@ -10,7 +10,7 @@ Ruby Server SDK for Experiment
 
 ## Installation
 Into Gemfile from rubygems.org:
-````ruby
+```ruby
 gem 'amplitude-experiment'
 ```
 Into environment gems from rubygems.org:
