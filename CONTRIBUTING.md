@@ -15,3 +15,22 @@ PR titles should follow [conventional commit standards](https://www.conventional
 - `ci(<optional scope>)`: Changes to our CI configuration files and scripts
 - `chore(<optional scope>)`: Other changes that don't modify src or test files
 - `revert(<optional scope>)`: Revert commit
+
+### Release [Amplitude Internal]
+
+Releases are managed by [semantic-release](https://github.com/semantic-release/semantic-release). It is a tool that will scan commits since the last release, determine the next [semantic version number](https://semver.org/), publish, and create changelogs.
+
+#### Release Conditions [Amplitude Internal]
+
+- `BREAKING CHANGES` in the body will do a major release
+  ```
+  feat(cookies): Create new cookie format
+
+  BREAKING CHANGES: Breaks old cookie format
+  ```
+- Else `feat` in title will do a `minor` release
+  `feat(cookies): some changes`
+- Else `fix` or `perf` in title will do a `patch` release
+  `fix: null check bug`
+- Else no release
+  `docs: update website`
