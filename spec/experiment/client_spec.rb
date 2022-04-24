@@ -41,7 +41,7 @@ module Experiment
                              city: 'San Francisco', region: 'California', language: 'English', platform: 'server',
                              version: '1.0.0', device_brand: 'Google', carrier: 'Verizon',
                              user_properties: {
-                               'test_user_property' => 'test value'
+                               'test_user_property' => 'test value' * 1000
                              })
         client = Client.new(API_KEY)
         expected_variant = Variant.new('on', 'payload')
