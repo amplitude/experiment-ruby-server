@@ -1,4 +1,5 @@
 require 'experiment/config'
+require 'experiment/cookie'
 require 'experiment/user'
 require 'experiment/variant'
 require 'experiment/factory'
