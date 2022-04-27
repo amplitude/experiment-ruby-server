@@ -32,7 +32,9 @@ experiment = Experiment.init(api_key)
 user = Experiment::User.new(user_id: 'user@company.com', device_id: 'abcezas123', user_properties: {'premium' => true})
 
 # (4) Lookup a flag's variant
-experiment.fetch(user) do |_, variants|
+# 
+# To fetch asynchronous
+experiment.fetch_async(user) do |_, variants|
   variant = variants['YOUR-FLAG-KEY']
   unless variant.nil?
     if variant.value == 'on'
@@ -40,6 +42,17 @@ experiment.fetch(user) do |_, variants|
     else
       # Flag is off
     end
+  end
+end
+
+# To fetch synchronous
+variants = experiment.fetch(user)
+variant = variants['YOUR-FLAG-KEY']
+unless variant.nil?
+  if variant.value == 'on'
+    # Flag is on
+  else
+    # Flag is off
   end
 end
 ```

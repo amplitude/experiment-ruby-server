@@ -22,11 +22,23 @@ module Experiment
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
 
-    # Fetch all variants for a user.
+    # Fetch all variants for a user synchronous.
     #
     # This method will automatically retry if configured (default).
     # @param [User] user
-    def fetch(user, &callback)
+    # @return [Hash] Variants Hash
+    def fetch(user)
+      fetch_internal(user)
+    rescue StandardError => e
+      @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
+      {}
+    end
+
+    # Fetch all variants for a user asynchronous.
+    #
+    # This method will automatically retry if configured (default).
+    # @param [User] user
+    def fetch_async(user, &callback)
       Thread.new do
         variants = fetch_internal(user)
         yield(user, variants) unless callback.nil?
