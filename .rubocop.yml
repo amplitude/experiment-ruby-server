@@ -24,3 +24,10 @@ Style/FrozenStringLiteralComment:
 
 Style/NumericPredicate:
   Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - lib/amplitude-experiment.rb # Gem name, added for easier Gemfile usage
+
+Metrics/ClassLength:
+  Max: 120

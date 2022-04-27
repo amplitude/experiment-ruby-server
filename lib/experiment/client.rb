@@ -22,35 +22,46 @@ module Experiment
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
 
-    # Fetch all variants for a user.
+    # Fetch all variants for a user synchronous.
     #
     # This method will automatically retry if configured (default).
     # @param [User] user
-    def fetch(user, &callback)
-      thread = Thread.new do
+    # @return [Hash] Variants Hash
+    def fetch(user)
+      fetch_internal(user)
+    rescue StandardError => e
+      @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
+      {}
+    end
+
+    # Fetch all variants for a user asynchronous.
+    #
+    # This method will automatically retry if configured (default).
+    # @param [User] user
+    def fetch_async(user, &callback)
+      Thread.new do
         variants = fetch_internal(user)
         yield(user, variants) unless callback.nil?
-        return variants
+        variants
       rescue StandardError => e
         @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
         yield(user, {}) unless callback.nil?
-        return {}
+        {}
       end
-      thread.begin
     end
 
     private
 
     # @param [User] user
     def fetch_internal(user)
-      @logger.debug("[Experiment] Fetching variants for user: #{user}")
+      @logger.debug("[Experiment] Fetching variants for user: #{user.as_json}")
       do_fetch(user, @config.fetch_timeout_millis)
     rescue StandardError => e
       @logger.error("[Experiment] Fetch failed: #{e.message}")
       begin
         return retry_fetch(user)
       rescue StandardError => err
-        @logger.error(err.message)
+        @logger.error("[Experiment] Retry Fetch failed: #{err.message}")
       end
       throw e
     end
@@ -63,7 +74,7 @@ module Experiment
       delay_millis = @config.fetch_retry_backoff_min_millis
       err = nil
       @config.fetch_retries.times do
-        sleep(delay_millis)
+        sleep(delay_millis / 1000.0)
         begin
           return do_fetch(user, @config.fetch_retry_timeout_millis)
         rescue StandardError => e
