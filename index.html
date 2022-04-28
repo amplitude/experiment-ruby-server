@@ -93,7 +93,9 @@
 </span><span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Experiment.html" title="Experiment (module)">Experiment</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Experiment/User.html" title="Experiment::User (class)">User</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Experiment/User.html#initialize-instance_method" title="Experiment::User#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>user_id:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>user@company.com</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>device_id:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>abcezas123</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>user_properties:</span> <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>premium</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='rparen'>)</span>
 
 <span class='comment'># (4) Lookup a flag&#39;s variant
-</span><span class='id identifier rubyid_experiment'>experiment</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_variants'>variants</span><span class='op'>|</span>
+</span><span class='comment'># 
+</span><span class='comment'># To fetch asynchronous
+</span><span class='id identifier rubyid_experiment'>experiment</span><span class='period'>.</span><span class='id identifier rubyid_fetch_async'>fetch_async</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_variants'>variants</span><span class='op'>|</span>
   <span class='id identifier rubyid_variant'>variant</span> <span class='op'>=</span> <span class='id identifier rubyid_variants'>variants</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>YOUR-FLAG-KEY</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
   <span class='kw'>unless</span> <span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
     <span class='kw'>if</span> <span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>on</span><span class='tstring_end'>&#39;</span></span>
@@ -103,6 +105,17 @@
 </span>    <span class='kw'>end</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span>
+
+<span class='comment'># To fetch synchronous
+</span><span class='id identifier rubyid_variants'>variants</span> <span class='op'>=</span> <span class='id identifier rubyid_experiment'>experiment</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_variant'>variant</span> <span class='op'>=</span> <span class='id identifier rubyid_variants'>variants</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>YOUR-FLAG-KEY</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+<span class='kw'>unless</span> <span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>on</span><span class='tstring_end'>&#39;</span></span>
+    <span class='comment'># Flag is on
+</span>  <span class='kw'>else</span>
+    <span class='comment'># Flag is off
+</span>  <span class='kw'>end</span>
+<span class='kw'>end</span>
 </code></pre>
 
 <h2 id="label-Need+Help-3F">Need Help?</h2>
@@ -111,7 +124,7 @@
 </div></div>
 
       <div id="footer">
-  Generated on Fri Apr 22 06:06:20 2022 by
+  Generated on Thu Apr 28 17:13:38 2022 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.27 (ruby-3.1.2).
 </div>
