@@ -1,3 +1,4 @@
+require 'experiment/version'
 require 'experiment/config'
 require 'experiment/cookie'
 require 'experiment/user'
