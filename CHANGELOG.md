@@ -1,3 +1,10 @@
+# [1.0.0-beta.2](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2022-04-28)
+
+
+### Bug Fixes
+
+* include version to resolve name error ([#7](https://github.com/amplitude/experiment-ruby-server/issues/7)) ([e7a4049](https://github.com/amplitude/experiment-ruby-server/commit/e7a40493950475c97de80f1dfb562b2218869905))
+
 # 1.0.0-beta.1 (2022-04-28)
 
 
