@@ -5,8 +5,10 @@
   <br />
 </p>
 
-# experiment-ruby-server
-Ruby Server SDK for Experiment
+[![Gem Version](https://badge.fury.io/rb/amplitude-experiment.svg)](https://badge.fury.io/rb/amplitude-experiment)
+
+# Experiment Ruby SDK
+Amplitude Ruby Server SDK for Experiment.
 
 ## Installation
 Into Gemfile from rubygems.org:
@@ -17,6 +19,11 @@ Into environment gems from rubygems.org:
 ```ruby
 gem install 'amplitude-experiment'
 ```
+To install beta versions:
+```ruby
+gem install amplitude-experiment --pre
+```
+
 
 ## Quick Start
 ```ruby
@@ -56,6 +63,9 @@ unless variant.nil?
   end
 end
 ```
+
+## More Information
+[Experiment Ruby SDK Docs](https://amplitude.github.io/experiment-ruby-server/)
 
 ## Need Help?
 If you have any problems or issues over our SDK, feel free to [create a github issue](https://github.com/amplitude/experiments-ruby-server/issues/new) or submit a request on [Amplitude Help](https://help.amplitude.com/hc/en-us/requests/new).
