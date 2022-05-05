@@ -19,6 +19,8 @@ module Experiment
                       else
                         Logger::INFO
                       end
+      endpoint = "#{@config.server_url}/sdk/vardata"
+      @uri = URI(endpoint)
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
 
@@ -91,16 +93,13 @@ module Experiment
     def do_fetch(user, timeout_millis)
       start_time = Time.now
       user_context = add_context(user)
-      endpoint = "#{@config.server_url}/sdk/vardata"
       headers = {
         'Authorization' => "Api-Key #{@api_key}",
         'Content-Type' => 'application/json;charset=utf-8'
       }
-      uri = URI(endpoint)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.read_timeout = timeout_millis / 1000 if (timeout_millis / 1000) > 0
-      request = Net::HTTP::Post.new(uri, headers)
+      read_timeout = timeout_millis / 1000 if (timeout_millis / 1000) > 0
+      http = PersistentHttpClient.get(@uri, { read_timeout: read_timeout })
+      request = Net::HTTP::Post.new(@uri, headers)
       request.body = user_context.to_json
       if request.body.length > 8000
         @logger.warn("[Experiment] encoded user object length #{request.body.length} cannot be cached by CDN; must be < 8KB")
