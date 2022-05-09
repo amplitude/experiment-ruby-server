@@ -1,3 +1,3 @@
 module Experiment
-  VERSION = '1.0.0.beta.2'.freeze
+  VERSION = '1.0.0.beta.3'.freeze
 end

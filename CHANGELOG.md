@@ -1,3 +1,10 @@
+# [1.0.0-beta.3](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2022-05-09)
+
+
+### Features
+
+* http connection reuse ([#8](https://github.com/amplitude/experiment-ruby-server/issues/8)) ([88a0444](https://github.com/amplitude/experiment-ruby-server/commit/88a0444abbec2d33f35ce7457484c327e3f42ef4))
+
 # [1.0.0-beta.2](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2022-04-28)
 
 
