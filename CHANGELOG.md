@@ -1,3 +1,10 @@
+# [1.0.0-beta.4](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2022-06-30)
+
+
+### Bug Fixes
+
+* fix empty payload error ([#11](https://github.com/amplitude/experiment-ruby-server/issues/11)) ([e3c617c](https://github.com/amplitude/experiment-ruby-server/commit/e3c617c2cfcc67cd78462e0eb9e141230b944600))
+
 # [1.0.0-beta.3](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2022-05-09)
 
 
