@@ -21,6 +21,8 @@ module Experiment
     response_with_int_payload = '{"sdk-ci-test":{"key":"off","payload":123}}'
     response_with_list_payload = '{"sdk-ci-test":{"key":"on","payload":["payload1", "payload2"]}}'
     response_with_hash_payload = '{"sdk-ci-test":{"key":"off","payload":{"nested": "nested payload"}}}'
+    response_without_payload = '{"sdk-ci-test":{"key":"on"}}'
+    response_with_value_without_payload = '{"sdk-ci-test":{"value":"on"}}'
     variant_name = 'sdk-ci-test'
     test_user =  User.new(user_id: 'test_user')
     test_user_with_properties = User.new(user_id: 'test_user', device_id: 'a4edba84-dba0-405c-be9c-7ce580cb83f3', country: 'US',
@@ -49,6 +51,8 @@ module Experiment
       test_fetch response_with_boolean_payload, test_user_with_properties, variant_name, false, 'on', false
       test_fetch response_with_list_payload, test_user, variant_name, false, 'on', %w[payload1 payload2]
       test_fetch response_with_hash_payload, test_user_with_properties, variant_name, false, 'off', { 'nested' => 'nested payload' }
+      test_fetch response_without_payload, test_user, variant_name, false, 'on', nil
+      test_fetch response_with_value_without_payload, test_user, variant_name, false, 'on', nil
 
       it 'fetch timeout failure' do
         stub_request(:post, SERVER_URL)
@@ -87,6 +91,8 @@ module Experiment
       test_fetch_async response_with_boolean_payload, test_user_with_properties, variant_name, false, 'on', false
       test_fetch_async response_with_list_payload, test_user, variant_name, false, 'on', %w[payload1 payload2]
       test_fetch_async response_with_hash_payload, test_user_with_properties, variant_name, false, 'off', { 'nested' => 'nested payload' }
+      test_fetch_async response_without_payload, test_user, variant_name, false, 'on', nil
+      test_fetch_async response_with_value_without_payload, test_user, variant_name, false, 'on', nil
 
       it 'fetch async timeout failure' do
         stub_request(:post, SERVER_URL)
