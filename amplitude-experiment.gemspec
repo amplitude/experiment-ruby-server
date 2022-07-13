@@ -1,7 +1,7 @@
 require File.expand_path('lib/experiment/version', __dir__)
 Gem::Specification.new do |spec|
   spec.name                  = 'amplitude-experiment'
-  spec.version               = Experiment::VERSION
+  spec.version               = AmplitudeExperiment::VERSION
   spec.authors               = ['Amplitude']
   spec.email                 = ['sdk@amplitude.com']
   spec.summary               = 'Amplitude Experiment Ruby Server SDK'

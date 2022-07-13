@@ -3,7 +3,7 @@ require 'json'
 require 'uri'
 require 'logger'
 
-module Experiment
+module AmplitudeExperiment
   # Main client for fetching variant data.
   class Client
     # Creates a new Experiment Client instance.

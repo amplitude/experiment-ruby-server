@@ -1,4 +1,4 @@
-module Experiment
+module AmplitudeExperiment
   # Variant
   class Variant
     # The value of the variant determined by the flag configuration.

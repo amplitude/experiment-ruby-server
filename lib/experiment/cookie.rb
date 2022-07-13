@@ -1,6 +1,6 @@
 require 'base64'
 
-module Experiment
+module AmplitudeExperiment
   # This class provides utility functions for parsing and handling identity from Amplitude cookies.
   class AmplitudeCookie
     # Get the cookie name that Amplitude sets for the provided
