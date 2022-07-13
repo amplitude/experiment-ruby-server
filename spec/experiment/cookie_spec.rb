@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Experiment
+module AmplitudeExperiment
   describe AmplitudeCookie do
     describe '#cookie_name' do
       it 'test invalid api key throw error' do
