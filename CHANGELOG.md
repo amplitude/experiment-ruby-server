@@ -1,3 +1,10 @@
+# [1.0.0-beta.5](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2022-07-13)
+
+
+### Features
+
+* update namespace ([#13](https://github.com/amplitude/experiment-ruby-server/issues/13)) ([ceb4848](https://github.com/amplitude/experiment-ruby-server/commit/ceb4848083f82877d9fcd2227bb3bdc2bfaad5e4))
+
 # [1.0.0-beta.4](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2022-06-30)
 
 
