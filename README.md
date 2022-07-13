@@ -33,10 +33,10 @@ require 'amplitude-experiment'
 apiKey = 'YOUR-API-KEY'
 
 # (2) Initialize the experiment client
-experiment = Experiment.init(api_key)
+experiment = AmplitudeExperiment.init(api_key)
 
 # (3) Fetch variants for a user
-user = Experiment::User.new(user_id: 'user@company.com', device_id: 'abcezas123', user_properties: {'premium' => true})
+user = AmplitudeExperiment::User.new(user_id: 'user@company.com', device_id: 'abcezas123', user_properties: {'premium' => true})
 
 # (4) Lookup a flag's variant
 # 

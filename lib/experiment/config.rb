@@ -1,4 +1,4 @@
-module Experiment
+module AmplitudeExperiment
   # Configuration
   class Config
     # Default server url

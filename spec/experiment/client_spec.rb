@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Experiment
+module AmplitudeExperiment
   API_KEY = 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3'.freeze
   SERVER_URL = 'https://api.lab.amplitude.com/sdk/vardata'.freeze
 

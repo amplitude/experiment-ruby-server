@@ -1,4 +1,4 @@
-module Experiment
+module AmplitudeExperiment
   # Persist Http Client to reuse connection and reduce IO
   class PersistentHttpClient
     DEFAULT_OPTIONS = { read_timeout: 80 }.freeze

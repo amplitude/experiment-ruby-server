@@ -1,5 +1,5 @@
 # Provides factory methods for storing singleton instance of Client
-module Experiment
+module AmplitudeExperiment
   @instances = {}
   @default_instance = '$default_instance'
 
