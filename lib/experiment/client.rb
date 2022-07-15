@@ -40,6 +40,7 @@ module AmplitudeExperiment
     #
     # This method will automatically retry if configured (default).
     # @param [User] user
+    # @yield [User, Hash] callback block takes user object and variants hash
     def fetch_async(user, &callback)
       Thread.new do
         variants = fetch_internal(user)
