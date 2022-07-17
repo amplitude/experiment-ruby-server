@@ -1,3 +1,10 @@
+# [1.0.0-beta.6](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2022-07-17)
+
+
+### Features
+
+* force user with sdk library ([#15](https://github.com/amplitude/experiment-ruby-server/issues/15)) ([cf98e83](https://github.com/amplitude/experiment-ruby-server/commit/cf98e83c32b77025ae759457d46150753bce47fd))
+
 # [1.0.0-beta.5](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2022-07-13)
 
 
