@@ -139,7 +139,7 @@ module AmplitudeExperiment
     # @return [User, Hash] user with library context
     def add_context(user)
       user = {} if user.nil?
-      user.library = "experiment-ruby-server/#{VERSION}" if user.library.nil?
+      user.library = "experiment-ruby-server/#{VERSION}"
       user
     end
   end
