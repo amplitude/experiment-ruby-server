@@ -40,6 +40,7 @@ module AmplitudeExperiment
     #
     # This method will automatically retry if configured (default).
     # @param [User] user
+    # @yield [User, Hash] callback block takes user object and variants hash
     def fetch_async(user, &callback)
       Thread.new do
         variants = fetch_internal(user)
@@ -138,7 +139,7 @@ module AmplitudeExperiment
     # @return [User, Hash] user with library context
     def add_context(user)
       user = {} if user.nil?
-      user.library = "experiment-ruby-server/#{VERSION}" if user.library.nil?
+      user.library = "experiment-ruby-server/#{VERSION}"
       user
     end
   end
