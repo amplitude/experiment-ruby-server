@@ -43,8 +43,8 @@ module AmplitudeExperiment
       else
         flag_configs = get_flag_configs(flag_keys)
       end
-      flag_configs_str = flag_configs.to_json.inspect.gsub(/\\/, '')[1..].chop!
-      user_str = user.to_json.inspect.gsub(/\\/, '')[1..].chop!
+      flag_configs_str = flag_configs.to_json
+      user_str = user.to_json
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flag_configs_str}") if @config.debug
       variants = evaluation(flag_configs_str, user_str)
       @logger.debug(`[Experiment] evaluate - result: #{variants}`) if @config.debug

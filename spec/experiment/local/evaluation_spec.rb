@@ -9,10 +9,8 @@ module AmplitudeExperiment
     expected_result = '{"sdk-local-evaluation-unit-test":{"variant":{"key":"control"},"description":"inclusion-list","isDefaultVariant":false}}'
 
     describe '#evaluation' do
-      it 'start the poller should store the flag config correctly in cache ' do
-
+      it 'get the variants for the given user and rule' do
         result = evaluation(rules_json, user_json)
-
         expect(result).to eq(expected_result)
       end
     end

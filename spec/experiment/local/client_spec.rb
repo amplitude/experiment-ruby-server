@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module AmplitudeExperiment
   LOCAL_SERVER_URL = 'https://api.lab.amplitude.com/sdk/vardata'.freeze
-  API_KEY = 'server-VY0FufBsdITI1Gv9y7RyUopLzk9m8t0n'.freeze
+  SERVER_API_KEY = 'server-VY0FufBsdITI1Gv9y7RyUopLzk9m8t0n'.freeze
 
   describe LocalEvaluationClient do
     describe '#initialize' do
@@ -16,8 +16,8 @@ module AmplitudeExperiment
     end
 
     describe '#evaluation' do
-      it 'evaluation should return variant 1' do
-        local_evaluation_client = LocalEvaluationClient.new(API_KEY)
+      it 'evaluation should return variant empty object with invalid user input' do
+        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
         result = local_evaluation_client.evaluate({}, [])
         expect(result).to eq('{}')
       end
@@ -31,7 +31,7 @@ module AmplitudeExperiment
             headers: {
               'Accept' => '*/*',
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => "Api-Key #{API_KEY}",
+              'Authorization' => "Api-Key #{SERVER_API_KEY}",
               'Content-Type' => 'application/json;charset=utf-8',
               'User-Agent' => 'Ruby'
             }
@@ -40,7 +40,7 @@ module AmplitudeExperiment
 
         expected_result = '{"asdf-1":{"variant":{"key":"on"},"description":"fully-rolled-out-variant","isDefaultVariant":false}}'
         config = LocalEvaluationConfig.new(false)
-        local_evaluation_client = LocalEvaluationClient.new(API_KEY, config)
+        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY, config)
         local_evaluation_client.start
 
         result = local_evaluation_client.evaluate(user, ['asdf-1'])
@@ -56,7 +56,7 @@ module AmplitudeExperiment
             headers: {
               'Accept' => '*/*',
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => "Api-Key #{API_KEY}",
+              'Authorization' => "Api-Key #{SERVER_API_KEY}",
               'Content-Type' => 'application/json;charset=utf-8',
               'User-Agent' => 'Ruby'
             }
@@ -65,7 +65,7 @@ module AmplitudeExperiment
 
         expected_result = '{"sdk-local-evaluation-unit-test":{"variant":{"key":"off"},"description":"default-segment","isDefaultVariant":true}}'
         config = LocalEvaluationConfig.new(false)
-        local_evaluation_client = LocalEvaluationClient.new(API_KEY, config)
+        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY, config)
         local_evaluation_client.start
 
         result = local_evaluation_client.evaluate(user)

@@ -13,14 +13,14 @@ module AmplitudeExperiment
             headers: {
               'Accept' => '*/*',
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'Authorization' => "Api-Key #{API_KEY}",
+              'Authorization' => "Api-Key #{SERVER_API_KEY}",
               'Content-Type' => 'application/json;charset=utf-8',
               'User-Agent' => 'Ruby'
             }
           ).to_return(status: 200, body: response, headers: {})
 
         cache = InMemoryFlagConfigCache.new
-        fetcher = LocalEvaluationFetcher.new(API_KEY, false)
+        fetcher = LocalEvaluationFetcher.new(SERVER_API_KEY, false)
         poller = FlagConfigPoller.new(fetcher, cache, false)
         poller.start
         expect(cache.get_all).to eq(flag_config)
@@ -33,14 +33,14 @@ module AmplitudeExperiment
               headers: {
                 'Accept' => '*/*',
                 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                'Authorization' => "Api-Key #{API_KEY}",
+                'Authorization' => "Api-Key #{SERVER_API_KEY}",
                 'Content-Type' => 'application/json;charset=utf-8',
                 'User-Agent' => 'Ruby'
               }
             ).to_return(status: 200, body: response, headers: {})
 
           cache = InMemoryFlagConfigCache.new
-          fetcher = LocalEvaluationFetcher.new(API_KEY, false)
+          fetcher = LocalEvaluationFetcher.new(SERVER_API_KEY, false)
           poller = FlagConfigPoller.new(fetcher, cache, false)
           poller.stop
 
