@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 module AmplitudeExperiment
-  SERVER_URL = 'https://api.lab.amplitude.com/sdk/vardata'.freeze
   API_KEY = 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3'.freeze
+  SERVER_URL = 'https://api.lab.amplitude.com/sdk/vardata'.freeze
 
   describe Client do
     describe '#initialize' do
@@ -106,6 +106,5 @@ module AmplitudeExperiment
         expect(variants).to eq({})
       end
     end
-
   end
 end

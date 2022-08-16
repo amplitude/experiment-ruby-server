@@ -33,7 +33,7 @@ module AmplitudeExperiment
               headers: {
                 'Accept' => '*/*',
                 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                'Authorization' => 'Api-Key server-VY0FufBsdITI1Gv9y7RyUopLzk9m8t0n',
+                'Authorization' => "Api-Key #{API_KEY}",
                 'Content-Type' => 'application/json;charset=utf-8',
                 'User-Agent' => 'Ruby'
               }
