@@ -9,7 +9,7 @@ module AmplitudeExperiment
   # @param [String] api_key The environment API Key
   # @param [Config] config Optional Config.
   def self.init(api_key, config = nil)
-    @instances.store(@default_instance, Client.new(api_key, config)) unless @instances.key?(@default_instance)
+    @instances.store(@default_instance, RemoteEvaluationClient.new(api_key, config)) unless @instances.key?(@default_instance)
     @instances.fetch(@default_instance)
   end
 end
