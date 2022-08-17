@@ -10,7 +10,6 @@ module AmplitudeExperiment
     # @param [String] api_key The environment API Key
     # @param [LocalEvaluationConfig] config The config object
     def initialize(api_key, config = nil)
-
       @api_key = api_key
       @config = config || LocalEvaluationConfig.new
       @cache = InMemoryFlagConfigCache.new(@config.bootstrap)
@@ -37,7 +36,7 @@ module AmplitudeExperiment
     def evaluate(user, flag_keys = [])
       flag_configs = []
       if flag_keys.empty?
-        @cache.get_all.each do |key, value|
+        @cache.cache.each do |_, value|
           flag_configs.push(value)
         end
       else
@@ -65,7 +64,7 @@ module AmplitudeExperiment
     private
 
     def get_flag_configs(flag_keys = [])
-      return @cache.get_all if flag_keys.empty?
+      return @cache.cache if flag_keys.empty?
 
       flag_configs = []
       flag_keys.each do |key|
@@ -74,6 +73,5 @@ module AmplitudeExperiment
       end
       flag_configs
     end
-
   end
 end

@@ -11,10 +11,10 @@ module AmplitudeExperiment
     end
 
     def get(flag_key)
-       @cache.fetch(flag_key, nil)
+      @cache.fetch(flag_key, nil)
     end
 
-    def get_all
+    def caches
       @cache
     end
 

@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'benchmark'
 
 module AmplitudeExperiment
-
   describe LocalEvaluationClient do
     local_evaluation_client = nil
     def random_benchmark_flag
@@ -20,7 +19,7 @@ module AmplitudeExperiment
 
     def random_experiment_user
       n = 15
-      user = User.new({ user_id: random_string(n) })
+      user = User.new(user_id: random_string(n))
 
       user.device_id = random_string(n) if random_boolean
       user.platform = random_string(n) if random_boolean
@@ -29,11 +28,7 @@ module AmplitudeExperiment
       user.device_manufacturer = random_string(n) if random_boolean
       user.device_model = random_string(n) if random_boolean
       user.device_brand = random_string(n) if random_boolean
-      if random_boolean
-        user.user_properties = {
-          'test': 'test'
-        }
-      end
+      user.user_properties = { test: 'test' } if random_boolean
       user
     end
 
@@ -70,7 +65,7 @@ module AmplitudeExperiment
 
     it '10 flag < 10ms' do
       total_duration = 0
-      (1..10).each do |n|
+      10.times do
         duration = Benchmark.measure do
           user = random_experiment_user
           flag = random_benchmark_flag
@@ -83,7 +78,7 @@ module AmplitudeExperiment
 
     it '100 flags < 100ms' do
       total_duration = 0
-      (1..100).each do |n|
+      100.times do
         duration = Benchmark.measure do
           user = random_experiment_user
           flag = random_benchmark_flag
@@ -96,7 +91,7 @@ module AmplitudeExperiment
 
     it '1000 flags < 1000ms' do
       total_duration = 0
-      (1..1000).each do |n|
+      1000.times do
         duration = Benchmark.measure do
           user = random_experiment_user
           flag = random_benchmark_flag
@@ -107,7 +102,4 @@ module AmplitudeExperiment
       expect(total_duration < 1000)
     end
   end
-
-
-  end
-
+end

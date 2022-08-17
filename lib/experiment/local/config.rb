@@ -13,19 +13,20 @@ module AmplitudeExperiment
     attr_accessor :server_url
 
     # The server endpoint from which to request variants.
-    # @return [object] the value of bootstrap
+    # @return [Object] the value of bootstrap
     attr_accessor :bootstrap
 
     # The server endpoint from which to request variants.
     # @return [long] the value of flag config polling interval in million seconds
     attr_accessor :flag_config_polling_interval_millis
 
-
     # @param [Boolean] debug Set to true to log some extra information to the console.
     # @param [String] server_url The server endpoint from which to request variants.
-    def initialize(debug = false, server_url = DEFAULT_SERVER_URL, bootstrap = {},
-                   flag_config_polling_interval_millis = 30_000)
-      @debug = debug
+    # @param [Object] bootstrap The value of bootstrap.
+    # @param [long] flag_config_polling_interval_millis The value of flag config polling interval in million seconds.
+    def initialize(server_url = DEFAULT_SERVER_URL, bootstrap = {},
+                   flag_config_polling_interval_millis = 30_000, debug: false)
+      @debug = debug || false
       @server_url = server_url
       @bootstrap = bootstrap
       @flag_config_polling_interval_millis = flag_config_polling_interval_millis

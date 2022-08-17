@@ -12,7 +12,6 @@ module AmplitudeExperiment
       @debug = debug
       @poller_thread = nil
       @is_running = false
-
     end
 
     # Fetch initial flag configurations and start polling for updates.
