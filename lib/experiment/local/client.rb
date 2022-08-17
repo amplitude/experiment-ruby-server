@@ -34,7 +34,7 @@ module AmplitudeExperiment
     # @param [String[]] flag_keys The flags to evaluate with the user. If empty, all flags from the flag cache are evaluated
     #
     # @return [Variants] The evaluated variants
-    def evaluate(user = User.new, flag_keys = [])
+    def evaluate(user, flag_keys = [])
       flag_configs = []
       if flag_keys.empty?
         @cache.get_all.each do |key, value|

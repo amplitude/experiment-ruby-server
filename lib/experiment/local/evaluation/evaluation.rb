@@ -6,16 +6,16 @@ module EvaluationInterop
   cpu = RbConfig::CONFIG['host_cpu']
   evaluation_dir = "#{Dir.pwd}/lib/experiment/local/evaluation/lib"
   if host_os =~ /darwin|mac os/ && cpu =~ /x86_64/
-    ffi_lib ["#{evaluation_dir}/macosX64/releaseShared/libevaluation_interop.dylib"]
+    ffi_lib ["#{evaluation_dir}/macosX64/libevaluation_interop.dylib"]
   end
   if host_os =~ /darwin|mac os/ && cpu =~ /aarch64/
-    ffi_lib ["#{evaluation_dir}/macosArm64/releaseShared/libevaluation_interop.dylib"]
+    ffi_lib ["#{evaluation_dir}/macosArm64/libevaluation_interop.dylib"]
   end
   if host_os =~ /linux/ && cpu =~ /x86_64/
-    ffi_lib ["#{evaluation_dir}/linuxX64/releaseShared/libevaluation_interop.so"]
+    ffi_lib ["#{evaluation_dir}/linuxX64/libevaluation_interop.so"]
   end
   if host_os =~ /linux/ && cpu =~ /aarch64s/
-    ffi_lib ["#{evaluation_dir}/linuxArm64/releaseShared/libevaluation_interop.so"]
+    ffi_lib ["#{evaluation_dir}/linuxArm64/libevaluation_interop.so"]
   end
 
   class Root < FFI::Struct
