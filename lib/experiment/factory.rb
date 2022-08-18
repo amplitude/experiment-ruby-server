@@ -8,10 +8,21 @@ module AmplitudeExperiment
   #
   # @param [String] api_key The environment API Key
   # @param [Config] config Optional Config.
-  def self.init(api_key, config = nil)
+  def self.init_remote(api_key, config = nil)
     unless @instances.key?(@default_instance)
       @instances.store(@default_instance, RemoteEvaluationClient.new(api_key, config))
     end
+    @instances.fetch(@default_instance)
+  end
+
+  # Initializes a local evaluation Client. A local evaluation client can evaluate local flags or experiments for a
+  # user without requiring a remote call to the amplitude evaluation server. In order to best leverage local
+  # evaluation, all flags, and experiments being evaluated server side should be configured as local.
+  #
+  # @param [String] api_key The environment API Key
+  # @param [Config] config Optional Config.
+  def self.init_local(api_key, config = nil)
+    @instances.store(@default_instance, LocalEvaluationClient.new(api_key, config)) unless @instances.key?(@default_instance)
     @instances.fetch(@default_instance)
   end
 end
