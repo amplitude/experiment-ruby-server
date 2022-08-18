@@ -32,7 +32,7 @@ module AmplitudeExperiment
     # @param [User] user The user to evaluate
     # @param [String[]] flag_keys The flags to evaluate with the user. If empty, all flags from the flag cache are evaluated
     #
-    # @return [Variants] The evaluated variants
+    # @return [Hash[String, Variant]] The evaluated variants
     def evaluate(user, flag_keys = [])
       flag_configs = []
       if flag_keys.empty?
@@ -45,8 +45,17 @@ module AmplitudeExperiment
       flag_configs_str = flag_configs.to_json
       user_str = user.to_json
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flag_configs_str}") if @config.debug
-      variants = evaluation(flag_configs_str, user_str)
+      result_json = evaluation(flag_configs_str, user_str)
       @logger.debug(`[Experiment] evaluate - result: #{variants}`) if @config.debug
+      result = JSON.parse(result_json)
+      variants = {}
+      result.each do |key, value|
+        next if value['isDefaultVariant']
+
+        variant_key = value['variant']['key']
+        variant_payload = value['variant']['payload']
+        variants.store(key, Variant.new(variant_key, variant_payload))
+      end
       variants
     end
 
