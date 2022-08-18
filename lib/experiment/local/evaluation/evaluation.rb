@@ -6,11 +6,11 @@ module EvaluationInterop
   extend FFI::Library
   host_os = RbConfig::CONFIG['host_os']
   cpu = RbConfig::CONFIG['host_cpu']
-  evaluation_dir = "#{Dir.pwd}/lib/experiment/local/evaluation/lib"
-  ffi_lib ["#{evaluation_dir}/macosX64/libevaluation_interop.dylib"] if host_os =~ /darwin|mac os/ && cpu =~ /x86_64/
-  ffi_lib ["#{evaluation_dir}/macosArm64/libevaluation_interop.dylib"] if host_os =~ /darwin|mac os/ && cpu =~ /aarch64/
-  ffi_lib ["#{evaluation_dir}/linuxX64/libevaluation_interop.so"] if host_os =~ /linux/ && cpu =~ /x86_64/
-  ffi_lib ["#{evaluation_dir}/linuxArm64/libevaluation_interop.so"] if host_os =~ /linux/ && cpu =~ /aarch64s/
+  evaluation_dir = File.dirname(__FILE__)
+  ffi_lib ["#{evaluation_dir}/lib/macosX64/libevaluation_interop.dylib"] if host_os =~ /darwin|mac os/ && cpu =~ /x86_64/
+  ffi_lib ["#{evaluation_dir}/lib/macosArm64/libevaluation_interop.dylib"] if host_os =~ /darwin|mac os/ && cpu =~ /aarch64/
+  ffi_lib ["#{evaluation_dir}/lib/linuxX64/libevaluation_interop.so"] if host_os =~ /linux/ && cpu =~ /x86_64/
+  ffi_lib ["#{evaluation_dir}/lib/linuxArm64/libevaluation_interop.so"] if host_os =~ /linux/ && cpu =~ /aarch64s/
 
   class Root < FFI::Struct
     layout :evaluate, callback([:string, :string], :pointer)
