@@ -5,7 +5,6 @@ module AmplitudeExperiment
   SERVER_API_KEY = 'server-qz35UwzJ5akieoAdIgzM4m9MIiOLXLoz'.freeze
   TEST_USER = User.new(user_id: 'test_user')
 
-
   describe LocalEvaluationClient do
     describe '#initialize' do
       it 'error if api_key is nil' do
