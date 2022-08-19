@@ -36,8 +36,7 @@ module AmplitudeExperiment
             }
           ).to_return(status: 200, body: response, headers: {})
 
-        config = LocalEvaluationConfig.new(false)
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY, config)
+        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
         local_evaluation_client.start
 
         result = local_evaluation_client.evaluate(TEST_USER, ['sdk-local-evaluation-ci-test'])
@@ -58,8 +57,7 @@ module AmplitudeExperiment
             }
           ).to_return(status: 200, body: response, headers: {})
 
-        config = LocalEvaluationConfig.new(false)
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY, config)
+        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
         local_evaluation_client.start
 
         result = local_evaluation_client.evaluate(TEST_USER)

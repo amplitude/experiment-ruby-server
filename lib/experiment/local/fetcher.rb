@@ -5,7 +5,7 @@ module AmplitudeExperiment
   class LocalEvaluationFetcher
     FLAG_CONFIG_TIMEOUT = 5000
 
-    def initialize(api_key, debug, server_url: 'https://api.lab.amplitude.com')
+    def initialize(api_key, debug, server_url = 'https://api.lab.amplitude.com')
       @api_key = api_key
       @uri = "#{server_url}/sdk/rules?eval_mode=local"
       @debug = debug
