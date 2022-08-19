@@ -5,7 +5,7 @@ AllCops:
 Layout/LineLength:
   Max: 125
   Exclude:
-    - "spec/**/**/*.rb"
+    - "spec/**/*.rb"
 
 Metrics/ParameterLists:
   Enabled: false
@@ -21,11 +21,11 @@ Metrics/BlockLength:
 
 Metrics/CyclomaticComplexity:
   Exclude:
-    - "spec/**/**/*.rb"
+    - "spec/**/*.rb"
 
 Metrics/PerceivedComplexity:
   Exclude:
-   - "spec/**/**/*.rb"
+   - "spec/**/*.rb"
 
 Style/FrozenStringLiteralComment:
   Enabled: false

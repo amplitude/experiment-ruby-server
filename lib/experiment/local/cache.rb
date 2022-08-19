@@ -2,7 +2,8 @@ require 'uri'
 require 'logger'
 
 module AmplitudeExperiment
-  # Main client for fetching variant data.
+  # The place to store the flag configs fetched from the server
+  # InMemoryFlagConfigCache
   class InMemoryFlagConfigCache
     attr_accessor :cache
 

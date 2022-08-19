@@ -19,8 +19,6 @@ module AmplitudeExperiment
                       else
                         Logger::INFO
                       end
-      endpoint = "#{@config.server_url}/sdk/vardata"
-      @uri = URI(endpoint)
       @fetcher = LocalEvaluationFetcher.new(api_key, @config.debug)
       @poller = FlagConfigPoller.new(@fetcher, @cache, @config.debug)
 
