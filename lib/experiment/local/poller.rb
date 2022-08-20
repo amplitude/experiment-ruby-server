@@ -1,5 +1,5 @@
 module AmplitudeExperiment
-  # LocalEvaluationConfig
+  # FlagConfigPoller
   # update the flag_config cache value
   class FlagConfigPoller
     FLAG_CONFIG_POLLING_INTERVAL_MILLIS = 30_000

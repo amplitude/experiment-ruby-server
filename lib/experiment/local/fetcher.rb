@@ -1,7 +1,7 @@
 module AmplitudeExperiment
+  # LocalEvaluationFetcher
   # Fetch local evaluation mode flag configs from the Experiment API server.
   # These flag configs can be used to perform local evaluation.
-  # LocalEvaluationFetcher
   class LocalEvaluationFetcher
     FLAG_CONFIG_TIMEOUT = 5000
 
