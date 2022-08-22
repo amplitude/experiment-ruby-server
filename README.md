@@ -33,7 +33,7 @@ require 'amplitude-experiment'
 apiKey = 'YOUR-API-KEY'
 
 # (2) Initialize the experiment client
-experiment = AmplitudeExperiment.init_remote(api_key)
+experiment = AmplitudeExperiment.initialize_remote(api_key)
 
 # (3) Fetch variants for a user
 user = AmplitudeExperiment::User.new(user_id: 'user@company.com', device_id: 'abcezas123', user_properties: {'premium' => true})
@@ -73,7 +73,7 @@ require 'amplitude-experiment'
 apiKey = 'YOUR-API-KEY'
 
 # (2) Initialize the experiment client
-experiment = AmplitudeExperiment.init_local(api_key)
+experiment = AmplitudeExperiment.initialize_local(api_key)
 
 # (3) Start the local evaluation client
 experiment.start
