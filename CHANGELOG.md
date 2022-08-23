@@ -1,3 +1,10 @@
+# [1.0.0-beta.7](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2022-08-23)
+
+
+### Features
+
+* local evaluation ([#16](https://github.com/amplitude/experiment-ruby-server/issues/16)) ([b049781](https://github.com/amplitude/experiment-ruby-server/commit/b0497817f331a6bc8cb962b36c1068b56150fa9a))
+
 # [1.0.0-beta.6](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2022-07-17)
 
 
