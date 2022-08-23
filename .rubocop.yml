@@ -19,6 +19,14 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   IgnoredMethods: ['describe', 'context']
 
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "spec/**/*.rb"
+
+Metrics/PerceivedComplexity:
+  Exclude:
+   - "spec/**/*.rb"
+
 Style/FrozenStringLiteralComment:
   Enabled: false
 
