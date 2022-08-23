@@ -14,7 +14,9 @@ Gem::Specification.new do |spec|
   spec.files                 = Dir['README.md',
                                    'lib/**/*.rb',
                                    'experiment-ruby.gemspec',
-                                   'Gemfile']
+                                   'Gemfile',
+                                   'lib/experiment/local/evaluation/lib/**/*.so',
+                                   'lib/experiment/local/evaluation/lib/**/*.dylib']
   spec.require_paths         = ["lib"]
   spec.extra_rdoc_files      = ['README.md']
 
