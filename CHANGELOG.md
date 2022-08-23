@@ -1,3 +1,10 @@
+# [1.0.0-beta.8](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.7...v1.0.0-beta.8) (2022-08-23)
+
+
+### Bug Fixes
+
+* fix loadError for loading local evaluation function ([#21](https://github.com/amplitude/experiment-ruby-server/issues/21)) ([b25a659](https://github.com/amplitude/experiment-ruby-server/commit/b25a659e6aab0d8ac6b5f9828a940bdacd74db03))
+
 # [1.0.0-beta.7](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2022-08-23)
 
 
