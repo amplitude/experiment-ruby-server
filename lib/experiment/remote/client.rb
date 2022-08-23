@@ -5,14 +5,14 @@ require 'logger'
 
 module AmplitudeExperiment
   # Main client for fetching variant data.
-  class Client
+  class RemoteEvaluationClient
     # Creates a new Experiment Client instance.
     #
     # @param [String] api_key The environment API Key
     # @param [Config] config
     def initialize(api_key, config = nil)
       @api_key = api_key
-      @config = config || Config.new
+      @config = config || RemoteEvaluationConfig.new
       @logger = Logger.new($stdout)
       @logger.level = if @config.debug
                         Logger::DEBUG

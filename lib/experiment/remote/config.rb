@@ -1,6 +1,6 @@
 module AmplitudeExperiment
   # Configuration
-  class Config
+  class RemoteEvaluationConfig
     # Default server url
     DEFAULT_SERVER_URL = 'https://api.lab.amplitude.com'.freeze
 
