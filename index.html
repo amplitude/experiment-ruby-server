@@ -86,7 +86,7 @@
 <pre class="code ruby"><code class="ruby">gem install amplitude-experiment --pre
 </code></pre>
 
-<h2 id="label-Quick+Start">Quick Start</h2>
+<h2 id="label-Remote+Evaluation+Quick+Start">Remote Evaluation Quick Start</h2>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>amplitude-experiment</span><span class='tstring_end'>&#39;</span></span>
 
@@ -94,7 +94,7 @@
 </span><span class='id identifier rubyid_apiKey'>apiKey</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>YOUR-API-KEY</span><span class='tstring_end'>&#39;</span></span>
 
 <span class='comment'># (2) Initialize the experiment client
-</span><span class='id identifier rubyid_experiment'>experiment</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="AmplitudeExperiment.html" title="AmplitudeExperiment (module)">AmplitudeExperiment</a></span></span><span class='period'>.</span><span class='id identifier rubyid_init'><span class='object_link'><a href="AmplitudeExperiment.html#init-class_method" title="AmplitudeExperiment.init (method)">init</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_api_key'>api_key</span><span class='rparen'>)</span>
+</span><span class='id identifier rubyid_experiment'>experiment</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="AmplitudeExperiment.html" title="AmplitudeExperiment (module)">AmplitudeExperiment</a></span></span><span class='period'>.</span><span class='id identifier rubyid_initialize_remote'><span class='object_link'><a href="AmplitudeExperiment.html#initialize_remote-class_method" title="AmplitudeExperiment.initialize_remote (method)">initialize_remote</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_api_key'>api_key</span><span class='rparen'>)</span>
 
 <span class='comment'># (3) Fetch variants for a user
 </span><span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="AmplitudeExperiment.html" title="AmplitudeExperiment (module)">AmplitudeExperiment</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="AmplitudeExperiment/User.html" title="AmplitudeExperiment::User (class)">User</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="AmplitudeExperiment/User.html#initialize-instance_method" title="AmplitudeExperiment::User#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>user_id:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>user@company.com</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>device_id:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>abcezas123</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>user_properties:</span> <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>premium</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -125,6 +125,32 @@
 <span class='kw'>end</span>
 </code></pre>
 
+<h2 id="label-Local+Evaluation+Quick+Start">Local Evaluation Quick Start</h2>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>amplitude-experiment</span><span class='tstring_end'>&#39;</span></span>
+
+<span class='comment'># (1) Get your deployment&#39;s API key
+</span><span class='id identifier rubyid_apiKey'>apiKey</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>YOUR-API-KEY</span><span class='tstring_end'>&#39;</span></span>
+
+<span class='comment'># (2) Initialize the experiment client
+</span><span class='id identifier rubyid_experiment'>experiment</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="AmplitudeExperiment.html" title="AmplitudeExperiment (module)">AmplitudeExperiment</a></span></span><span class='period'>.</span><span class='id identifier rubyid_initialize_local'><span class='object_link'><a href="AmplitudeExperiment.html#initialize_local-class_method" title="AmplitudeExperiment.initialize_local (method)">initialize_local</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_api_key'>api_key</span><span class='rparen'>)</span>
+
+<span class='comment'># (3) Start the local evaluation client
+</span><span class='id identifier rubyid_experiment'>experiment</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
+
+<span class='comment'># (4) Evaluate a user
+</span><span class='id identifier rubyid_user'>user</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="AmplitudeExperiment.html" title="AmplitudeExperiment (module)">AmplitudeExperiment</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="AmplitudeExperiment/User.html" title="AmplitudeExperiment::User (class)">User</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="AmplitudeExperiment/User.html#initialize-instance_method" title="AmplitudeExperiment::User#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>user_id:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>user@company.com</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>device_id:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>abcezas123</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>user_properties:</span> <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>premium</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='kw'>true</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_variants'>variants</span> <span class='op'>=</span> <span class='id identifier rubyid_experiment'>experiment</span><span class='period'>.</span><span class='id identifier rubyid_evaluate'>evaluate</span><span class='lparen'>(</span><span class='id identifier rubyid_user'>user</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_variant'>variant</span> <span class='op'>=</span> <span class='id identifier rubyid_variants'>variants</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>YOUR-FLAG-KEY</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+<span class='kw'>unless</span> <span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_variant'>variant</span><span class='period'>.</span><span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>on</span><span class='tstring_end'>&#39;</span></span>
+    <span class='comment'># Flag is on
+</span>  <span class='kw'>else</span>
+    <span class='comment'># Flag is off
+</span>  <span class='kw'>end</span>
+<span class='kw'>end</span>
+</code></pre>
+
 <h2 id="label-More+Information">More Information</h2>
 
 <p>Please visit our :100:<a href="https://www.docs.developers.amplitude.com/experiment/sdks/ruby-sdk/">Developer Center</a> for more instructions on using our the SDK.</p>
@@ -137,7 +163,7 @@
 </div></div>
 
       <div id="footer">
-  Generated on Fri Jul 15 22:54:28 2022 by
+  Generated on Wed Aug 24 20:39:52 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.1.2).
 </div>

@@ -82,7 +82,7 @@
 <p class="children">
   
     
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="AmplitudeExperiment.html" title="AmplitudeExperiment (module)">AmplitudeExperiment</a></span>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="AmplitudeExperiment.html" title="AmplitudeExperiment (module)">AmplitudeExperiment</a></span>, <span class='object_link'><a href="EvaluationInterop.html" title="EvaluationInterop (module)">EvaluationInterop</a></span>
     
   
     
@@ -95,12 +95,87 @@
 
 
 
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
 
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="top-level-namespace.html#evaluation-instance_method" title="#evaluation (instance method)">#<strong>evaluation</strong>(rule_json, user_json)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="evaluation-instance_method">
+  
+    #<strong>evaluation</strong>(rule_json, user_json)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+42
+43
+44
+45
+46
+47</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/experiment/local/evaluation/evaluation.rb', line 42</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_evaluation'>evaluation</span><span class='lparen'>(</span><span class='id identifier rubyid_rule_json'>rule_json</span><span class='comma'>,</span> <span class='id identifier rubyid_user_json'>user_json</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_lib'>lib</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EvaluationInterop.html" title="EvaluationInterop (module)">EvaluationInterop</a></span></span><span class='period'>.</span><span class='id identifier rubyid_libevaluation_interop_symbols'>libevaluation_interop_symbols</span><span class='lparen'>(</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_fn'>fn</span> <span class='op'>=</span> <span class='id identifier rubyid_lib'>lib</span><span class='lbracket'>[</span><span class='symbol'>:kotlin</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:root</span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='symbol'>:evaluate</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_evaluation_result'>evaluation_result</span> <span class='op'>=</span> <span class='id identifier rubyid_fn'>fn</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_rule_json'>rule_json</span><span class='comma'>,</span> <span class='id identifier rubyid_user_json'>user_json</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_evaluation_result'>evaluation_result</span><span class='period'>.</span><span class='id identifier rubyid_read_string'>read_string</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
 
 </div>
 
       <div id="footer">
-  Generated on Fri Jul 15 22:54:28 2022 by
+  Generated on Wed Aug 24 20:39:52 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.1.2).
 </div>
