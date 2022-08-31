@@ -1,3 +1,10 @@
+# [1.0.0-beta.9](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.8...v1.0.0-beta.9) (2022-08-31)
+
+
+### Bug Fixes
+
+* use response.code instead of response.status when logging error ([#23](https://github.com/amplitude/experiment-ruby-server/issues/23)) ([3cdcb34](https://github.com/amplitude/experiment-ruby-server/commit/3cdcb342b50550d6e876241f08951f7e1a76ff43))
+
 # [1.0.0-beta.8](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.7...v1.0.0-beta.8) (2022-08-23)
 
 
