@@ -32,6 +32,7 @@ module AmplitudeExperiment
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => "Api-Key #{SERVER_API_KEY}",
               'Content-Type' => 'application/json;charset=utf-8',
+              'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}",
               'User-Agent' => 'Ruby'
             }
           ).to_return(status: 200, body: response, headers: {})
@@ -53,6 +54,7 @@ module AmplitudeExperiment
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => "Api-Key #{SERVER_API_KEY}",
               'Content-Type' => 'application/json;charset=utf-8',
+              'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}",
               'User-Agent' => 'Ruby'
             }
           ).to_return(status: 200, body: response, headers: {})
