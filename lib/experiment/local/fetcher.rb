@@ -20,7 +20,8 @@ module AmplitudeExperiment
       # fetch flag_configs
       headers = {
         'Authorization' => "Api-Key #{@api_key}",
-        'Content-Type' => 'application/json;charset=utf-8'
+        'Content-Type' => 'application/json;charset=utf-8',
+        'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}"
       }
       request = Net::HTTP::Get.new(@uri, headers)
       response = @http.request(request)
