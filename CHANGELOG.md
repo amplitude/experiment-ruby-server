@@ -1,3 +1,10 @@
+# [1.0.0-beta.10](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.9...v1.0.0-beta.10) (2022-09-08)
+
+
+### Features
+
+* add local evaluation header ([#24](https://github.com/amplitude/experiment-ruby-server/issues/24)) ([04995c6](https://github.com/amplitude/experiment-ruby-server/commit/04995c61b4d09a952d63b286f75bd9538a0dfd34))
+
 # [1.0.0-beta.9](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.8...v1.0.0-beta.9) (2022-08-31)
 
 
