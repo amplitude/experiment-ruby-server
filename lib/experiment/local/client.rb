@@ -20,7 +20,7 @@ module AmplitudeExperiment
                         Logger::INFO
                       end
       @fetcher = LocalEvaluationFetcher.new(api_key, @config.debug, @config.server_url)
-      @poller = FlagConfigPoller.new(@fetcher, @cache, @config.debug)
+      @poller = FlagConfigPoller.new(@fetcher, @cache, @config.debug, @config.flag_config_polling_interval_millis)
 
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
