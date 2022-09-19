@@ -1,3 +1,10 @@
+# [1.0.0-beta.11](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.10...v1.0.0-beta.11) (2022-09-19)
+
+
+### Bug Fixes
+
+* fix local evaluation poller interval issue ([#26](https://github.com/amplitude/experiment-ruby-server/issues/26)) ([abb7899](https://github.com/amplitude/experiment-ruby-server/commit/abb78990155d3329d8cc5f9e4889cc2111eac3a0))
+
 # [1.0.0-beta.10](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.9...v1.0.0-beta.10) (2022-09-08)
 
 
