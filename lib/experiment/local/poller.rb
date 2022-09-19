@@ -40,7 +40,7 @@ module AmplitudeExperiment
       @cache.clear
       @cache.put_all(flag_configs)
       @poller_thread = Thread.new do
-        sleep @poll_interval_millis
+        sleep(@poll_interval_millis / 1000.to_f)
         run
       end
     end
