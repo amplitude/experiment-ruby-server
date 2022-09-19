@@ -18,7 +18,7 @@ module AmplitudeExperiment
 
     describe '#evaluation' do
       it 'evaluation should return variant empty object with invalid user input' do
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
+        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY, LocalEvaluationConfig.new(flag_config_polling_interval_millis: 15_000))
         result = local_evaluation_client.evaluate({}, [])
         expect(result).to eq({})
       end
