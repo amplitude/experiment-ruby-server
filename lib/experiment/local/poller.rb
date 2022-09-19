@@ -4,7 +4,7 @@ module AmplitudeExperiment
   class FlagConfigPoller
     FLAG_CONFIG_POLLING_INTERVAL_MILLIS = 30_000
 
-    def initialize(fetcher, cache, debug, poll_interval_millis: FLAG_CONFIG_POLLING_INTERVAL_MILLIS)
+    def initialize(fetcher, cache, debug, poll_interval_millis = FLAG_CONFIG_POLLING_INTERVAL_MILLIS)
       @fetcher = fetcher
       @cache = cache
       @poll_interval_millis = poll_interval_millis
