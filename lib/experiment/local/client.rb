@@ -44,7 +44,7 @@ module AmplitudeExperiment
       user_str = user.to_json
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flag_configs_str}") if @config.debug
       result_json = evaluation(flag_configs_str, user_str)
-      @logger.debug(`[Experiment] evaluate - result: #{variants}`) if @config.debug
+      @logger.debug("[Experiment] evaluate - result: #{variants}") if @config.debug
       result = JSON.parse(result_json)
       variants = {}
       result.each do |key, value|
