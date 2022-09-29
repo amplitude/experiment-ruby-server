@@ -1,3 +1,10 @@
+# [1.0.0-beta.12](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.11...v1.0.0-beta.12) (2022-09-29)
+
+
+### Bug Fixes
+
+* Use correct format for string interpolation ([#27](https://github.com/amplitude/experiment-ruby-server/issues/27)) ([7e94960](https://github.com/amplitude/experiment-ruby-server/commit/7e94960eed039f3345c61cc23b8727878b58236b))
+
 # [1.0.0-beta.11](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0-beta.10...v1.0.0-beta.11) (2022-09-19)
 
 
