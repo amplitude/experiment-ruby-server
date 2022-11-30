@@ -10,7 +10,7 @@ module EvaluationInterop
   ffi_lib ["#{evaluation_dir}/lib/macosX64/libevaluation_interop.dylib"] if host_os =~ /darwin|mac os/ && cpu =~ /x86_64/
   ffi_lib ["#{evaluation_dir}/lib/macosArm64/libevaluation_interop.dylib"] if host_os =~ /darwin|mac os/ && cpu =~ /arm64/
   ffi_lib ["#{evaluation_dir}/lib/linuxX64/libevaluation_interop.so"] if host_os =~ /linux/ && cpu =~ /x86_64/
-  ffi_lib ["#{evaluation_dir}/lib/linuxArm64/libevaluation_interop.so"] if host_os =~ /linux/ && cpu =~ /arm64/
+  ffi_lib ["#{evaluation_dir}/lib/linuxArm64/libevaluation_interop.so"] if host_os =~ /linux/ && cpu =~ /arm64|aarch64/
 
   class Root < FFI::Struct
     layout :evaluate, callback([:string, :string], :pointer)
