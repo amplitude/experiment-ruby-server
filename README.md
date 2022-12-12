@@ -96,5 +96,7 @@ Please visit our :100:[Developer Center](https://www.docs.developers.amplitude.c
 
 See our [Experiment Ruby SDK Docs](https://amplitude.github.io/experiment-ruby-server/) for a list and description of all available SDK methods.
 
+See our [Local Evaluation Repo](https://github.com/amplitude/experiment-evaluation) for more details about local evaluation binary logic.
+
 ## Need Help?
 If you have any problems or issues over our SDK, feel free to [create a github issue](https://github.com/amplitude/experiments-ruby-server/issues/new) or submit a request on [Amplitude Help](https://help.amplitude.com/hc/en-us/requests/new).
