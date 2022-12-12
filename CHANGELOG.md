@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0...v1.0.1) (2022-12-12)
+
+
+### Bug Fixes
+
+* add local evaluation repo info ([#32](https://github.com/amplitude/experiment-ruby-server/issues/32)) ([7684dcf](https://github.com/amplitude/experiment-ruby-server/commit/7684dcf9a760c6f7c3d37842dbb95dde0be91652))
+
 # 1.0.0 (2022-12-12)
 
 
