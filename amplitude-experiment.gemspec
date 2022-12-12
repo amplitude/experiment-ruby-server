@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov', '~> 0.21'
   spec.add_development_dependency 'webmock', '~> 3.14'
   spec.add_development_dependency 'yard', '~> 0.9'
+  spec.add_development_dependency 'psych', '~> 4.0'
   spec.metadata['rubygems_mfa_required'] = 'false'
   spec.add_runtime_dependency 'ffi', '~> 1.15.5'
 end
