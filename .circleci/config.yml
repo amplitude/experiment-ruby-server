@@ -15,6 +15,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "install"
+          command: "bundle install"
+      - run:
           name: "test"
           command: "bundle exec rake"
 
