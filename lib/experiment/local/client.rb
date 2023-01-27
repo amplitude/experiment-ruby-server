@@ -1,6 +1,5 @@
 require 'uri'
 require 'logger'
-require 'experiment/local/evaluation/evaluation'
 
 module AmplitudeExperiment
   # Main client for fetching variant data.
@@ -10,6 +9,7 @@ module AmplitudeExperiment
     # @param [String] api_key The environment API Key
     # @param [LocalEvaluationConfig] config The config object
     def initialize(api_key, config = nil)
+      require 'experiment/local/evaluation/evaluation'
       @api_key = api_key
       @config = config || LocalEvaluationConfig.new
       @cache = InMemoryFlagConfigCache.new(@config.bootstrap)
