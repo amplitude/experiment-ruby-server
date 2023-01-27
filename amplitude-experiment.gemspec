@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
 
   spec.files                 = Dir['README.md',
                                    'lib/**/*.rb',
-                                   'experiment-ruby.gemspec',
+                                   'amplitude-experiment.gemspec',
                                    'Gemfile',
                                    'lib/experiment/local/evaluation/lib/**/*']
   spec.require_paths         = ["lib"]
