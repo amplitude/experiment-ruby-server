@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.1...v1.0.2) (2023-01-27)
+
+
+### Bug Fixes
+
+* late require native binaries so remote code does not load them ([#35](https://github.com/amplitude/experiment-ruby-server/issues/35)) ([9073e2d](https://github.com/amplitude/experiment-ruby-server/commit/9073e2da6ccc2f8cfe7ed99d65b2b74c31f73154))
+
 ## [1.0.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.0...v1.0.1) (2022-12-12)
 
 
