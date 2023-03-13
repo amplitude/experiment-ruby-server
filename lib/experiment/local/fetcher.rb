@@ -26,6 +26,7 @@ module AmplitudeExperiment
       request = Net::HTTP::Get.new("#{@server_url}/sdk/v1/flags", headers)
       response = @http.request(request)
       raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
+
       @logger.debug("[Experiment] Fetch flag configs: #{response.body}") if @debug
       response.body
     end

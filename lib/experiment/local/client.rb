@@ -31,25 +31,16 @@ module AmplitudeExperiment
     #
     # @return [Hash[String, Variant]] The evaluated variants
     def evaluate(user, flag_keys = [])
-      variants = {}
       flags = @flags_mutex.synchronize do
         @flags
       end
-      return variants if flags.nil?
+      return {} if flags.nil?
 
       user_str = user.to_json
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
-      result_json = evaluation(flags, user_str)
-      @logger.debug("[Experiment] evaluate - result: #{result_json}") if @config.debug
-      result = JSON.parse(result_json)
-      result.each do |key, value|
-        next if value['isDefaultVariant'] || (flag_keys.empty? && flag_keys.include?(key))
-
-        variant_key = value['variant']['key']
-        variant_payload = value['variant']['payload']
-        variants.store(key, Variant.new(variant_key, variant_payload))
-      end
-      variants
+      results_json = evaluation(flags, user_str)
+      @logger.debug("[Experiment] evaluate - result: #{results_json}") if @config.debug
+      parse_results_json(results_json, flag_keys)
     end
 
     # Fetch initial flag configurations and start polling for updates.
@@ -69,6 +60,19 @@ module AmplitudeExperiment
     end
 
     private
+
+    def parse_results_json(results_json, flag_keys)
+      JSON.parse(results_json)
+      variants = {}
+      result.each do |key, value|
+        next if value['isDefaultVariant'] || (flag_keys.empty? && flag_keys.include?(key))
+
+        variant_key = value['variant']['key']
+        variant_payload = value['variant']['payload']
+        variants.store(key, Variant.new(variant_key, variant_payload))
+      end
+      variants
+    end
 
     def run
       @is_running = true
