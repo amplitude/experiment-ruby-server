@@ -12,7 +12,8 @@ module AmplitudeExperiment
       require 'experiment/local/evaluation/evaluation'
       @api_key = api_key
       @config = config || LocalEvaluationConfig.new
-      @cache = InMemoryFlagConfigCache.new(@config.bootstrap)
+      @flags = nil
+      @flags_mutex = Mutex.new
       @logger = Logger.new($stdout)
       @logger.level = if @config.debug
                         Logger::DEBUG
@@ -20,8 +21,6 @@ module AmplitudeExperiment
                         Logger::INFO
                       end
       @fetcher = LocalEvaluationFetcher.new(api_key, @config.debug, @config.server_url)
-      @poller = FlagConfigPoller.new(@fetcher, @cache, @config.debug, @config.flag_config_polling_interval_millis)
-
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
 
@@ -32,24 +31,19 @@ module AmplitudeExperiment
     #
     # @return [Hash[String, Variant]] The evaluated variants
     def evaluate(user, flag_keys = [])
-      flag_configs = []
-      if flag_keys.empty?
-        @cache.cache.each do |_, value|
-          flag_configs.push(value)
-        end
-      else
-        flag_configs = get_flag_configs(flag_keys)
-      end
-      flag_configs_str = flag_configs.to_json
-      user_str = user.to_json
-      @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flag_configs_str}") if @config.debug
-      result_json = evaluation(flag_configs_str, user_str)
-      @logger.debug("[Experiment] evaluate - result: #{variants}") if @config.debug
-      result = JSON.parse(result_json)
       variants = {}
+      flags = @flags_mutex.synchronize do
+        @flags
+      end
+      return variants if flags == nil
+      user_str = user.to_json
+      @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
+      result_json = evaluation(flags, user_str)
+      @logger.debug("[Experiment] evaluate - result: #{result_json}") if @config.debug
+      result = JSON.parse(result_json)
+      filter = flag_keys.length == 0
       result.each do |key, value|
-        next if value['isDefaultVariant']
-
+        next if value['isDefaultVariant'] || (filter && flag_keys.include?(key))
         variant_key = value['variant']['key']
         variant_payload = value['variant']['payload']
         variants.store(key, Variant.new(variant_key, variant_payload))
@@ -60,25 +54,31 @@ module AmplitudeExperiment
     # Fetch initial flag configurations and start polling for updates.
     # You must call this function to begin polling for flag config updates.
     def start
-      @poller.start
+      return if @is_running
+
+      @logger.debug('[Experiment] poller - start') if @debug
+      run
     end
 
     # Stop polling for flag configurations. Close resource like connection pool with client
     def stop
-      @poller.stop
+      @poller_thread&.exit
+      @is_running = false
+      @poller_thread = nil
     end
 
     private
 
-    def get_flag_configs(flag_keys = [])
-      return @cache.cache if flag_keys.empty?
-
-      flag_configs = []
-      flag_keys.each do |key|
-        flag_config = @cache.get(key)
-        flag_configs.push(flag_config) if flag_config
+    def run
+      @is_running = true
+      flags = @fetcher.fetch_v1
+      @flags_mutex.synchronize do
+        @flags = flags
       end
-      flag_configs
+      @poller_thread = Thread.new do
+        sleep(@config.flag_config_polling_interval_millis / 1000.to_f)
+        run
+      end
     end
   end
 end
