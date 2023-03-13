@@ -62,7 +62,7 @@ module AmplitudeExperiment
     private
 
     def parse_results_json(results_json, flag_keys)
-      JSON.parse(results_json)
+      result = JSON.parse(results_json)
       variants = {}
       result.each do |key, value|
         next if value['isDefaultVariant'] || (flag_keys.empty? && flag_keys.include?(key))
