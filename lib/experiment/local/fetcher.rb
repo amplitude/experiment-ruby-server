@@ -27,7 +27,7 @@ module AmplitudeExperiment
       response = @http.request(request)
       raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
       @logger.debug("[Experiment] Fetch flag configs: #{response.body}") if @debug
-      return response.body
+      response.body
     end
 
     # Fetch local evaluation mode flag configs from the Experiment API server.

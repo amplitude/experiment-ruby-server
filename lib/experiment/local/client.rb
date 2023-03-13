@@ -35,15 +35,16 @@ module AmplitudeExperiment
       flags = @flags_mutex.synchronize do
         @flags
       end
-      return variants if flags == nil
+      return variants if flags.nil?
+
       user_str = user.to_json
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
       result_json = evaluation(flags, user_str)
       @logger.debug("[Experiment] evaluate - result: #{result_json}") if @config.debug
       result = JSON.parse(result_json)
-      filter = flag_keys.length == 0
       result.each do |key, value|
-        next if value['isDefaultVariant'] || (filter && flag_keys.include?(key))
+        next if value['isDefaultVariant'] || (flag_keys.empty? && flag_keys.include?(key))
+
         variant_key = value['variant']['key']
         variant_payload = value['variant']['payload']
         variants.store(key, Variant.new(variant_key, variant_payload))
