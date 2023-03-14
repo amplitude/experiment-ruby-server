@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.2...v1.1.0) (2023-03-14)
+
+
+### Features
+
+* flag dependencies ([#36](https://github.com/amplitude/experiment-ruby-server/issues/36)) ([ac92f86](https://github.com/amplitude/experiment-ruby-server/commit/ac92f865e11d072c166161af945b2461d0d8cfce))
+
 ## [1.0.2](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.1...v1.0.2) (2023-01-27)
 
 
