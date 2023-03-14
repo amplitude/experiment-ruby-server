@@ -7,9 +7,28 @@ module AmplitudeExperiment
 
     def initialize(api_key, debug, server_url = 'https://api.lab.amplitude.com')
       @api_key = api_key
-      @uri = "#{server_url}/sdk/rules?eval_mode=local"
+      @server_url = server_url
       @debug = debug
-      @http =  PersistentHttpClient.get(@uri, { read_timeout: FLAG_CONFIG_TIMEOUT })
+      @http =  PersistentHttpClient.get(server_url, { read_timeout: FLAG_CONFIG_TIMEOUT })
+    end
+
+    # Fetch local evaluation mode flag configs from the Experiment API server.
+    # These flag configs can be used to perform local evaluation.
+    #
+    # @return [String] The flag configs
+    def fetch_v1
+      # fetch flag_configs
+      headers = {
+        'Authorization' => "Api-Key #{@api_key}",
+        'Content-Type' => 'application/json;charset=utf-8',
+        'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}"
+      }
+      request = Net::HTTP::Get.new("#{@server_url}/sdk/v1/flags", headers)
+      response = @http.request(request)
+      raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
+
+      @logger.debug("[Experiment] Fetch flag configs: #{response.body}") if @debug
+      response.body
     end
 
     # Fetch local evaluation mode flag configs from the Experiment API server.
@@ -23,7 +42,7 @@ module AmplitudeExperiment
         'Content-Type' => 'application/json;charset=utf-8',
         'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}"
       }
-      request = Net::HTTP::Get.new(@uri, headers)
+      request = Net::HTTP::Get.new("#{@server_url}/sdk/rules?eval_mode=local", headers)
       response = @http.request(request)
       raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
 

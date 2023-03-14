@@ -12,11 +12,7 @@ module AmplitudeExperiment
     # @return [String] the value of server url
     attr_accessor :server_url
 
-    # The server endpoint from which to request variants.
-    # @return [Hash] the value of bootstrap
-    attr_accessor :bootstrap
-
-    # The server endpoint from which to request variants.
+    # The polling interval for flag configs.
     # @return [long] the value of flag config polling interval in million seconds
     attr_accessor :flag_config_polling_interval_millis
 
