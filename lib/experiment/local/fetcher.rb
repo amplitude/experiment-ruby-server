@@ -9,7 +9,7 @@ module AmplitudeExperiment
       @api_key = api_key
       @server_url = server_url
       @logger = logger
-      @http =  PersistentHttpClient.get(server_url, { read_timeout: FLAG_CONFIG_TIMEOUT })
+      @http = PersistentHttpClient.get(server_url, { read_timeout: FLAG_CONFIG_TIMEOUT })
     end
 
     # Fetch local evaluation mode flag configs from the Experiment API server.
