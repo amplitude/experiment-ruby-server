@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.0...v1.1.1) (2023-05-22)
+
+
+### Bug Fixes
+
+* pass logger to fetcher rather than debug flag ([#39](https://github.com/amplitude/experiment-ruby-server/issues/39)) ([8ec9194](https://github.com/amplitude/experiment-ruby-server/commit/8ec919459cc049483588ebbe7155b29a1108c84c))
+
 # [1.1.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.0.2...v1.1.0) (2023-03-14)
 
 
