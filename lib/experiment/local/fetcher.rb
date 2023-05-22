@@ -5,11 +5,11 @@ module AmplitudeExperiment
   class LocalEvaluationFetcher
     FLAG_CONFIG_TIMEOUT = 5000
 
-    def initialize(api_key, debug, server_url = 'https://api.lab.amplitude.com')
+    def initialize(api_key, logger, server_url = 'https://api.lab.amplitude.com')
       @api_key = api_key
       @server_url = server_url
-      @debug = debug
-      @http =  PersistentHttpClient.get(server_url, { read_timeout: FLAG_CONFIG_TIMEOUT })
+      @logger = logger
+      @http = PersistentHttpClient.get(server_url, { read_timeout: FLAG_CONFIG_TIMEOUT })
     end
 
     # Fetch local evaluation mode flag configs from the Experiment API server.
@@ -27,7 +27,7 @@ module AmplitudeExperiment
       response = @http.request(request)
       raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
 
-      @logger.debug("[Experiment] Fetch flag configs: #{response.body}") if @debug
+      @logger.debug("[Experiment] Fetch flag configs: #{response.body}")
       response.body
     end
 
@@ -47,7 +47,7 @@ module AmplitudeExperiment
       raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
 
       flag_configs = parse(response.body)
-      @logger.debug("[Experiment] Fetch flag configs: #{request.body}") if @debug
+      @logger.debug("[Experiment] Fetch flag configs: #{request.body}")
       flag_configs
     end
 

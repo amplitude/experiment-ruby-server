@@ -20,7 +20,7 @@ module AmplitudeExperiment
                       else
                         Logger::INFO
                       end
-      @fetcher = LocalEvaluationFetcher.new(api_key, @config.debug, @config.server_url)
+      @fetcher = LocalEvaluationFetcher.new(api_key, @logger, @config.server_url)
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
 
