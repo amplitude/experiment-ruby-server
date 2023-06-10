@@ -1,5 +1,6 @@
 # rubocop:disable all
 require 'ffi'
+require 'json'
 
 # The evaluation wrapper
 module EvaluationInterop
@@ -59,7 +60,13 @@ end
 def evaluation(rule_json, user_json)
   lib = EvaluationInterop.libevaluation_interop_symbols()
   fn = lib[:kotlin][:root][:evaluate]
-  evaluation_result = fn.call(rule_json, user_json)
-  evaluation_result.read_string
+  result_json = fn.call(rule_json, user_json).read_string
+  result = JSON.parse(result_json)
+  if result["error"] != nil
+    raise "#{result["error"]}"
+  elsif result["result"] == nil
+    raise "Evaluation result is nil."
+  end
+  result["result"]
 end
 # rubocop:disable all
