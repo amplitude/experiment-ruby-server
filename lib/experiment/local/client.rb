@@ -39,7 +39,7 @@ module AmplitudeExperiment
       user_str = user.to_json
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
       result = evaluation(flags, user_str)
-      @logger.debug("[Experiment] evaluate - result: #{results}") if @config.debug
+      @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
       parse_results(result, flag_keys)
     end
 
