@@ -38,9 +38,9 @@ module AmplitudeExperiment
 
       user_str = user.to_json
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
-      results_json = evaluation(flags, user_str)
-      @logger.debug("[Experiment] evaluate - result: #{results_json}") if @config.debug
-      parse_results_json(results_json, flag_keys)
+      result = evaluation(flags, user_str)
+      @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
+      parse_results(result, flag_keys)
     end
 
     # Fetch initial flag configurations and start polling for updates.
@@ -61,8 +61,7 @@ module AmplitudeExperiment
 
     private
 
-    def parse_results_json(results_json, flag_keys)
-      result = JSON.parse(results_json)
+    def parse_results(result, flag_keys)
       variants = {}
       result.each do |key, value|
         next if value['isDefaultVariant'] || (flag_keys.empty? && flag_keys.include?(key))
