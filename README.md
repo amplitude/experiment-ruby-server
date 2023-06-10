@@ -26,8 +26,6 @@ To install beta versions:
 gem install amplitude-experiment --pre
 ```
 
-
-
 ## Remote Evaluation Quick Start
 ```ruby
 require 'amplitude-experiment'
