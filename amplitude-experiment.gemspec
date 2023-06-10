@@ -16,9 +16,10 @@ Gem::Specification.new do |spec|
                                    'amplitude-experiment.gemspec',
                                    'Gemfile',
                                    'lib/experiment/local/evaluation/lib/**/*']
-  spec.require_paths         = ["lib"]
+  spec.require_paths         = ['lib']
   spec.extra_rdoc_files      = ['README.md']
 
+  spec.add_development_dependency 'psych', '~> 4.0'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rdoc', '= 6.4'
   spec.add_development_dependency 'rspec', '~> 3.6'
@@ -26,7 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov', '~> 0.21'
   spec.add_development_dependency 'webmock', '~> 3.14'
   spec.add_development_dependency 'yard', '~> 0.9'
-  spec.add_development_dependency 'psych', '~> 4.0'
   spec.metadata['rubygems_mfa_required'] = 'false'
   spec.add_runtime_dependency 'ffi', '~> 1.15.5'
 end
