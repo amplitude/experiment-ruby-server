@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.1...v1.1.2) (2023-06-10)
+
+
+### Bug Fixes
+
+* better handling of exceptions from evaluation library ([#43](https://github.com/amplitude/experiment-ruby-server/issues/43)) ([898b223](https://github.com/amplitude/experiment-ruby-server/commit/898b223b4c002ff4e63269ee71823bad44717396))
+
 ## [1.1.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.0...v1.1.1) (2023-05-22)
 
 
