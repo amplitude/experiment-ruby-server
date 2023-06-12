@@ -10,6 +10,8 @@
 # Experiment Ruby SDK
 Amplitude Ruby Server SDK for Experiment.
 
+> ⚠️ **Local evaluation process fork safety:** When using a `LocalEvaluationClient` and forking the process, you must call `#start` _after forking_ to update the flag configuration state on the new process. For example, in Puma, this means calling `#start` in the [`on_worker_boot` hook](https://www.rubydoc.info/gems/puma/Puma%2FDSL:on_worker_boot). 
+
 ## Installation
 Into Gemfile from rubygems.org:
 ```ruby
@@ -23,7 +25,6 @@ To install beta versions:
 ```ruby
 gem install amplitude-experiment --pre
 ```
-
 
 ## Remote Evaluation Quick Start
 ```ruby
