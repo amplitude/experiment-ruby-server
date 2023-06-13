@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.2...v1.1.3) (2023-06-13)
+
+
+### Bug Fixes
+
+* support multiple instances keyed by api key ([#45](https://github.com/amplitude/experiment-ruby-server/issues/45)) ([e2fb480](https://github.com/amplitude/experiment-ruby-server/commit/e2fb48058f7acefd44474ec4ec1ccced922d42e5))
+
 ## [1.1.2](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.1...v1.1.2) (2023-06-10)
 
 
