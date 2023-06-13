@@ -9,9 +9,7 @@ module AmplitudeExperiment
   # @param [String] api_key The environment API Key
   # @param [Config] config Optional Config.
   def self.initialize_remote(api_key, config = nil)
-    unless @remote_instance.key?(api_key)
-      @remote_instance.store(api_key, RemoteEvaluationClient.new(api_key, config))
-    end
+    @remote_instance.store(api_key, RemoteEvaluationClient.new(api_key, config)) unless @remote_instance.key?(api_key)
     @remote_instance.fetch(api_key)
   end
 
@@ -22,9 +20,7 @@ module AmplitudeExperiment
   # @param [String] api_key The environment API Key
   # @param [Config] config Optional Config.
   def self.initialize_local(api_key, config = nil)
-    unless @local_instance.key?(api_key)
-      @local_instance.store(api_key, LocalEvaluationClient.new(api_key, config))
-    end
+    @local_instance.store(api_key, LocalEvaluationClient.new(api_key, config)) unless @local_instance.key?(api_key)
     @local_instance.fetch(api_key)
   end
 end
