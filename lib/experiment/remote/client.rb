@@ -99,7 +99,7 @@ module AmplitudeExperiment
         'Content-Type' => 'application/json;charset=utf-8'
       }
       read_timeout = timeout_millis / 1000 if (timeout_millis / 1000) > 0
-      http = PersistentHttpClient.get(@uri, { read_timeout: read_timeout })
+      http = PersistentHttpClient.get(@uri, { read_timeout: read_timeout }, @api_key)
       request = Net::HTTP::Post.new(@uri, headers)
       request.body = user_context.to_json
       if request.body.length > 8000
