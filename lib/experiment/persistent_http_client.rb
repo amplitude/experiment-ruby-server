@@ -10,7 +10,7 @@ module AmplitudeExperiment
     class << self
       # url: URI / String
       # options: any options that Net::HTTP.new accepts
-      # api_key: the deployment key for ensuring different deployments dont
+      # api_key: the deployment key for ensuring different deployments don't
       # share connections.
       def get(url, options, api_key)
         uri = url.is_a?(URI) ? url : URI(url)
