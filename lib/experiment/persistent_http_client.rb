@@ -1,14 +1,20 @@
 module AmplitudeExperiment
-  # Persist Http Client to reuse connection and reduce IO
+  # Persist Http Client to reuse connection and reduce IO. Connections are
+  # shared by api key.
+  #
+  # WARNING: these connections are not safe for concurrent requests. Callers
+  # must synchronize requests per connection.
   class PersistentHttpClient
     DEFAULT_OPTIONS = { read_timeout: 80 }.freeze
 
     class << self
       # url: URI / String
       # options: any options that Net::HTTP.new accepts
-      def get(url, options = {})
+      # api_key: the deployment key for ensuring different deployments dont
+      # share connections.
+      def get(url, options = {}, api_key)
         uri = url.is_a?(URI) ? url : URI(url)
-        connection_manager.get_client(uri, options)
+        connection_manager.get_client(uri, options, api_key)
       end
 
       private
@@ -72,7 +78,7 @@ module AmplitudeExperiment
         self.last_used = Time.now
       end
 
-      def get_client(uri, options)
+      def get_client(uri, options, api_key)
         mutex.synchronize do
           # refresh the last time a client was used,
           # this prevents the client from becoming stale
@@ -81,7 +87,7 @@ module AmplitudeExperiment
           # we use params as a cache key for clients.
           # 2 connections to the same host but with different
           # options are going to use different HTTP clients
-          params = [uri.host, uri.port, options]
+          params = [uri.host, uri.port, options, api_key]
           client = clients_store[params]
 
           return client if client
