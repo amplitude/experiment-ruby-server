@@ -12,7 +12,7 @@ module AmplitudeExperiment
       # options: any options that Net::HTTP.new accepts
       # api_key: the deployment key for ensuring different deployments dont
       # share connections.
-      def get(url, options = {}, api_key)
+      def get(url, options, api_key)
         uri = url.is_a?(URI) ? url : URI(url)
         connection_manager.get_client(uri, options, api_key)
       end
