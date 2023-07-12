@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.3...v1.1.4) (2023-07-12)
+
+
+### Bug Fixes
+
+* use a separate connection per deployment ([#46](https://github.com/amplitude/experiment-ruby-server/issues/46)) ([504e8a2](https://github.com/amplitude/experiment-ruby-server/commit/504e8a2531652a995931c5021c79c26c2a6bef19))
+
 ## [1.1.3](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.2...v1.1.3) (2023-06-13)
 
 
