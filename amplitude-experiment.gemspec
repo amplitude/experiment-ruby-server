@@ -19,6 +19,8 @@ Gem::Specification.new do |spec|
   spec.require_paths         = ['lib']
   spec.extra_rdoc_files      = ['README.md']
 
+  spec.add_development_dependency 'concurrent-ruby', '~> 1.2.2'
+  spec.add_development_dependency 'httparty', '~> 0.13.7'
   spec.add_development_dependency 'psych', '~> 4.0'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rdoc', '= 6.4'
