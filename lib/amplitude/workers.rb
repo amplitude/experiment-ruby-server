@@ -62,8 +62,7 @@ module AmplitudeAnalytics
     def get_payload(events)
       payload_body = {
         'api_key' => @configuration.api_key,
-        'events' => [],
-        'options' => {}
+        'events' => []
       }
 
       events.each do |event|

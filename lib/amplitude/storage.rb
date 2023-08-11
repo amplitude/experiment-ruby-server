@@ -2,7 +2,6 @@ require 'monitor'
 module AmplitudeAnalytics
   # Storage
   class Storage
-    include MonitorMixin
 
     def initialize
       super
@@ -82,11 +81,11 @@ module AmplitudeAnalytics
 
     def pull(batch_size)
       current_time = AmplitudeAnalytics.current_milliseconds
-      synchronize do
+      @monitor.synchronize do
         result = @ready_queue.shift(batch_size)
         index = 0
         while index < @buffer_data.length && index < batch_size - result.length &&
-          current_time >= @buffer_data[index][0]
+              current_time >= @buffer_data[index][0]
           event = @buffer_data[index][1]
           result << event
           index += 1
@@ -98,7 +97,7 @@ module AmplitudeAnalytics
     end
 
     def pull_all
-      synchronize do
+      @monitor.synchronize do
         result = @ready_queue + @buffer_data.map { |element| element[1] }
         @buffer_data.clear
         @ready_queue.clear
@@ -109,7 +108,7 @@ module AmplitudeAnalytics
 
     def insert_event(total_delay, event)
       current_time = AmplitudeAnalytics.current_milliseconds
-      synchronize do
+      @monitor.synchronize do
         @ready_queue << @buffer_data.shift[1] while @buffer_data.any? && @buffer_data[0][0] <= current_time
 
         if total_delay == 0
@@ -141,7 +140,7 @@ module AmplitudeAnalytics
       elsif ret <= 0
         0
       else
-        100 * (2 ** ((ret - 1) / 2))
+        100 * (2**((ret - 1) / 2))
       end
     end
   end

@@ -76,7 +76,7 @@ module AmplitudeAnalytics
     def push_to_storage(events, delay, res)
       events.each do |event|
         event.retry += 1
-        success, message = @storage.push(event, delay: delay)
+        success, message = @storage.push(event, delay)
         unless success
           callback([event], res.code, message)
           log([event], res.code, message)
@@ -95,7 +95,7 @@ module AmplitudeAnalytics
 
     def log(events, code, message)
       events.each do |event|
-        @configuration.logger.info(message, code: code, event: event)
+        @configuration.logger.info("#{message}, response code: #{code}, event: #{event}")
       end
     end
   end

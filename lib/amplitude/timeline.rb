@@ -4,7 +4,7 @@ module AmplitudeAnalytics
   # Timeline
   class Timeline
     attr_accessor :configuration
-    attr_reader :logger, :plugins
+    attr_reader :plugins
 
     def initialize(configuration = nil)
       @locks = {
@@ -18,6 +18,11 @@ module AmplitudeAnalytics
         PluginType::DESTINATION => []
       }
       @configuration = configuration
+    end
+
+    def logger
+      @configuration&.logger
+      Logger.new($stdout, progname: LOGGER_NAME)
     end
 
     def setup(client)
@@ -44,7 +49,7 @@ module AmplitudeAnalytics
         @plugins[PluginType::DESTINATION].each do |destination|
           destination_futures << destination.flush
         rescue StandardError
-          @logger.exception('Error for flush events')
+          logger.exception('Error for flush events')
         end
       end
       destination_futures
@@ -52,7 +57,7 @@ module AmplitudeAnalytics
 
     def process(event)
       if @configuration&.opt_out
-        @configuration.logger.info('Skipped event for opt out config')
+        logger.info('Skipped event for opt out config')
         return event
       end
 
@@ -76,9 +81,9 @@ module AmplitudeAnalytics
               result = plugin.execute(result)
             end
           rescue InvalidEventError
-            @logger.error("Invalid event body #{event}")
+            logger.error("Invalid event body #{event}")
           rescue StandardError
-            @logger.error("Error for apply #{PluginType.name(plugin_type)} plugin for event #{event}")
+            logger.error("Error for apply #{PluginType.name(plugin_type)} plugin for event #{event}")
           end
         end
       end
@@ -92,3 +97,4 @@ module AmplitudeAnalytics
     end
   end
 end
+

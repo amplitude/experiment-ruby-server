@@ -19,7 +19,10 @@ module AmplitudeAnalytics
         obj = {}
         2000.times { |i| obj[i.to_s] = i }
 
-        expect { AmplitudeAnalytics.truncate(obj) }.to output(/ERROR -- : Too many properties. 1024 maximum.\n/).to_stdout
+        logs_output = []
+        allow(AmplitudeAnalytics.logger).to receive(:error) { |block| logs_output << block.to_s }
+        AmplitudeAnalytics.truncate(obj)
+        expect(logs_output).to include('Too many properties. 1024 maximum.')
       end
 
       it 'truncates strings and dictionaries in a list input' do
@@ -28,7 +31,10 @@ module AmplitudeAnalytics
         long_string = 'a' * 2000
         obj = [15, 6.6, long_string, large_dict, false]
 
-        expect { AmplitudeAnalytics.truncate(obj) }.to output(/ERROR -- : Too many properties. 1024 maximum.\n/).to_stdout
+        logs_output = []
+        allow(AmplitudeAnalytics.logger).to receive(:error) { |block| logs_output << block.to_s }
+        AmplitudeAnalytics.truncate(obj)
+        expect(logs_output).to include('Too many properties. 1024 maximum.')
 
         expect(obj[0]).to eq(15)
         expect(obj[1]).to eq(6.6)
