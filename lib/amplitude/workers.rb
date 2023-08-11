@@ -4,6 +4,8 @@ require 'concurrent'
 module AmplitudeAnalytics
   # Workers
   class Workers
+    attr_reader :is_active, :is_started, :storage, :configuration, :threads_pool, :consumer_lock, :response_processor
+
     def initialize
       @threads_pool = Concurrent::ThreadPoolExecutor.new(max_threads: 16)
       @is_active = true
@@ -74,7 +76,7 @@ module AmplitudeAnalytics
 
     def buffer_consumer
       if @is_active
-        @storage.lock.synchronize do
+        @storage.monitor.synchronize do
           @storage.lock.wait(@configuration.flush_interval_millis / 1000)
 
           loop do
@@ -82,7 +84,7 @@ module AmplitudeAnalytics
 
             events = @storage.pull(@configuration.flush_queue_size)
             if events
-              @threads_pool.submit { send(events) }
+              @threads_pool.post { send(events) }
             else
               wait_time = @storage.wait_time / 1000
               @storage.lock.wait(wait_time) if wait_time > 0

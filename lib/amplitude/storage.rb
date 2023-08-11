@@ -31,14 +31,15 @@ module AmplitudeAnalytics
   # InMemoryStorage class
   class InMemoryStorage < Storage
 
-    attr_accessor :total_events, :ready_queue, :workers, :buffer_data
+    attr_accessor :total_events, :ready_queue, :workers, :buffer_data, :monitor
 
     def initialize
       super
       @total_events = 0
       @buffer_data = []
       @ready_queue = []
-      @buffer_lock_cv = new_cond
+      @monitor = Monitor.new
+      @buffer_lock_cv = @monitor.new_cond
       @configuration = nil
       @workers = nil
     end

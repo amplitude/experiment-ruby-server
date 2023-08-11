@@ -1,11 +1,11 @@
 module AmplitudeAnalytics
   # Amplitude
   class Amplitude
-    attr_reader :configuration
+    attr_reader :configuration, :timeline
 
     def initialize(api_key, configuration: Config.new)
       @configuration = configuration
-      @configuration.api_key = api_key[:api_key]
+      @configuration.api_key = api_key
       @timeline = Timeline.new
       @timeline.setup(self)
       register_on_exit

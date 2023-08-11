@@ -119,7 +119,7 @@ module AmplitudeAnalytics
                   :event_id, :session_id, :insert_id, :library, :plan, :ingestion_metadata,
                   :group_properties, :partner_id, :version_name, :retry
 
-    def initialize(event_type, user_id: nil, device_id: nil, time: nil, event_properties: nil,
+    def initialize(user_id: nil, device_id: nil, time: nil, event_properties: nil,
                    user_properties: nil, groups: nil, app_version: nil, platform: nil, os_name: nil,
                    os_version: nil, device_brand: nil, device_manufacturer: nil, device_model: nil,
                    carrier: nil, country: nil, region: nil, city: nil, dma: nil, language: nil,
@@ -205,7 +205,7 @@ module AmplitudeAnalytics
         # value.is_a?(Enum) ? value.value : value
         # end
       end
-      AmplitudeAnalytics.truncate(event_body)
+      AmplitudeAnalytics.truncate(event_body.sort.to_h)
     end
 
     def callback(status_code, message = nil)
@@ -215,21 +215,22 @@ module AmplitudeAnalytics
     end
 
     def to_s
-      JSON.generate(event_body, sort_keys: true)
+      JSON.generate(event_body)
     end
   end
 
   # BaseEvent
   class BaseEvent < EventOptions
     def initialize(event_type, **kwargs)
-      super(event_type, **kwargs)
+      @event_type = event_type
+      super(**kwargs)
     end
 
     def load_event_options(event_options)
       return if event_options.nil?
 
       EVENT_KEY_MAPPING.each_key do |key|
-        send("#{key}=", event_options[key]) if respond_to?("#{key}=")
+        self[key] = Marshal.load(Marshal.dump(event_options[key])) if event_options.include?(key)
       end
     end
   end

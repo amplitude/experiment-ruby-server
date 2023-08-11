@@ -16,7 +16,7 @@ module AmplitudeAnalytics
     case obj
     when Hash
       if obj.length > MAX_PROPERTY_KEYS
-        Amplitude.logger.error("Too many properties. #{MAX_PROPERTY_KEYS} maximum.")
+        logger.error("Too many properties. #{MAX_PROPERTY_KEYS} maximum.")
         return {}
       end
       obj.each { |key, value| obj[key] = truncate(value) }

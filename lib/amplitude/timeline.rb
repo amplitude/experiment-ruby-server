@@ -3,9 +3,10 @@ require_relative 'constants'
 module AmplitudeAnalytics
   # Timeline
   class Timeline
-    attr_reader :logger
+    attr_accessor :configuration
+    attr_reader :logger, :plugins
 
-    def initialize(configuration: nil)
+    def initialize(configuration = nil)
       @locks = {
         PluginType::BEFORE => Mutex.new,
         PluginType::ENRICHMENT => Mutex.new,
@@ -50,7 +51,10 @@ module AmplitudeAnalytics
     end
 
     def process(event)
-      return event if @configuration&.opt_out
+      if @configuration&.opt_out
+        @configuration.logger.info('Skipped event for opt out config')
+        return event
+      end
 
       before_result = apply_plugins(PluginType::BEFORE, event)
       enrich_result = apply_plugins(PluginType::ENRICHMENT, before_result)
@@ -72,9 +76,9 @@ module AmplitudeAnalytics
               result = plugin.execute(result)
             end
           rescue InvalidEventError
-            @logger.exception("Invalid event body #{event}")
+            @logger.error("Invalid event body #{event}")
           rescue StandardError
-            @logger.exception("Error for apply #{PluginType.name(plugin_type)} plugin for event #{event}")
+            @logger.error("Error for apply #{PluginType.name(plugin_type)} plugin for event #{event}")
           end
         end
       end

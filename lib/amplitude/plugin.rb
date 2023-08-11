@@ -30,6 +30,8 @@ module AmplitudeAnalytics
 
   # DestinationPlugin
   class DestinationPlugin < EventPlugin
+    attr_reader :timeline
+
     def initialize
       super(PluginType::DESTINATION)
       @timeline = Timeline.new
@@ -101,6 +103,8 @@ module AmplitudeAnalytics
 
   # ContextPlugin
   class ContextPlugin < Plugin
+    attr_accessor :configuration
+
     def initialize
       super(PluginType::BEFORE)
       @context_string = "#{SDK_LIBRARY}/#{SDK_VERSION}"

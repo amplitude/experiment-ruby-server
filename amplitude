@@ -327,3 +327,13 @@ E, [2023-08-08T16:54:56.094719 #33259] ERROR -- : Consumer thread error: undefin
 E, [2023-08-08T16:55:16.615576 #35262] ERROR -- : Consumer thread error: undefined method `synchronize' for #<MonitorMixin::ConditionVariable:0x00000001490f6a28>
 E, [2023-08-08T16:56:04.911681 #37496] ERROR -- : Consumer thread error: undefined method `synchronize' for #<MonitorMixin::ConditionVariable:0x000000013ab48d28>
 E, [2023-08-08T16:56:04.914652 #37496] ERROR -- : Consumer thread error: undefined method `synchronize' for #<MonitorMixin::ConditionVariable:0x000000013ab48d28>
+E, [2023-08-09T10:48:06.508241 #87607] ERROR -- : Consumer thread error: undefined method `synchronize' for #<MonitorMixin::ConditionVariable:0x000000012ba72318>
+E, [2023-08-09T10:48:06.511050 #87607] ERROR -- : Consumer thread error: undefined method `synchronize' for #<MonitorMixin::ConditionVariable:0x000000012ba72318>
+E, [2023-08-09T11:02:35.851545 #78852] ERROR -- : Consumer thread error: undefined method `synchronize' for #<MonitorMixin::ConditionVariable:0x000000012c449ff8>
+I, [2023-08-10T14:07:15.000080 #73822]  INFO -- : Skipped event for opt out config
+I, [2023-08-10T14:07:20.175564 #75107]  INFO -- : Skipped event for opt out config
+I, [2023-08-10T14:07:58.588358 #76971]  INFO -- : Skipped event for opt out config
+I, [2023-08-10T14:08:35.536502 #79507]  INFO -- : Skipped event for opt out config
+E, [2023-08-10T14:10:54.909215 #81662] ERROR -- : Skipped event for opt out config
+I, [2023-08-10T14:11:41.096705 #85442]  INFO -- : Skipped event for opt out config
+I, [2023-08-10T14:11:59.619988 #88393]  INFO -- : Skipped event for opt out config
