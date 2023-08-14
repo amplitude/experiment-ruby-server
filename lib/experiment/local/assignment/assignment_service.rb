@@ -1,14 +1,20 @@
+require_relative '../../../amplitude'
 module AmplitudeExperiment
   # AssignmentService
   class AssignmentService
-    def initialize(api_key, assignment_filter)
-      @api_key = api_key
+    attr_reader :amplitude
+    def initialize(amplitude, assignment_filter)
+      @amplitude = amplitude
       @assignment_filter = assignment_filter
     end
 
+    def track(assignment)
+      @amplitude.track(to_event(assignment)) if @assignment_filter.should_track(assignment)
+    end
+
     def to_event(assignment)
-      event = Event.new(
-        event_type: '[Experiment] Assignment',
+      event = AmplitudeAnalytics::BaseEvent.new(
+        '[Experiment] Assignment',
         user_id: assignment.user.user_id,
         device_id: assignment.user.device_id,
         event_properties: {},
@@ -35,7 +41,7 @@ module AmplitudeExperiment
       event.user_properties['$set'] = set
       event.user_properties['$unset'] = unset
 
-      event.insert_id = "#{event.user_id} #{event.device_id} #{assignment.canonicalize.hash} #{assignment.timestamp / DAY_MILLIS}"
+      event.insert_id = "#{event.user_id} #{event.device_id} #{AmplitudeExperiment.hash_code(assignment.canonicalize)} #{assignment.timestamp / DAY_MILLIS}"
 
       event
     end

@@ -5,7 +5,7 @@ require 'time'
 module AmplitudeAnalytics
 
   def self.logger
-    @logger ||= Logger.new($stdout)
+    @logger ||= Logger.new($stdout, progname: LOGGER_NAME)
   end
 
   def self.current_milliseconds

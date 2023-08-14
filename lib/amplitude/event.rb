@@ -194,7 +194,7 @@ module AmplitudeAnalytics
 
           if element.is_a?(Hash)
             result &&= valid_object?(element)
-          elsif !element.is_a?(Numeric) && !element.is_a?(String)
+          elsif !element.is_a?(Numeric) && !element.is_a?(String) && !element.is_a?(TrueClass) && !element.is_a?(FalseClass)
             result = false
           end
           break unless result

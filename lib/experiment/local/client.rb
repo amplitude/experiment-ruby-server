@@ -1,5 +1,6 @@
 require 'uri'
 require 'logger'
+require_relative '../../amplitude'
 
 module AmplitudeExperiment
   # Main client for fetching variant data.
@@ -8,6 +9,7 @@ module AmplitudeExperiment
     #
     # @param [String] api_key The environment API Key
     # @param [LocalEvaluationConfig] config The config object
+    attr_reader :assignment_service
     def initialize(api_key, config = nil)
       require 'experiment/local/evaluation/evaluation'
       @api_key = api_key
@@ -22,6 +24,13 @@ module AmplitudeExperiment
                       end
       @fetcher = LocalEvaluationFetcher.new(api_key, @logger, @config.server_url)
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
+
+      @assignment_service = nil
+      if config&.assignment_config
+        amplitude = AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config.amp_config)
+        filter = AssignmentFilter.new(config.assignment_config.cache_capacity)
+        @assignment_service = AssignmentService.new(amplitude, filter)
+      end
     end
 
     # Locally evaluates flag variants for a user.
@@ -34,12 +43,16 @@ module AmplitudeExperiment
       flags = @flags_mutex.synchronize do
         @flags
       end
-      return {} if flags.nil?
-
       user_str = user.to_json
+      if flags.nil?
+        @assignment_service&.track(Assignment.new(user, {}))
+        return {}
+      end
+
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
       result = evaluation(flags, user_str)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
+      @assignment_service&.track(Assignment.new(user, result))
       parse_results(result, flag_keys)
     end
 

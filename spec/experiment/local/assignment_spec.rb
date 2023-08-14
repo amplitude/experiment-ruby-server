@@ -216,7 +216,7 @@ module AmplitudeExperiment
       end
 
       it 'filter - lru ttl-based expiration' do
-        filter = MockAssignmentFilter.new(2, 1000)
+        filter = AssignmentFilter.new(2, 1000)
         user1 = User.new(user_id: 'user1')
         user2 = User.new(user_id: 'user2')
         results = {

@@ -17,7 +17,7 @@ module AmplitudeExperiment
     def initialize(key, value)
       @key = key
       @value = value
-      @created_at = Time.now.to_f * 1000
+      @created_at = (Time.now.to_f * 1000).to_i
     end
   end
 
@@ -48,7 +48,7 @@ module AmplitudeExperiment
       node = @cache[key]
       return nil unless node
 
-      time_elapsed = Time.now.to_f * 1000 - node.data.created_at
+      time_elapsed = (Time.now.to_f * 1000).to_i - node.data.created_at
       if time_elapsed > @ttl_millis
         remove(key)
         return nil

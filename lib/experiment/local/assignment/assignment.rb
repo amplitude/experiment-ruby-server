@@ -8,13 +8,13 @@ module AmplitudeExperiment
     def initialize(user, results)
       @user = user
       @results = results
-      @timestamp = Time.now.strftime('%s%L').to_i
+      @timestamp = (Time.now.to_f * 1000).to_i
     end
 
     def canonicalize
-      sb = "#{user&.user_id&.strip} #{user&.device_id&.strip} "
+      sb = "#{@user&.user_id&.strip} #{@user&.device_id&.strip} "
       results.sort.to_h.each do |key, value|
-        sb += "#{key.strip} #{value&.fetch(:value)&.strip} "
+        sb += "#{key.strip} #{value['variant']&.fetch('key', '').strip} "
       end
       sb
     end

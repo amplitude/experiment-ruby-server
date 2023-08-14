@@ -94,6 +94,15 @@ module AmplitudeExperiment
         result = local_evaluation_client.evaluate(TEST_USER_2)
         expect(result['sdk-ci-local-dependencies-test-holdout']).to eq(nil)
       end
+
+      it 'test evaluation with assignment config' do
+        assignment_config = AssignmentConfig.new('a6dd847b9d2f03c816d4f3f8458cdc1d')
+        local_config = LocalEvaluationConfig.new(assignment_config: assignment_config)
+        client = LocalEvaluationClient.new(SERVER_API_KEY, local_config)
+        client.start
+        client.evaluate(User.new(user_id: 'tim.yiu@amplitude.com'))
+        client.assignment_service.amplitude.flush
+      end
     end
   end
 end

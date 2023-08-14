@@ -22,7 +22,7 @@ module AmplitudeAnalytics
 
     it 'base_event_set_plan_attribute_success' do
       event = BaseEvent.new('test_event', user_id: 'test_user')
-      event[:plan] = Plan.new(branch: 'test_branch', version_id: 'v1.1')
+      event['plan'] = Plan.new(branch: 'test_branch', version_id: 'v1.1')
       expect(event.event_body).to eq({
                                        'user_id' => 'test_user',
                                        'event_type' => 'test_event',
@@ -32,7 +32,7 @@ module AmplitudeAnalytics
 
     it 'base_event_set_ingestion_metadata_attribute_success' do
       event = BaseEvent.new('test_event', user_id: 'test_user')
-      event[:ingestion_metadata] = IngestionMetadata.new(source_name: 'test_source', source_version: 'test_version')
+      event['ingestion_metadata'] = IngestionMetadata.new(source_name: 'test_source', source_version: 'test_version')
       expect(event.event_body).to eq({
                                        'user_id' => 'test_user',
                                        'event_type' => 'test_event',
