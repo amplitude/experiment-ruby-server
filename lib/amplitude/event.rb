@@ -177,11 +177,61 @@ module AmplitudeAnalytics
     end
 
     def []=(key, value)
-      send("#{key}=", value) if respond_to?("#{key}=")
+      send("#{key}=", value) if verify_property(key, value)
     end
 
     def include?(key)
       instance_variable_defined?("@#{key}") && !instance_variable_get("@#{key}").nil?
+    end
+
+    def valid_properties?(key, value)
+      return false unless key.is_a?(String)
+
+      if value.is_a?(Array)
+        result = true
+        value.each do |element|
+          return false if element.is_a?(Array)
+
+          if element.is_a?(Hash)
+            result &&= valid_object?(element)
+          elsif !element.is_a?(Numeric) && !element.is_a?(String)
+            result = false
+          end
+          break unless result
+        end
+        return result
+      end
+
+      return valid_object?(value) if value.is_a?(Hash)
+
+      value.is_a?(TrueClass) || value.is_a?(FalseClass) ||
+        value.is_a?(Numeric) || value.is_a?(String) || value.is_a?(Symbol)
+    end
+
+    def valid_object?(obj)
+      obj.each do |key, value|
+        return false unless valid_properties?(key, value)
+      end
+      true
+    end
+
+    def verify_property(key, value)
+      return true if value.nil?
+
+      unless instance_variable_defined?("@#{key}")
+        logger.error("Unexpected event property key: #{key}")
+        return false
+      end
+
+      expected_type = EVENT_KEY_MAPPING[key][1]
+      unless value.is_a?(expected_type)
+        logger.error("Event property #{key} expected #{expected_type} but received #{value.class}.")
+        return false
+      end
+
+      return valid_object?(value) if value.is_a?(Hash)
+
+      true
     end
 
     def event_body
@@ -209,9 +259,7 @@ module AmplitudeAnalytics
     end
 
     def callback(status_code, message = nil)
-      if @event_callback.respond_to?(:call)
-        @event_callback.call(self, status_code, message)
-      end
+      @event_callback.call(self, status_code, message) if @event_callback.respond_to?(:call)
     end
 
     def to_s

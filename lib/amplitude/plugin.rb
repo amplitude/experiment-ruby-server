@@ -71,7 +71,6 @@ module AmplitudeAnalytics
     end
 
     def setup(client)
-      super(client)
       @configuration = client.configuration
       @storage = client.configuration.storage
       @workers.setup(client.configuration, @storage)

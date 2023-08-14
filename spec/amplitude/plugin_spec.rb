@@ -2,11 +2,10 @@ module AmplitudeAnalytics
   describe Plugin do
     it 'initializes Amplitude client and sets up destination plugin' do
       allow(AmplitudeDestinationPlugin).to receive(:setup)
-
       client = Amplitude.new('test_api_key')
       timeline = client.timeline
-      expect(AmplitudeDestinationPlugin).to have_received(:setup).with(client)
       expect(timeline.plugins[PluginType::DESTINATION]).to be_truthy
+      expect(AmplitudeDestinationPlugin).to have_received(:setup).with(client)
     end
 
     it 'initializes Amplitude client and creates context plugin' do
