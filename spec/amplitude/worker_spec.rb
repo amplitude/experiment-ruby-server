@@ -11,9 +11,12 @@ module AmplitudeAnalytics
       @workers.setup(Config.new, InMemoryStorage.new)
       @workers.storage.setup(@workers.configuration, @workers)
       @events_dict = Hash.new { |hash, key| hash[key] = Set.new }
+      @events_dict_mutex = Mutex.new
 
       callback_func = lambda do |event, code, message = nil|
-        @events_dict[code].add(event)
+        @events_dict_mutex.synchronize do
+          @events_dict[code].add(event)
+        end
       end
 
       @workers.configuration.callback = callback_func
@@ -250,16 +253,12 @@ module AmplitudeAnalytics
         end
       end
 
-      @events_dict_mutex = Mutex.new # Create a mutex
-
       [@workers.method(:send), method(:push_event)].each do |target_func|
         threads = []
         @events_dict.clear
-        10.times do
+        20.times do
           t = Thread.new do
-            @events_dict_mutex.synchronize do
-              target_func.call(get_events_list(100))
-            end
+            target_func.call(get_events_list(100))
           end
           threads << t
         end
@@ -267,11 +266,9 @@ module AmplitudeAnalytics
         while @workers.storage.total_events > 0
           sleep(0.1)
         end
-        @events_dict_mutex.synchronize do
-          total_events = @events_dict.values.sum(&:length)
-          expect(@workers.storage.total_events).to eq(0)
-          expect(total_events).to eq(1000)
-        end
+        total_events = @events_dict.values.sum(&:length)
+        expect(@workers.storage.total_events).to eq(0)
+        expect(total_events).to eq(2000)
       end
     end
   end
