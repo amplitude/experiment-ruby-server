@@ -130,7 +130,7 @@ module AmplitudeAnalytics
 
         @total_events += 1
 
-        @buffer_lock_cv.signal if @ready_queue.length >= @configuration.flush_queue_size
+        lock.signal if @ready_queue.length >= @configuration.flush_queue_size
       end
     end
 

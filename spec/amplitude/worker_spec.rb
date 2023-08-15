@@ -23,21 +23,9 @@ module AmplitudeAnalytics
     end
 
     after(:each) do
-      @workers.storage.lock { @workers.storage.lock.signal }
-    end
-
-    def push_event(events)
-      events.each do |event|
-        @workers.storage.push(event)
+      @workers.storage.monitor.synchronize do
+        @workers.storage.lock.signal
       end
-    end
-
-    def get_events_list(num)
-      events = []
-      num.times do |i|
-        events.append(BaseEvent.new("test_event_#{i}", user_id: 'test_user'))
-      end
-      events
     end
 
     it 'initializes and sets up correctly' do
@@ -256,7 +244,7 @@ module AmplitudeAnalytics
       [@workers.method(:send), method(:push_event)].each do |target_func|
         threads = []
         @events_dict.clear
-        20.times do
+        30.times do
           t = Thread.new do
             target_func.call(get_events_list(100))
           end
@@ -268,8 +256,24 @@ module AmplitudeAnalytics
         end
         total_events = @events_dict.values.sum(&:length)
         expect(@workers.storage.total_events).to eq(0)
-        expect(total_events).to eq(2000)
+        expect(total_events).to eq(3000)
       end
+    end
+
+    private
+
+    def push_event(events)
+      events.each do |event|
+        @workers.storage.push(event)
+      end
+    end
+
+    def get_events_list(num)
+      events = []
+      num.times do |i|
+        events.append(BaseEvent.new("test_event_#{i}", user_id: 'test_user'))
+      end
+      events
     end
   end
 end

@@ -16,7 +16,8 @@ module AmplitudeExperiment
     # @return [long] the value of flag config polling interval in million seconds
     attr_accessor :flag_config_polling_interval_millis
 
-    # TODO: description
+    # Configuration for automatically tracking assignment events after an evaluation.
+    # @return [AssignmentConfig] the config instance
     attr_accessor :assignment_config
 
     # @param [Boolean] debug Set to true to log some extra information to the console.
