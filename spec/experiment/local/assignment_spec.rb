@@ -4,16 +4,17 @@ module AmplitudeExperiment
       filter = AssignmentFilter.new(100)
       service = AssignmentService.new('', filter)
       user = User.new(user_id: 'user', device_id: 'device')
-      results = {}
-      results['flag-key-1'] = {
-        value: 'on',
-        description: 'description-1',
-        is_default_variant: false
-      }
-      results['flag-key-2'] = {
-        value: 'control',
-        description: 'description-2',
-        is_default_variant: true
+      results = {
+        'flag-key-1' => {
+          'variant' => { 'key' => 'on' },
+          'description' => 'description-1',
+          'isDefaultVariant' => false
+        },
+        'flag-key-2' => {
+          'variant' => { 'key' => 'control' },
+          'description' => 'description-2',
+          'isDefaultVariant' => true
+        }
       }
       assignment = Assignment.new(user, results)
 
@@ -34,9 +35,10 @@ module AmplitudeExperiment
       expect(user_properties['$unset'].keys.length).to eq(1)
 
       canonicalization = 'user device flag-key-1 on flag-key-2 control '
-      expected = "user device #{canonicalization.hash} #{assignment.timestamp / DAY_MILLIS}"
+      expected = "user device #{AmplitudeExperiment.hash_code(canonicalization)} #{assignment.timestamp / DAY_MILLIS}"
       expect(assignment.canonicalize).to eq(canonicalization)
       expect(event.insert_id).to eq(expected)
+      puts event
     end
 
     describe AssignmentFilter do
@@ -45,14 +47,14 @@ module AmplitudeExperiment
         user = User.new(user_id: 'user', device_id: 'device')
         results = {
           'flag-key-1' => {
-            value: 'on',
-            description: 'description-1',
-            is_default_variant: false
+            'variant' => { 'key' => 'on' },
+            'description' => 'description-1',
+            'isDefaultVariant' => false
           },
           'flag-key-2' => {
-            value: 'control',
-            description: 'description-2',
-            is_default_variant: true
+            'variant' => { 'key' => 'control' },
+            'description' => 'description-2',
+            'isDefaultVariant' => true
           }
         }
         assignment = Assignment.new(user, results)
@@ -65,14 +67,14 @@ module AmplitudeExperiment
         user = User.new(user_id: 'user', device_id: 'device')
         results = {
           'flag-key-1' => {
-            value: 'on',
-            description: 'description-1',
-            is_default_variant: false
+            'variant' => { 'key' => 'on' },
+            'description' => 'description-1',
+            'isDefaultVariant' => false
           },
           'flag-key-2' => {
-            value: 'control',
-            description: 'description-2',
-            is_default_variant: true
+            'variant' => { 'key' => 'control' },
+            'description' => 'description-2',
+            'isDefaultVariant' => true
           }
         }
         assignment1 = Assignment.new(user, results)
@@ -87,26 +89,26 @@ module AmplitudeExperiment
         user = User.new(user_id: 'user', device_id: 'device')
         results1 = {
           'flag-key-1' => {
-            value: 'on',
-            description: 'description-1',
-            is_default_variant: false
+            'variant' => { 'key' => 'on' },
+            'description' => 'description-1',
+            'isDefaultVariant' => false
           },
           'flag-key-2' => {
-            value: 'control',
-            description: 'description-2',
-            is_default_variant: true
+            'variant' => { 'key' => 'control' },
+            'description' => 'description-2',
+            'isDefaultVariant' => true
           }
         }
         results2 = {
           'flag-key-1' => {
-            value: 'control',
-            description: 'description-1',
-            is_default_variant: false
+            'variant' => { 'key' => 'control' },
+            'description' => 'description-1',
+            'isDefaultVariant' => false
           },
           'flag-key-2' => {
-            value: 'on',
-            description: 'description-2',
-            is_default_variant: true
+            'variant' => { 'key' => 'on' },
+            'description' => 'description-2',
+            'isDefaultVariant' => true
           }
         }
         assignment1 = Assignment.new(user, results1)
@@ -122,14 +124,14 @@ module AmplitudeExperiment
         user2 = User.new(user_id: 'different-user')
         results = {
           'flag-key-1' => {
-            value: 'on',
-            description: 'description-1',
-            is_default_variant: false
+            'variant' => { 'key' => 'on' },
+            'description' => 'description-1',
+            'isDefaultVariant' => false
           },
           'flag-key-2' => {
-            value: 'control',
-            description: 'description-2',
-            is_default_variant: true
+            'variant' => { 'key' => 'control' },
+            'description' => 'description-2',
+            'isDefaultVariant' => true
           }
         }
         assignment1 = Assignment.new(user1, results)
@@ -158,26 +160,26 @@ module AmplitudeExperiment
         user = User.new(user_id: 'user')
         results1 = {
           'flag-key-1' => {
-            value: 'on',
-            description: 'description-1',
-            is_default_variant: false
+            'variant' => { 'key' => 'on' },
+            'description' => 'description-1',
+            'isDefaultVariant' => false
           },
           'flag-key-2' => {
-            value: 'control',
-            description: 'description-2',
-            is_default_variant: true
+            'variant' => { 'key' => 'control' },
+            'description' => 'description-2',
+            'isDefaultVariant' => true
           }
         }
         results2 = {
           'flag-key-2' => {
-            value: 'control',
-            description: 'description-2',
-            is_default_variant: true
+            'variant' => { 'key' => 'control' },
+            'description' => 'description-2',
+            'isDefaultVariant' => true
           },
           'flag-key-1' => {
-            value: 'on',
-            description: 'description-1',
-            is_default_variant: false
+            'variant' => { 'key' => 'on' },
+            'description' => 'description-1',
+            'isDefaultVariant' => false
           }
         }
 
@@ -195,14 +197,14 @@ module AmplitudeExperiment
         user3 = User.new(user_id: 'user3')
         results = {
           'flag-key-1' => {
-            value: 'on',
-            description: 'description-1',
-            is_default_variant: false
+            'variant' => { 'key' => 'on' },
+            'description' => 'description-1',
+            'isDefaultVariant' => false
           },
           'flag-key-2' => {
-            value: 'control',
-            description: 'description-2',
-            is_default_variant: true
+            'variant' => { 'key' => 'control' },
+            'description' => 'description-2',
+            'isDefaultVariant' => true
           }
         }
         assignment1 = Assignment.new(user1, results)
@@ -221,14 +223,14 @@ module AmplitudeExperiment
         user2 = User.new(user_id: 'user2')
         results = {
           'flag-key-1' => {
-            value: 'on',
-            description: 'description-1',
-            is_default_variant: false
+            'variant' => { 'key' => 'on' },
+            'description' => 'description-1',
+            'isDefaultVariant' => false
           },
           'flag-key-2' => {
-            value: 'control',
-            description: 'description-2',
-            is_default_variant: true
+            'variant' => { 'key' => 'control' },
+            'description' => 'description-2',
+            'isDefaultVariant' => true
           }
         }
         assignment1 = Assignment.new(user1, results)

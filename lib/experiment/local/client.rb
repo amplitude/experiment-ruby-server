@@ -10,6 +10,7 @@ module AmplitudeExperiment
     # @param [String] api_key The environment API Key
     # @param [LocalEvaluationConfig] config The config object
     attr_reader :assignment_service
+
     def initialize(api_key, config = nil)
       require 'experiment/local/evaluation/evaluation'
       @api_key = api_key

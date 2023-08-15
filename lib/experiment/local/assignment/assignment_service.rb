@@ -22,19 +22,19 @@ module AmplitudeExperiment
       )
 
       assignment.results.each do |results_key, result|
-        event.event_properties["#{results_key}.variant"] = result[:value]
+        event.event_properties["#{results_key}.variant"] = result['variant']['key']
       end
 
       set = {}
       unset = {}
 
       assignment.results.each do |results_key, result|
-        next if result[:type] == FLAG_TYPE_MUTUAL_EXCLUSION_GROUP
+        next if result['type'] == FLAG_TYPE_MUTUAL_EXCLUSION_GROUP
 
-        if result[:is_default_variant]
+        if result['isDefaultVariant']
           unset["[Experiment] #{results_key}"] = '-'
         else
-          set["[Experiment] #{results_key}"] = result[:value]
+          set["[Experiment] #{results_key}"] = result['variant']['key']
         end
       end
 
