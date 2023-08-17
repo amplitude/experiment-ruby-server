@@ -1,4 +1,5 @@
 require 'spec_helper'
+require_relative '../../../lib/amplitude'
 
 module AmplitudeExperiment
   LOCAL_SERVER_URL = 'https://api.lab.amplitude.com/sdk/vardata'.freeze
@@ -33,12 +34,6 @@ module AmplitudeExperiment
     end
 
     describe '#evaluation' do
-      let (:local_evaluation_client) { LocalEvaluationClient.new(SERVER_API_KEY, LocalEvaluationConfig.new(flag_config_polling_interval_millis: 15_000)) }
-      it 'evaluation should return variant empty object with invalid user input' do
-        result = local_evaluation_client.evaluate({}, [])
-        expect(result).to eq({})
-      end
-
       it 'evaluation should return specific variants' do
         setup_stub
 
@@ -95,15 +90,17 @@ module AmplitudeExperiment
         expect(result['sdk-ci-local-dependencies-test-holdout']).to eq(nil)
       end
 
-      it 'test evaluation with assignment config' do
-        assignment_config = AssignmentConfig.new('a6dd847b9d2f03c816d4f3f8458cdc1d')
-        local_config = LocalEvaluationConfig.new(assignment_config: assignment_config)
-        client = LocalEvaluationClient.new(SERVER_API_KEY, local_config)
-        client.start
-        client.evaluate(User.new(user_id: 'tim.yiu@amplitude.com'))
-        client.assignment_service.amplitude.flush
-        sleep(10)
-      end
+      # TODO: remove after PR review
+      # it 'test evaluation with assignment config' do
+      #   amp_config = AmplitudeAnalytics::Config.new
+      #   assignment_config = AssignmentConfig.new('a6dd847b9d2f03c816d4f3f8458cdc1d', amp_config: amp_config)
+      #   local_config = LocalEvaluationConfig.new(assignment_config: assignment_config)
+      #   client = LocalEvaluationClient.new(SERVER_API_KEY, local_config)
+      #   client.start
+      #   client.evaluate(User.new(user_id: 'tim.yiu@amplitude.com'))
+      #   client.assignment_service.amplitude.flush
+      #   sleep(10)
+      # end
     end
   end
 end

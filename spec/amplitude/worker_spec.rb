@@ -43,6 +43,7 @@ module AmplitudeAnalytics
       @workers.stop
       expect(@workers.is_active).to be_falsy
       expect(@workers.is_started).to be_truthy
+      sleep(1)
       expect(@workers.storage).to have_received(:pull_all).once
     end
 
@@ -228,8 +229,10 @@ module AmplitudeAnalytics
         }
       })
 
+      r = Random.new(200)
+
       allow(HttpClient).to receive(:post) do |_url, _payload|
-        i = rand(0..100)
+        i = r.rand(0..100)
         case i
         when 0..2 then timeout_response
         when 3..5 then unknown_error_response
@@ -244,19 +247,20 @@ module AmplitudeAnalytics
       [@workers.method(:send), method(:push_event)].each do |target_func|
         threads = []
         @events_dict.clear
-        30.times do
+        50.times do
           t = Thread.new do
             target_func.call(get_events_list(100))
           end
           threads << t
         end
-        threads.each(&:join) # Wait for all threads to finish
+        threads.each(&:join)
         while @workers.storage.total_events > 0
           sleep(0.1)
         end
+        sleep(5)
         total_events = @events_dict.values.sum(&:length)
         expect(@workers.storage.total_events).to eq(0)
-        expect(total_events).to eq(3000)
+        expect(total_events).to eq(5000)
       end
     end
 

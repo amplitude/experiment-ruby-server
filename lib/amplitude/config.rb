@@ -9,7 +9,7 @@ module AmplitudeAnalytics
     def initialize(api_key: nil, flush_queue_size: FLUSH_QUEUE_SIZE,
                    flush_interval_millis: FLUSH_INTERVAL_MILLIS,
                    flush_max_retries: FLUSH_MAX_RETRIES,
-                   logger: Logger.new($stdout, progname: LOGGER_NAME),
+                   logger: Logger.new($stdout, progname: LOGGER_NAME, level: Logger::ERROR),
                    min_id_length: nil, callback: nil, server_zone: DEFAULT_ZONE,
                    use_batch: false, server_url: nil,
                    storage_provider: InMemoryStorageProvider.new, plan: nil, ingestion_metadata: nil)
@@ -19,7 +19,6 @@ module AmplitudeAnalytics
       @flush_interval_millis = flush_interval_millis
       @flush_max_retries = flush_max_retries
       @logger = logger
-      @logger.progname = LOGGER_NAME
       @min_id_length = min_id_length
       @callback = callback
       @server_zone = server_zone
