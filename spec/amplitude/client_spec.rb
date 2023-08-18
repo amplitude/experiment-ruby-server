@@ -1,7 +1,7 @@
 module AmplitudeAnalytics
   describe Amplitude do
     before(:each) do
-      @client = Amplitude.new(api_key: 'test api key', configuration: Config.new(flush_queue_size: 10, flush_interval_millis: 500))
+      @client = Amplitude.new('test api key', configuration: Config.new(flush_queue_size: 10, flush_interval_millis: 500))
     end
 
     after(:each) do
@@ -68,7 +68,6 @@ module AmplitudeAnalytics
       }
 
       success_response = Response.new(status: HttpStatus::SUCCESS)
-      allow(HttpClient).to receive(:post).and_return(success_response, invalid_response)
       events = []
 
       callback_func = lambda do |event, code, message = nil|

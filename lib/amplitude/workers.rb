@@ -76,7 +76,7 @@ module AmplitudeAnalytics
     def buffer_consumer
       if @is_active
         @storage.monitor.synchronize do
-          @storage.lock.wait(@configuration.flush_interval_millis / 1000)
+          @storage.lock.wait(@configuration.flush_interval_millis.to_f / 1000)
 
           loop do
             break unless @storage.total_events.positive?
@@ -85,7 +85,7 @@ module AmplitudeAnalytics
             if events
               @threads_pool.post { send(events) }
             else
-              wait_time = @storage.wait_time / 1000
+              wait_time = @storage.wait_time.to_f / 1000
               @storage.lock.wait(wait_time) if wait_time > 0
             end
           end
