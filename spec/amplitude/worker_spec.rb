@@ -257,6 +257,7 @@ module AmplitudeAnalytics
         while @workers.storage.total_events > 0
           sleep(0.1)
         end
+        sleep(5)
         total_events = @events_dict.values.sum(&:length)
         expect(@workers.storage.total_events).to eq(0)
         expect(total_events).to eq(5000)
