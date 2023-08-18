@@ -1,19 +1,11 @@
 module AmplitudeAnalytics
   describe Amplitude do
-    def setup
+    before(:each) do
       @client = Amplitude.new(api_key: 'test api key', configuration: Config.new(flush_queue_size: 10, flush_interval_millis: 500))
     end
 
-    def teardown
-      @client.shutdown
-    end
-
-    before(:each) do
-      setup
-    end
-
     after(:each) do
-      teardown
+      @client.shutdown
     end
 
     it 'should track successfully' do
