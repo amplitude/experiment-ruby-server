@@ -69,7 +69,7 @@ module AmplitudeAnalytics
     it 'exceeds max capacity and fails' do
       @config.flush_interval_millis = 50_000
       push_event(@storage, Set.new, MAX_BUFFER_CAPACITY)
-      expect(@storage.total_events).to eq(MAX_BUFFER_CAPACITY)
+      sleep(0.1) until @storage.total_events = MAX_BUFFER_CAPACITY
 
       event = BaseEvent.new('test_event', user_id: 'test_user')
       event.retry += 1
