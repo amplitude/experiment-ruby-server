@@ -4,9 +4,9 @@ module AmplitudeAnalytics
       @provider = InMemoryStorageProvider.new
       @storage = @provider.storage
       @workers = Workers.new
-      config = Config.new
-      @storage.setup(config, @workers)
-      @workers.setup(config, @storage)
+      @config = Config.new
+      @storage.setup(@config, @workers)
+      @workers.setup(@config, @storage)
     end
 
     it 'checks if storage is empty after pull' do
@@ -68,6 +68,7 @@ module AmplitudeAnalytics
 
     it 'exceeds max capacity and fails' do
       push_event(@storage, Set.new, MAX_BUFFER_CAPACITY)
+      sleep(1)
       expect(@storage.total_events).to eq(MAX_BUFFER_CAPACITY)
 
       event = BaseEvent.new('test_event', user_id: 'test_user')
