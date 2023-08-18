@@ -3,8 +3,10 @@ module AmplitudeAnalytics
     before(:each) do
       @provider = InMemoryStorageProvider.new
       @storage = @provider.storage
-      @worker = Workers.new
-      @storage.setup(Config.new, @worker)
+      @workers = Workers.new
+      config = Config.new
+      @storage.setup(config, @workers)
+      @workers.setup(config, @storage)
     end
 
     it 'checks if storage is empty after pull' do
