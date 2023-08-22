@@ -7,6 +7,12 @@ module AmplitudeAnalytics
       @config = Config.new
       @storage.setup(@config, @workers)
       @workers.setup(@config, @storage)
+      setup_stub
+    end
+
+    def setup_stub
+      stub_request(:post, 'https://api2.amplitude.com/batch').to_return(status: 200, body: '{code:200}', headers: {})
+      stub_request(:post, 'https://api2.amplitude.com/2/httpapi').to_return(status: 200, body: '{code:200}', headers: {})
     end
 
     it 'checks if storage is empty after pull' do
