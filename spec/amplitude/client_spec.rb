@@ -1,11 +1,17 @@
 module AmplitudeAnalytics
   describe Amplitude do
     before(:each) do
+      setup_stub
       @client = Amplitude.new('test api key', configuration: Config.new(flush_queue_size: 10, flush_interval_millis: 500))
     end
 
     after(:each) do
       @client.shutdown
+    end
+
+    def setup_stub
+      stub_request(:post, 'https://api2.amplitude.com/batch').to_return(status: 200, body: '{code:200}', headers: {})
+      stub_request(:post, 'https://api2.amplitude.com/2/httpapi').to_return(status: 200, body: '{code:200}', headers: {})
     end
 
     it 'should track successfully' do
@@ -29,6 +35,7 @@ module AmplitudeAnalytics
         futures.each do |flush_future|
           flush_future&.value
         end
+        sleep(1)
         expect(events.length).to eq(25)
         expect(HttpClient).to have_received(:post).at_least(:once)
       end

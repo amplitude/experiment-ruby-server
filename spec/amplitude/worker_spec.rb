@@ -20,12 +20,18 @@ module AmplitudeAnalytics
       end
 
       @workers.configuration.callback = callback_func
+      setup_stub
     end
 
     after(:each) do
       @workers.storage.monitor.synchronize do
         @workers.storage.lock.signal
       end
+    end
+
+    def setup_stub
+      stub_request(:post, 'https://api2.amplitude.com/batch').to_return(status: 200, body: '{code:200}', headers: {})
+      stub_request(:post, 'https://api2.amplitude.com/2/httpapi').to_return(status: 200, body: '{code:200}', headers: {})
     end
 
     it 'initializes and sets up correctly' do
@@ -213,7 +219,6 @@ module AmplitudeAnalytics
     end
 
     it 'processes events with random response in multithreaded mode' do
-
       too_many_requests_response = Response.new(status: HttpStatus::TOO_MANY_REQUESTS, body: {
         "code" => 429,
         "error" => "Too many requests for some devices and users",
