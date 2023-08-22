@@ -35,7 +35,6 @@ module AmplitudeAnalytics
         futures.each do |flush_future|
           flush_future&.value
         end
-        sleep(1)
         expect(events.length).to eq(25)
         expect(HttpClient).to have_received(:post).at_least(:once)
       end
