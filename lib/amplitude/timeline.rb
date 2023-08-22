@@ -64,7 +64,6 @@ module AmplitudeAnalytics
       before_result = apply_plugins(PluginType::BEFORE, event)
       enrich_result = apply_plugins(PluginType::ENRICHMENT, before_result)
       apply_plugins(PluginType::DESTINATION, enrich_result)
-
       enrich_result
     end
 
