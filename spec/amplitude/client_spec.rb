@@ -70,7 +70,7 @@ module AmplitudeAnalytics
       success_response = Response.new(status: HttpStatus::SUCCESS)
       events = []
 
-      callback_func = lambda do |event, code|
+      callback_func = lambda do |event, code, message = nil|
         if [1, 2, 5, 6, 8].include?(event.event_properties['id'])
           expect(code).to eq(400)
         else

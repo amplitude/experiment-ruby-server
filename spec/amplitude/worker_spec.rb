@@ -13,7 +13,7 @@ module AmplitudeAnalytics
       @events_dict = Hash.new { |hash, key| hash[key] = Set.new }
       @events_dict_mutex = Mutex.new
 
-      callback_func = lambda do |event, code|
+      callback_func = lambda do |event, code, message = nil|
         @events_dict_mutex.synchronize do
           @events_dict[code].add(event)
         end

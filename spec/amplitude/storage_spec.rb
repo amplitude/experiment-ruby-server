@@ -42,9 +42,10 @@ module AmplitudeAnalytics
     end
 
     it 'pushes events with delay and pulls them' do
+      r = Random.new(200)
       event_set = Set.new
       expect(@storage.workers).to receive(:start).exactly(50).times
-      push_event(@storage, event_set, 50)
+      push_event(@storage, event_set, 50, r)
 
       expect(@storage.total_events).to eq(50)
       expect(@storage.ready_queue.length + @storage.buffer_data.length).to eq(50)
@@ -52,11 +53,12 @@ module AmplitudeAnalytics
     end
 
     it 'pushes events with multithreading and pulls them' do
+      r = Random.new(200)
       event_set = Set.new
       expect(@storage.workers).to receive(:start).exactly(5000).times
       threads = []
       50.times do
-        t = Thread.new { push_event(@storage, event_set, 100) }
+        t = Thread.new { push_event(@storage, event_set, 100, r) }
         threads << t
       end
 
@@ -67,8 +69,9 @@ module AmplitudeAnalytics
     end
 
     it 'exceeds max capacity and fails' do
+      r = Random.new(200)
       @config.flush_interval_millis = 50_000
-      push_event(@storage, Set.new, MAX_BUFFER_CAPACITY)
+      push_event(@storage, Set.new, MAX_BUFFER_CAPACITY, r)
       event = BaseEvent.new('test_event', user_id: 'test_user')
       event.retry += 1
       expect(@storage.workers).not_to receive(:start)
@@ -112,7 +115,8 @@ module AmplitudeAnalytics
     end
 
     it 'from ready queue and buffer data' do
-      push_event(@storage, Set.new, 200)
+      r = Random.new(200)
+      push_event(@storage, Set.new, 200, r)
       first_event_in_buffer_data = @storage.buffer_data[0][1]
       # Wait 100 ms - max delay of push_event()
       sleep(0.1)
@@ -124,10 +128,10 @@ module AmplitudeAnalytics
 
     private
 
-    def push_event(storage, event_set, count)
+    def push_event(storage, event_set, count, r)
       count.times do |i|
         event = BaseEvent.new("test_event_#{i}", user_id: 'test_user')
-        storage.push(event, rand(101))
+        storage.push(event, r.rand(101))
         event_set.add(event)
       end
     end
