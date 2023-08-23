@@ -30,7 +30,6 @@ module AmplitudeAnalytics
         25.times do |i|
           @client.track(BaseEvent.new('test_event', user_id: 'test_user_id', event_properties: { 'id' => i }))
         end
-        sleep(1)
         futures = @client.flush
         futures.each do |flush_future|
           flush_future&.value
