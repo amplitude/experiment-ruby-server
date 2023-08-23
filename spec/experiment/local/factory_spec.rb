@@ -1,4 +1,4 @@
-require 'spec_helper'
+API_KEY = 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3'.freeze
 
 describe AmplitudeExperiment do
   describe '#init' do

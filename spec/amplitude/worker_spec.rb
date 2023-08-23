@@ -259,7 +259,6 @@ module AmplitudeAnalytics
           threads << t
         end
         threads.each(&:join)
-        sleep(5)
         while @workers.storage.total_events > 0
           sleep(0.1)
         end

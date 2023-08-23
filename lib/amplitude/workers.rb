@@ -40,7 +40,7 @@ module AmplitudeAnalytics
     end
 
     def flush
-      events = @storage.pull_all
+      events = @storage.pull_all unless @storage.nil?
       Concurrent::Future.execute do
         if events && !events.empty?
           send(events)

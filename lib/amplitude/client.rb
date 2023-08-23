@@ -8,9 +8,9 @@ module AmplitudeAnalytics
       @configuration.api_key = api_key
       @timeline = Timeline.new
       @timeline.setup(self)
-      register_on_exit
       add(AmplitudeDestinationPlugin.new)
       add(ContextPlugin.new)
+      register_on_exit
     end
 
     def track(event)
@@ -42,7 +42,7 @@ module AmplitudeAnalytics
     def register_on_exit
       if Thread.respond_to?(:_at_exit)
         begin
-          at_exit { method(:shutdown) }
+          at_exit { shutdown }
         rescue StandardError
           @configuration.logger.warning('register for exit fail')
         end
