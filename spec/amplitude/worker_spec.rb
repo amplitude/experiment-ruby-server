@@ -59,7 +59,7 @@ module AmplitudeAnalytics
     end
 
     it 'consumes storage events successfully' do
-      allow(HttpClient).to receive(:post).and_return(success_response)
+      allow(@workers.http_client).to receive(:post).and_return(success_response)
 
       @workers.configuration.flush_interval_millis = 10
       push_event(get_events_list(50))
@@ -69,19 +69,19 @@ module AmplitudeAnalytics
       expect(@workers.is_started).to be false
       push_event(get_events_list(50))
       expect(@workers.is_started).to be true
-      expect(HttpClient).to have_received(:post).at_least(:once)
+      expect(@workers.http_client).to have_received(:post).at_least(:once)
     end
 
     it 'flushes events in storage successfully' do
-      allow(HttpClient).to receive(:post).and_return(success_response)
+      allow(@workers.http_client).to receive(:post).and_return(success_response)
       push_event(get_events_list(50))
       @workers.flush&.value
       expect(@events_dict[200].length).to eq(50)
-      expect(HttpClient).to have_received(:post).at_least(:once)
+      expect(@workers.http_client).to have_received(:post).at_least(:once)
     end
 
     it 'sends events with success response and triggers callback' do
-      allow(HttpClient).to receive(:post).and_return(success_response)
+      allow(@workers.http_client).to receive(:post).and_return(success_response)
       events = get_events_list(100)
       @workers.send(events)
       expect(@events_dict[200]).to eq(Set.new(events))
@@ -105,7 +105,7 @@ module AmplitudeAnalytics
         },
         'silenced_events' => [16, 17, 18, 19]
       }
-      allow(HttpClient).to receive(:post).and_return(invalid_response, success_response)
+      allow(@workers.http_client).to receive(:post).and_return(invalid_response, success_response)
 
       @workers.send(events)
       @workers.flush&.value
@@ -113,7 +113,7 @@ module AmplitudeAnalytics
       expect(@events_dict[200]).to eq(Set.new(events[20..]))
       (20..99).each { |i| expect(events[i].retry).to eq(1) }
       expect(@events_dict[400]).to eq(Set.new(events[0..19]))
-      expect(HttpClient).to have_received(:post).twice
+      expect(@workers.http_client).to have_received(:post).twice
     end
 
     it 'sends events with invalid response missing field and no retry' do
@@ -124,7 +124,7 @@ module AmplitudeAnalytics
         'error' => 'Test error',
         'missing_field' => 'api_key'
       }
-      allow(HttpClient).to receive(:post).and_return(invalid_response)
+      allow(@workers.http_client).to receive(:post).and_return(invalid_response)
 
       @workers.send(events)
 
@@ -139,7 +139,7 @@ module AmplitudeAnalytics
         'code' => 400,
         'error' => 'Invalid API key: TEST_API_KEY'
       }
-      allow(HttpClient).to receive(:post).and_return(invalid_response)
+      allow(@workers.http_client).to receive(:post).and_return(invalid_response)
       logs_output = []
       allow(@workers.configuration.logger).to receive(:error) { |block| logs_output << block.to_s }
       @workers.send(events)
@@ -150,7 +150,7 @@ module AmplitudeAnalytics
 
     it 'handles payload too large response and decreases flush queue size' do
       events = get_events_list(30)
-      allow(HttpClient).to receive(:post).and_return(payload_too_large_response, payload_too_large_response, success_response)
+      allow(@workers.http_client).to receive(:post).and_return(payload_too_large_response, payload_too_large_response, success_response)
 
       @workers.configuration.flush_queue_size = 30
       @workers.send(events)
@@ -163,26 +163,26 @@ module AmplitudeAnalytics
 
     it 'retries events on timeout and failed response' do
       events = get_events_list(100)
-      allow(HttpClient).to receive(:post).and_return(timeout_response, failed_response, success_response)
+      allow(@workers.http_client).to receive(:post).and_return(timeout_response, failed_response, success_response)
 
       @workers.send(events)
       @workers.flush&.value
       @workers.flush&.value
 
       expect(@events_dict[200].length).to eq(100)
-      expect(HttpClient).to have_received(:post).exactly(3).times
+      expect(@workers.http_client).to have_received(:post).exactly(3).times
     end
 
     it 'triggers callback on unknown error' do
-      allow(HttpClient).to receive(:post).and_return(unknown_error_response)
+      allow(@workers.http_client).to receive(:post).and_return(unknown_error_response)
 
       @workers.send(get_events_list(100))
 
       expect(@events_dict[-1].length).to eq(100)
-      expect(HttpClient).to have_received(:post).once
+      expect(@workers.http_client).to have_received(:post).once
 
       @workers.flush
-      expect(HttpClient).to have_received(:post).once
+      expect(@workers.http_client).to have_received(:post).once
     end
 
     it 'handles too many requests response, triggers callback, and retries' do
@@ -199,7 +199,7 @@ module AmplitudeAnalytics
       events = get_events_list(100)
       events[0].user_id = 'test_throttled_user2'
       events[1].device_id = 'test_throttled_device2'
-      allow(HttpClient).to receive(:post).and_return(too_many_requests_response, success_response, success_response)
+      allow(@workers.http_client).to receive(:post).and_return(too_many_requests_response, success_response, success_response)
 
       @workers.send(events)
       expect(@events_dict[429]).to eq(Set.new(events.first(2)))
@@ -229,7 +229,7 @@ module AmplitudeAnalytics
                                       })
 
 
-      allow(HttpClient).to receive(:post) do |_url, _payload, _message = nil|
+      allow(@workers.http_client).to receive(:post) do |_url, _payload, _message = nil|
         i = rand(0..100)
         case i
         when 0..2 then timeout_response

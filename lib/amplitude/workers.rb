@@ -4,7 +4,7 @@ require 'concurrent'
 module AmplitudeAnalytics
   # Workers
   class Workers
-    attr_reader :is_active, :is_started, :storage, :configuration, :threads_pool, :consumer_lock, :response_processor
+    attr_reader :is_active, :is_started, :storage, :configuration, :threads_pool, :consumer_lock, :response_processor, :http_client
 
     def initialize
       @threads_pool = Concurrent::ThreadPoolExecutor.new(max_threads: 16)
@@ -14,6 +14,7 @@ module AmplitudeAnalytics
       @configuration = nil
       @storage = nil
       @response_processor = ResponseProcessor.new
+      @http_client = HttpClient.new
     end
 
     def setup(configuration, storage)
@@ -49,7 +50,7 @@ module AmplitudeAnalytics
     def send(events)
       url = @configuration.server_url
       payload = get_payload(events)
-      res = HttpClient.post(url, payload)
+      res = @http_client.post(url, payload)
       begin
         @response_processor.process_response(res, events)
       rescue InvalidAPIKeyError

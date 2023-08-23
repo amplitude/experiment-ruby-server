@@ -128,6 +128,11 @@ module AmplitudeAnalytics
 
   # HttpClient
   class HttpClient
+
+    def post(url, payload, header = nil)
+      self.post(url, payload, header)
+    end
+
     def self.post(url, payload, header = nil)
       result = Response.new
       begin
