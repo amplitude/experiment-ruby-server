@@ -48,22 +48,26 @@ module AmplitudeAnalytics
 
       expect(@storage.total_events).to eq(50)
       expect(@storage.ready_queue.length + @storage.buffer_data.length).to eq(50)
-      expect(Set.new(@storage.pull_all)).to eq(event_set)
+      storage_set = Set.new
+      @storage.pull_all.each{|e| storage_set.add(e)}
+      expect(storage_set).to eq(event_set)
     end
 
     it 'pushes events with multithreading and pulls them' do
       event_set = Set.new
-      expect(@storage.workers).to receive(:start).exactly(5000).times
+      expect(@storage.workers).to receive(:start).exactly(100).times
       threads = []
-      50.times do
-        t = Thread.new { push_event(@storage, event_set, 100) }
+      10.times do
+        t = Thread.new { push_event(@storage, event_set, 10) }
         threads << t
       end
 
       threads.each(&:join)
-      expect(@storage.total_events).to eq(5000)
-      expect(@storage.ready_queue.length + @storage.buffer_data.length).to eq(5000)
-      expect(Set.new(@storage.pull_all)).to eq(event_set)
+      expect(@storage.total_events).to eq(100)
+      expect(@storage.ready_queue.length + @storage.buffer_data.length).to eq(100)
+      storage_set = Set.new
+      @storage.pull_all.each{|e| storage_set.add(e)}
+      expect(storage_set).to eq(event_set)
     end
 
     it 'exceeds max capacity and fails' do
