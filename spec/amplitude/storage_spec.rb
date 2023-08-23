@@ -7,12 +7,6 @@ module AmplitudeAnalytics
       @config = Config.new
       @storage.setup(@config, @workers)
       @workers.setup(@config, @storage)
-      setup_stub
-    end
-
-    def setup_stub
-      stub_request(:post, 'https://api2.amplitude.com/batch').to_return(status: 200, body: '{code:200}', headers: {})
-      stub_request(:post, 'https://api2.amplitude.com/2/httpapi').to_return(status: 200, body: '{code:200}', headers: {})
     end
 
     it 'checks if storage is empty after pull' do
@@ -48,10 +42,9 @@ module AmplitudeAnalytics
     end
 
     it 'pushes events with delay and pulls them' do
-      r = Random.new(200)
       event_set = Set.new
       expect(@storage.workers).to receive(:start).exactly(50).times
-      push_event(@storage, event_set, 50, r)
+      push_event(@storage, event_set, 50)
 
       expect(@storage.total_events).to eq(50)
       expect(@storage.ready_queue.length + @storage.buffer_data.length).to eq(50)
@@ -59,12 +52,11 @@ module AmplitudeAnalytics
     end
 
     it 'pushes events with multithreading and pulls them' do
-      r = Random.new(200)
       event_set = Set.new
       expect(@storage.workers).to receive(:start).exactly(5000).times
       threads = []
       50.times do
-        t = Thread.new { push_event(@storage, event_set, 100, r) }
+        t = Thread.new { push_event(@storage, event_set, 100) }
         threads << t
       end
 
@@ -75,16 +67,15 @@ module AmplitudeAnalytics
     end
 
     it 'exceeds max capacity and fails' do
-      r = Random.new(200)
       @config.flush_interval_millis = 50_000
-      push_event(@storage, Set.new, MAX_BUFFER_CAPACITY, r)
+      push_event(@storage, Set.new, MAX_BUFFER_CAPACITY)
+      expect(@storage.total_events).to eq(MAX_BUFFER_CAPACITY)
       event = BaseEvent.new('test_event', user_id: 'test_user')
       event.retry += 1
       expect(@storage.workers).not_to receive(:start)
       is_success, message = @storage.push(event)
       expect(is_success).to be_falsey
       expect(message).to eq('Destination buffer full. Retry temporarily disabled')
-      expect(@storage.total_events).to eq(MAX_BUFFER_CAPACITY)
     end
 
     it 'exceeds max retry and fails' do
@@ -120,8 +111,7 @@ module AmplitudeAnalytics
     end
 
     it 'from ready queue and buffer data' do
-      r = Random.new(200)
-      push_event(@storage, Set.new, 200, r)
+      push_event(@storage, Set.new, 200)
       first_event_in_buffer_data = @storage.buffer_data[0][1]
       # Wait 100 ms - max delay of push_event()
       sleep(0.1)
@@ -133,10 +123,10 @@ module AmplitudeAnalytics
 
     private
 
-    def push_event(storage, event_set, count, random)
+    def push_event(storage, event_set, count)
       count.times do |i|
         event = BaseEvent.new("test_event_#{i}", user_id: 'test_user')
-        storage.push(event, random.rand(101))
+        storage.push(event, rand(101))
         event_set.add(event)
       end
     end

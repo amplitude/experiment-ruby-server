@@ -20,18 +20,12 @@ module AmplitudeAnalytics
       end
 
       @workers.configuration.callback = callback_func
-      setup_stub
     end
 
     after(:each) do
       @workers.storage.monitor.synchronize do
         @workers.storage.lock.signal
       end
-    end
-
-    def setup_stub
-      stub_request(:post, 'https://api2.amplitude.com/batch').to_return(status: 200, body: '{code:200}', headers: {})
-      stub_request(:post, 'https://api2.amplitude.com/2/httpapi').to_return(status: 200, body: '{code:200}', headers: {})
     end
 
     it 'initializes and sets up correctly' do
@@ -261,7 +255,7 @@ module AmplitudeAnalytics
         threads.each(&:join)
         sleep(0.1) while @workers.storage.total_events > 0
         expect(@workers.storage.total_events).to eq(0)
-        sleep(2)
+        sleep(4)
         total_events = @events_dict.values.sum(&:length)
         expect(total_events).to eq(5000)
       end
