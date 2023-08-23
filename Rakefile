@@ -6,15 +6,15 @@ RSpec::Core::RakeTask.new(:spec)
 
 default_tasks << :spec
 
-if RUBY_VERSION >= '2.1'
-  require 'rubocop/rake_task'
-
-  RuboCop::RakeTask.new(:rubocop) do |task|
-    task.patterns = ['lib/**/*.rb', 'spec/**/*.rb']
-  end
-
-  default_tasks << :rubocop
-end
+# if RUBY_VERSION >= '2.1'
+#   require 'rubocop/rake_task'
+#
+#   RuboCop::RakeTask.new(:rubocop) do |task|
+#     task.patterns = ['lib/**/*.rb', 'spec/**/*.rb']
+#   end
+#
+#   default_tasks << :rubocop
+# end
 
 task default: default_tasks
 

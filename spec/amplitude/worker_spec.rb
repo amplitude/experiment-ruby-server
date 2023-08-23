@@ -228,10 +228,9 @@ module AmplitudeAnalytics
                                         }
                                       })
 
-      r = Random.new(200)
 
       allow(HttpClient).to receive(:post) do |_url, _payload, _message = nil|
-        i = r.rand(0..100)
+        i = rand(0..100)
         case i
         when 0..2 then timeout_response
         when 3..5 then unknown_error_response
