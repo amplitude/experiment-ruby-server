@@ -49,7 +49,7 @@ module AmplitudeAnalytics
       expect(@storage.total_events).to eq(50)
       expect(@storage.ready_queue.length + @storage.buffer_data.length).to eq(50)
       storage_set = Set.new
-      @storage.pull_all.each{|e| storage_set.add(e)}
+      @storage.pull_all.each { |e| storage_set.add(e) }
       expect(storage_set).to eq(event_set)
     end
 
@@ -66,7 +66,7 @@ module AmplitudeAnalytics
       expect(@storage.total_events).to eq(100)
       expect(@storage.ready_queue.length + @storage.buffer_data.length).to eq(100)
       storage_set = Set.new
-      @storage.pull_all.each{|e| storage_set.add(e)}
+      @storage.pull_all.each { |e| storage_set.add(e) }
       expect(storage_set).to eq(event_set)
     end
 
