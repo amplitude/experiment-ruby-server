@@ -52,7 +52,6 @@ module AmplitudeAnalytics
     end
 
     it 'pushes events with multithreading and pulls them' do
-
       event_set = Set.new
       expect(@storage.workers).to receive(:start).exactly(5000).times
       threads = []

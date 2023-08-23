@@ -228,7 +228,6 @@ module AmplitudeAnalytics
                                         }
                                       })
 
-
       allow(@workers.http_client).to receive(:post) do |_url, _payload, _message = nil|
         i = rand(0..100)
         case i

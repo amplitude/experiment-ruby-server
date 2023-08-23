@@ -64,6 +64,7 @@ module AmplitudeAnalytics
   # AmplitudeDestinationPlugin
   class AmplitudeDestinationPlugin < DestinationPlugin
     attr_reader :workers
+
     def initialize
       super
       @workers = Workers.new
