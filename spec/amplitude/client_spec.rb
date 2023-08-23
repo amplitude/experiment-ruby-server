@@ -95,7 +95,6 @@ module AmplitudeAnalytics
         (0..9).each do |i|
           @client.track(BaseEvent.new('test_event', user_id: 'test_user_id', event_properties: { 'id' => i }))
         end
-        sleep(1)
         @client.flush
         sleep(0.1) while events.length < 10
         expect(events).to eq([[1, 0], [2, 0], [5, 0], [6, 0], [8, 0], [0, 1], [3, 1], [4, 1], [7, 1], [9, 1]])
