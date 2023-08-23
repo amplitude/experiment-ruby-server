@@ -212,7 +212,7 @@ module AmplitudeAnalytics
       expect(@events_dict[200]).to eq(Set.new(events[2..]))
     end
 
-    it 'processes events with random response in multithreaded mode' do
+    it 'processes events with all responses in multithreaded mode' do
       too_many_requests_response = Response.new(status: HttpStatus::TOO_MANY_REQUESTS, body: {
                                                   'code' => 429,
                                                   'error' => 'Too many requests for some devices and users',
@@ -227,9 +227,9 @@ module AmplitudeAnalytics
                                           'time' => [0]
                                         }
                                       })
-
+      i = -1
       allow(@workers.http_client).to receive(:post) do |_url, _payload, _message = nil|
-        i = rand(0..100)
+        i += 0
         case i
         when 0..2 then timeout_response
         when 3..5 then unknown_error_response
@@ -252,6 +252,7 @@ module AmplitudeAnalytics
         end
         threads.each(&:join)
         sleep(0.1) while @workers.storage.total_events > 0
+        @workers.flush&.value
         expect(@workers.storage.total_events).to eq(0)
         total_events = @events_dict.values.sum(&:length)
         expect(total_events).to eq(5000)
