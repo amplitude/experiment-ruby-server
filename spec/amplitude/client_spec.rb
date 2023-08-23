@@ -2,6 +2,7 @@ module AmplitudeAnalytics
   describe Amplitude do
     before(:each) do
       @client = Amplitude.new('test api key', configuration: Config.new(flush_queue_size: 10, flush_interval_millis: 500))
+      @http_client = @client.timeline.plugins[PluginType::DESTINATION][0].workers.http_client
     end
 
     after(:each) do
@@ -9,7 +10,7 @@ module AmplitudeAnalytics
     end
 
     it 'should track successfully' do
-      allow(HttpClient).to receive(:post).and_return(Response.new(status: HttpStatus::SUCCESS))
+      allow(@http_client).to receive(:post).and_return(Response.new(status: HttpStatus::SUCCESS))
       events = []
       callback_func = lambda do |event, code, _message = nil|
         expect(code).to eq(200)
@@ -29,14 +30,14 @@ module AmplitudeAnalytics
           flush_future&.value
         end
         expect(events.length).to eq(25)
-        expect(HttpClient).to have_received(:post).at_least(:once)
+        expect(@http_client).to have_received(:post).at_least(:once)
       end
     end
 
     it 'tracks with invalid API key and logs an error' do
       res = Response.new(status: HttpStatus::INVALID_REQUEST)
       res.body['error'] = "Invalid API key: #{@client.configuration.api_key}"
-      allow(HttpClient).to receive(:post).and_return(res)
+      allow(@http_client).to receive(:post).and_return(res)
 
       [true, false].each do |use_batch|
         @client.configuration.use_batch = use_batch
@@ -49,7 +50,7 @@ module AmplitudeAnalytics
         futures.each { |flush_future| flush_future&.value }
 
         expect(logs_output).to include('Invalid API Key')
-        expect(HttpClient).to have_received(:post).at_least(:once)
+        expect(@http_client).to have_received(:post).at_least(:once)
       end
     end
 
@@ -82,8 +83,8 @@ module AmplitudeAnalytics
 
       [true, false].each do |use_batch|
         @client.configuration.use_batch = use_batch
-        allow(HttpClient).to receive(:post).and_return(invalid_response, success_response)
-        expect(HttpClient).to receive(:post).exactly(:twice)
+        allow(@http_client).to receive(:post).and_return(invalid_response, success_response)
+        expect(@http_client).to receive(:post).exactly(:twice)
 
         events.clear
         (0..9).each do |i|
@@ -106,7 +107,7 @@ module AmplitudeAnalytics
       @client.configuration.callback = callback_func
 
       [true, false].each do |use_batch|
-        expect(HttpClient).to receive(:post).exactly(:once)
+        expect(@http_client).to receive(:post).exactly(:once)
         @client.configuration.use_batch = use_batch
         @client.track(BaseEvent.new('flush_test', user_id: 'test_user_id', device_id: 'test_device_id'))
         futures = @client.flush
