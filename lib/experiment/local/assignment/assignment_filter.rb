@@ -1,7 +1,6 @@
 module AmplitudeExperiment
   # AssignmentFilter
   class AssignmentFilter
-
     def initialize(size, ttl_millis = DAY_MILLIS)
       @cache = LRUCache.new(size, ttl_millis)
     end

@@ -10,4 +10,3 @@ require 'amplitude/storage'
 require 'amplitude/timeline'
 require 'amplitude/utils'
 require 'amplitude/workers'
-

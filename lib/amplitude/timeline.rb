@@ -96,4 +96,3 @@ module AmplitudeAnalytics
     end
   end
 end
-

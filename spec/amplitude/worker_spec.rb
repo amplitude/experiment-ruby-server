@@ -13,7 +13,7 @@ module AmplitudeAnalytics
       @events_dict = Hash.new { |hash, key| hash[key] = Set.new }
       @events_dict_mutex = Mutex.new
 
-      callback_func = lambda do |event, code, message = nil|
+      callback_func = lambda do |event, code, _message = nil|
         @events_dict_mutex.synchronize do
           @events_dict[code].add(event)
         end
@@ -70,7 +70,7 @@ module AmplitudeAnalytics
       @workers.configuration.flush_interval_millis = 10
       push_event(get_events_list(50))
       expect(@workers.is_started).to be true
-      sleep(@workers.configuration.flush_interval_millis / 1000 + 1)
+      sleep((@workers.configuration.flush_interval_millis / 1000) + 1)
       expect(@events_dict[200].size).to eq(50)
       expect(@workers.is_started).to be false
       push_event(get_events_list(50))
@@ -97,19 +97,19 @@ module AmplitudeAnalytics
       events = get_events_list(100)
       invalid_response = Response.new(status: HttpStatus::INVALID_REQUEST)
       invalid_response.body = {
-        "code" => 400,
-        "error" => "Test error",
-        "events_with_invalid_fields" => {
-          "time" => [0, 1, 2, 3, 4, 5]
+        'code' => 400,
+        'error' => 'Test error',
+        'events_with_invalid_fields' => {
+          'time' => [0, 1, 2, 3, 4, 5]
         },
-        "events_with_missing_fields" => {
-          "event_type": [5, 6, 7, 8, 9]
+        'events_with_missing_fields' => {
+          event_type: [5, 6, 7, 8, 9]
         },
-        "events_with_invalid_id_lengths" => {
-          "user_id" => [10, 11, 12],
-          "device_id" => [13, 14, 15]
+        'events_with_invalid_id_lengths' => {
+          'user_id' => [10, 11, 12],
+          'device_id' => [13, 14, 15]
         },
-        "silenced_events" => [16, 17, 18, 19]
+        'silenced_events' => [16, 17, 18, 19]
       }
       allow(HttpClient).to receive(:post).and_return(invalid_response, success_response)
 
@@ -126,9 +126,9 @@ module AmplitudeAnalytics
       events = get_events_list(100)
       invalid_response = Response.new(status: HttpStatus::INVALID_REQUEST)
       invalid_response.body = {
-        "code" => 400,
-        "error" => "Test error",
-        "missing_field" => "api_key"
+        'code' => 400,
+        'error' => 'Test error',
+        'missing_field' => 'api_key'
       }
       allow(HttpClient).to receive(:post).and_return(invalid_response)
 
@@ -142,8 +142,8 @@ module AmplitudeAnalytics
       events = get_events_list(100)
       invalid_response = Response.new(status: HttpStatus::INVALID_REQUEST)
       invalid_response.body = {
-        "code" => 400,
-        "error" => "Invalid API key: TEST_API_KEY"
+        'code' => 400,
+        'error' => 'Invalid API key: TEST_API_KEY'
       }
       allow(HttpClient).to receive(:post).and_return(invalid_response)
       logs_output = []
@@ -167,7 +167,7 @@ module AmplitudeAnalytics
       expect(@events_dict[200].length).to eq(30)
     end
 
-    it "retries events on timeout and failed response" do
+    it 'retries events on timeout and failed response' do
       events = get_events_list(100)
       allow(HttpClient).to receive(:post).and_return(timeout_response, failed_response, success_response)
 
@@ -179,7 +179,7 @@ module AmplitudeAnalytics
       expect(HttpClient).to have_received(:post).exactly(3).times
     end
 
-    it "triggers callback on unknown error" do
+    it 'triggers callback on unknown error' do
       allow(HttpClient).to receive(:post).and_return(unknown_error_response)
 
       @workers.send(get_events_list(100))
@@ -191,20 +191,20 @@ module AmplitudeAnalytics
       expect(HttpClient).to have_received(:post).once
     end
 
-    it "handles too many requests response, triggers callback, and retries" do
+    it 'handles too many requests response, triggers callback, and retries' do
       too_many_requests_response = Response.new(status: HttpStatus::TOO_MANY_REQUESTS, body: {
-        "code" => 429,
-        "error" => "Too many requests for some devices and users",
-        "eps_threshold" => 10,
-        "throttled_devices" => { "test_throttled_device" => 11 },
-        "throttled_users" => { "test_throttled_user" => 12 },
-        "exceeded_daily_quota_users" => { "test_throttled_user2" => 500200 },
-        "exceeded_daily_quota_devices" => { "test_throttled_device2" => 600200 },
-        "throttled_events" => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-      })
+                                                  'code' => 429,
+                                                  'error' => 'Too many requests for some devices and users',
+                                                  'eps_threshold' => 10,
+                                                  'throttled_devices' => { 'test_throttled_device' => 11 },
+                                                  'throttled_users' => { 'test_throttled_user' => 12 },
+                                                  'exceeded_daily_quota_users' => { 'test_throttled_user2' => 500_200 },
+                                                  'exceeded_daily_quota_devices' => { 'test_throttled_device2' => 600_200 },
+                                                  'throttled_events' => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+                                                })
       events = get_events_list(100)
-      events[0].user_id = "test_throttled_user2"
-      events[1].device_id = "test_throttled_device2"
+      events[0].user_id = 'test_throttled_user2'
+      events[1].device_id = 'test_throttled_device2'
       allow(HttpClient).to receive(:post).and_return(too_many_requests_response, success_response, success_response)
 
       @workers.send(events)
@@ -220,23 +220,23 @@ module AmplitudeAnalytics
 
     it 'processes events with random response in multithreaded mode' do
       too_many_requests_response = Response.new(status: HttpStatus::TOO_MANY_REQUESTS, body: {
-        "code" => 429,
-        "error" => "Too many requests for some devices and users",
-        "eps_threshold" => 10,
-        "exceeded_daily_quota_users" => { "test_user" => 500200 },
-        "throttled_events" => [0]
-      })
+                                                  'code' => 429,
+                                                  'error' => 'Too many requests for some devices and users',
+                                                  'eps_threshold' => 10,
+                                                  'exceeded_daily_quota_users' => { 'test_user' => 500_200 },
+                                                  'throttled_events' => [0]
+                                                })
       invalid_response = Response.new(status: HttpStatus::INVALID_REQUEST, body: {
-        "code" => 400,
-        "error" => "Test error",
-        "events_with_invalid_fields" => {
-          "time" => [0]
-        }
-      })
+                                        'code' => 400,
+                                        'error' => 'Test error',
+                                        'events_with_invalid_fields' => {
+                                          'time' => [0]
+                                        }
+                                      })
 
       r = Random.new(200)
 
-      allow(HttpClient).to receive(:post) do |_url, _payload|
+      allow(HttpClient).to receive(:post) do |_url, _payload, _message = nil|
         i = r.rand(0..100)
         case i
         when 0..2 then timeout_response
@@ -259,10 +259,9 @@ module AmplitudeAnalytics
           threads << t
         end
         threads.each(&:join)
-        while @workers.storage.total_events > 0
-          sleep(0.1)
-        end
+        sleep(0.1) while @workers.storage.total_events > 0
         expect(@workers.storage.total_events).to eq(0)
+        sleep(2)
         total_events = @events_dict.values.sum(&:length)
         expect(total_events).to eq(5000)
       end

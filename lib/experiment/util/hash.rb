@@ -1,3 +1,4 @@
+# AmplitudeExperiment
 module AmplitudeExperiment
   def self.hash_code(string)
     hash = 0
@@ -11,4 +12,3 @@ module AmplitudeExperiment
     hash
   end
 end
-

@@ -92,9 +92,7 @@ module AmplitudeAnalytics
 
     def exceed_daily_quota(event)
       return true if @body.key?('exceeded_daily_quota_users') && @body['exceeded_daily_quota_users'].include?(event.user_id)
-      if @body.key?('exceeded_daily_quota_devices') && @body['exceeded_daily_quota_devices'].include?(event.device_id)
-        return true
-      end
+      return true if @body.key?('exceeded_daily_quota_devices') && @body['exceeded_daily_quota_devices'].include?(event.device_id)
 
       false
     end

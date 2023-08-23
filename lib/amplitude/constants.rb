@@ -26,6 +26,7 @@ module AmplitudeAnalytics
   CONNECTION_TIMEOUT = 10.0 # seconds float
   MAX_BUFFER_CAPACITY = 20_000
 
+  # PluginType
   class PluginType
     BEFORE = 0
     ENRICHMENT = 1
@@ -42,6 +43,5 @@ module AmplitudeAnalytics
 
       mapping[value]
     end
-
   end
 end

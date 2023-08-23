@@ -2,16 +2,11 @@ require 'monitor'
 module AmplitudeAnalytics
   # Storage
   class Storage
-
-    def initialize
-      super
-    end
-
-    def push(event, delay = 0)
+    def push(_event, _delay = 0)
       raise NotImplementedError, 'push method must be implemented in subclasses'
     end
 
-    def pull(batch_size)
+    def pull(_batch_size)
       raise NotImplementedError, 'pull method must be implemented in subclasses'
     end
 
@@ -29,7 +24,6 @@ module AmplitudeAnalytics
 
   # InMemoryStorage class
   class InMemoryStorage < Storage
-
     attr_accessor :total_events, :ready_queue, :workers, :buffer_data, :monitor
 
     def initialize
@@ -67,9 +61,7 @@ module AmplitudeAnalytics
     end
 
     def push(event, delay = 0)
-      if event.retry && @total_events >= MAX_BUFFER_CAPACITY
-        return false, 'Destination buffer full. Retry temporarily disabled'
-      end
+      return false, 'Destination buffer full. Retry temporarily disabled' if event.retry && @total_events >= MAX_BUFFER_CAPACITY
 
       return false, "Event reached max retry times #{max_retry}." if event.retry >= max_retry
 
@@ -147,7 +139,6 @@ module AmplitudeAnalytics
 
   # InMemoryStorageProvider class
   class InMemoryStorageProvider < StorageProvider
-
     def storage
       InMemoryStorage.new
     end

@@ -27,8 +27,11 @@ module AmplitudeExperiment
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
 
       @assignment_service = nil
+      # rubocop:disable Style/GuardClause
       if config&.assignment_config
-        amplitude = AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config.amp_config)
+        # rubocop:enable Style/GuardClause
+        amplitude = AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key,
+                                                      configuration: config.assignment_config.amp_config)
         filter = AssignmentFilter.new(config.assignment_config.cache_capacity)
         @assignment_service = AssignmentService.new(amplitude, filter)
       end

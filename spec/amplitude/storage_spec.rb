@@ -95,7 +95,6 @@ module AmplitudeAnalytics
       expect(is_success).to be_falsey
       expect(message).to eq("Event reached max retry times #{@storage.max_retry}.")
       expect(@storage.total_events).to eq(0)
-
     end
 
     it 'events in ready queue is zero' do
@@ -134,10 +133,10 @@ module AmplitudeAnalytics
 
     private
 
-    def push_event(storage, event_set, count, r)
+    def push_event(storage, event_set, count, random)
       count.times do |i|
         event = BaseEvent.new("test_event_#{i}", user_id: 'test_user')
-        storage.push(event, r.rand(101))
+        storage.push(event, random.rand(101))
         event_set.add(event)
       end
     end

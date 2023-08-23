@@ -1,9 +1,10 @@
 AllCops:
   NewCops: enable
   SuggestExtensions: false
+  TargetRubyVersion: 2.7
 
 Layout/LineLength:
-  Max: 125
+  Enabled: false
   Exclude:
     - "spec/**/*.rb"
 
@@ -11,21 +12,19 @@ Metrics/ParameterLists:
   Enabled: false
 
 Metrics/MethodLength:
-  Max: 25
+  Enabled: false
 
 Metrics/AbcSize:
-  Max: 35
+  Enabled: false
 
 Metrics/BlockLength:
-  IgnoredMethods: ['describe', 'context']
+  Enabled: false
 
 Metrics/CyclomaticComplexity:
-  Exclude:
-    - "spec/**/*.rb"
+  Enabled: false
 
 Metrics/PerceivedComplexity:
-  Exclude:
-   - "spec/**/*.rb"
+  Enabled: false
 
 Style/FrozenStringLiteralComment:
   Enabled: false
@@ -38,4 +37,7 @@ Naming/FileName:
     - lib/amplitude-experiment.rb # Gem name, added for easier Gemfile usage
 
 Metrics/ClassLength:
-  Max: 120
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false

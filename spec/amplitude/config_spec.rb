@@ -128,7 +128,6 @@ module AmplitudeAnalytics
       config.flush_queue_size = 50
       expect(config.flush_queue_size).to eq(50)
       config.increase_flush_divider
-
     end
   end
 end

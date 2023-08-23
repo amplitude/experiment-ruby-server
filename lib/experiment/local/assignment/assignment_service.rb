@@ -3,6 +3,7 @@ module AmplitudeExperiment
   # AssignmentService
   class AssignmentService
     attr_reader :amplitude
+
     def initialize(amplitude, assignment_filter)
       @amplitude = amplitude
       @assignment_filter = assignment_filter
@@ -45,6 +46,5 @@ module AmplitudeExperiment
 
       event
     end
-
   end
 end

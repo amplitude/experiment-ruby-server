@@ -3,7 +3,6 @@ require 'time'
 
 # Amplitude
 module AmplitudeAnalytics
-
   def self.logger
     @logger ||= Logger.new($stdout, progname: LOGGER_NAME)
   end
