@@ -52,6 +52,7 @@ module AmplitudeAnalytics
     end
 
     it 'pushes events with multithreading and pulls them' do
+
       event_set = Set.new
       expect(@storage.workers).to receive(:start).exactly(5000).times
       threads = []
@@ -67,6 +68,7 @@ module AmplitudeAnalytics
     end
 
     it 'exceeds max capacity and fails' do
+      allow(@storage.workers).to receive(:start)
       @config.flush_interval_millis = 50_000
       push_event(@storage, Set.new, MAX_BUFFER_CAPACITY)
       expect(@storage.total_events).to eq(MAX_BUFFER_CAPACITY)
@@ -89,11 +91,13 @@ module AmplitudeAnalytics
     end
 
     it 'events in ready queue is zero' do
+      allow(@storage.workers).to receive(:start)
       @storage.push(BaseEvent.new('test_event', user_id: 'test_user'), 0)
       expect(@storage.wait_time).to eq(0)
     end
 
     it 'event in buffer exceeds flush interval' do
+      allow(@storage.workers).to receive(:start)
       @storage.push(BaseEvent.new('test_event', user_id: 'test_user'), 200)
       expect(@storage.wait_time > 0 && @storage.wait_time <= 200).to be_truthy
       @storage.pull_all
@@ -102,6 +106,7 @@ module AmplitudeAnalytics
     end
 
     it 'verifies retry delay success' do
+      allow(@storage.workers).to receive(:start)
       expect_delay = [0, 100, 100, 200, 200, 400, 400, 800, 800, 1600, 1600, 3200, 3200]
       expect_delay.each_with_index do |delay, retry_count|
         event = BaseEvent.new('test_event', user_id: 'test_user')
@@ -111,6 +116,7 @@ module AmplitudeAnalytics
     end
 
     it 'from ready queue and buffer data' do
+      allow(@storage.workers).to receive(:start)
       push_event(@storage, Set.new, 200)
       first_event_in_buffer_data = @storage.buffer_data[0][1]
       # Wait 100 ms - max delay of push_event()
