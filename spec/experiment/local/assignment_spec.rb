@@ -38,7 +38,6 @@ module AmplitudeExperiment
       expected = "user device #{AmplitudeExperiment.hash_code(canonicalization)} #{assignment.timestamp / DAY_MILLIS}"
       expect(assignment.canonicalize).to eq(canonicalization)
       expect(event.insert_id).to eq(expected)
-      puts event
     end
 
     describe AssignmentFilter do

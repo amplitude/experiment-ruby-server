@@ -4,9 +4,10 @@ module AmplitudeExperiment
     hash = 0
     return hash if string.empty?
 
-    string.each_char do |chr|
-      hash = (hash << 5) - hash + chr.ord
-      hash |= 0
+    string.each_char do |char|
+      chr_code = char.ord
+      hash = ((hash << 5) - hash) + chr_code
+      hash &= 0xFFFFFFFF
     end
 
     hash
