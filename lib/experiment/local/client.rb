@@ -80,8 +80,8 @@ module AmplitudeExperiment
     def parse_results(result, flag_keys, user)
       variants = {}
       assignments = {}
-      included = flag_keys.empty? || flag_keys.include?(key)
       result.each do |key, value|
+        included = flag_keys.empty? || flag_keys.include?(key)
         if !value['isDefaultVariant'] && included
           variant_key = value['variant']['key']
           variant_payload = value['variant']['payload']

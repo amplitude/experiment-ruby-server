@@ -77,7 +77,7 @@ module AmplitudeExperiment
         local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
         local_evaluation_client.start
         result = local_evaluation_client.evaluate(TEST_USER_2, ['does-not-exist'])
-        expect(result['sdk-ci-local-dependencies-test']).to eq(Variant.new('control', nil))
+        expect(result['sdk-ci-local-dependencies-test']).to eq(nil)
       end
 
       it 'evaluation with dependencies holdout excludes variant from expeirment' do
