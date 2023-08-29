@@ -89,7 +89,6 @@ module AmplitudeExperiment
         end
 
         assignments[key] = value if included || value['type'] == 'mutual-exclusion-group' || value['type'] == 'holdout-group'
-
       end
       @assignment_service&.track(Assignment.new(user, assignments))
       variants
