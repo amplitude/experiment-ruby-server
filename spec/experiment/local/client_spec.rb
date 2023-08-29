@@ -80,7 +80,7 @@ module AmplitudeExperiment
         expect(result['sdk-ci-local-dependencies-test']).to eq(nil)
       end
 
-      it 'evaluation with dependencies holdout excludes variant from expeirment' do
+      it 'evaluation with dependencies holdout excludes variant from experiment' do
         setup_stub
 
         local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
