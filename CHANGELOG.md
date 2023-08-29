@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.4...v1.1.5) (2023-08-29)
+
+
+### Bug Fixes
+
+* Variant result parsing for local evaluation ([#49](https://github.com/amplitude/experiment-ruby-server/issues/49)) ([0f4709a](https://github.com/amplitude/experiment-ruby-server/commit/0f4709ada74e8ff7e3af0bb59d0c43497ae32e4a))
+
 ## [1.1.4](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.3...v1.1.4) (2023-07-12)
 
 
