@@ -56,8 +56,7 @@ module AmplitudeExperiment
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
       result = evaluation(flags, user_str)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
-      @assignment_service&.track(Assignment.new(user, result))
-      parse_results(result, flag_keys)
+      parse_results(result, flag_keys, user)
     end
 
     # Fetch initial flag configurations and start polling for updates.
@@ -78,15 +77,21 @@ module AmplitudeExperiment
 
     private
 
-    def parse_results(result, flag_keys)
+    def parse_results(result, flag_keys, user)
       variants = {}
+      assignments = {}
+      included = flag_keys.empty? || flag_keys.include?(key)
       result.each do |key, value|
-        next if value['isDefaultVariant'] || (flag_keys.empty? && flag_keys.include?(key))
+        if !value['isDefaultVariant'] && included
+          variant_key = value['variant']['key']
+          variant_payload = value['variant']['payload']
+          variants.store(key, Variant.new(variant_key, variant_payload))
+        end
 
-        variant_key = value['variant']['key']
-        variant_payload = value['variant']['payload']
-        variants.store(key, Variant.new(variant_key, variant_payload))
+        assignments[key] = value if included || value['type'] == 'mutual-exclusion-group' || value['type'] == 'holdout-group'
+
       end
+      @assignment_service&.track(Assignment.new(user, assignments))
       variants
     end
 
