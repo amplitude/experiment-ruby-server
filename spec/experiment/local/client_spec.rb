@@ -94,11 +94,13 @@ module AmplitudeExperiment
       #   amp_config = AmplitudeAnalytics::Config.new
       #   assignment_config = AssignmentConfig.new('a6dd847b9d2f03c816d4f3f8458cdc1d', amp_config: amp_config)
       #   local_config = LocalEvaluationConfig.new(assignment_config: assignment_config)
-      #   client = LocalEvaluationClient.new(SERVER_API_KEY, local_config)
+      #   client = LocalEvaluationClient.new('server-qz35UwzJ5akieoAdIgzM4m9MIiOLXLoz', local_config)
       #   client.start
       #   client.evaluate(User.new(user_id: 'tim.yiu@amplitude.com'))
-      #   client.assignment_service.amplitude.flush
-      #   sleep(10)
+      #   client.assignment_service.amplitude.flush.each do |flush_future|
+      #     flush_future&.value
+      #   end
+      #   sleep(2)
       # end
     end
   end
