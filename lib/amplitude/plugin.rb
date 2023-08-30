@@ -87,7 +87,7 @@ module AmplitudeAnalytics
 
     def execute(event)
       event = @timeline.process(event)
-      raise 'Invalid event.' unless verify_event(event)
+      raise InvalidEventError, 'Invalid event.' unless verify_event(event)
 
       @storage.push(event)
     end
