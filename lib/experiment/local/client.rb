@@ -9,7 +9,6 @@ module AmplitudeExperiment
     #
     # @param [String] api_key The environment API Key
     # @param [LocalEvaluationConfig] config The config object
-    attr_reader :assignment_service
 
     def initialize(api_key, config = nil)
       require 'experiment/local/evaluation/evaluation'
@@ -27,14 +26,7 @@ module AmplitudeExperiment
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
 
       @assignment_service = nil
-      # rubocop:disable Style/GuardClause
-      if config&.assignment_config
-        # rubocop:enable Style/GuardClause
-        amplitude = AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key,
-                                                      configuration: config.assignment_config.amp_config)
-        filter = AssignmentFilter.new(config.assignment_config.cache_capacity)
-        @assignment_service = AssignmentService.new(amplitude, filter)
-      end
+      @assignment_service = AssignmentService.new(AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config.amp_config), AssignmentFilter.new(config.assignment_config.cache_capacity)) if config&.assignment_config
     end
 
     # Locally evaluates flag variants for a user.
