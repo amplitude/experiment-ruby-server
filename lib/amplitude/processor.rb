@@ -1,8 +1,6 @@
 module AmplitudeAnalytics
   # ResponseProcessor
   class ResponseProcessor
-    attr_accessor :configuration, :storage
-
     def initialize
       @configuration = nil
       @storage = nil

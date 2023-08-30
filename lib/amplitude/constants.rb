@@ -1,6 +1,6 @@
 module AmplitudeAnalytics
   SDK_LIBRARY = 'amplitude-experiment-ruby'.freeze
-  SDK_VERSION = '1.1.4'.freeze
+  SDK_VERSION = '1.1.5'.freeze
 
   EU_ZONE = 'EU'.freeze
   DEFAULT_ZONE = 'US'.freeze

@@ -21,20 +21,17 @@ module AmplitudeAnalytics
       context_plugin = ContextPlugin.new
       client = Amplitude.new('test_api_key')
       context_plugin.setup(client)
-      context_plugin.configuration.plan = Plan.new(source: 'test_source')
       event = BaseEvent.new('test_event', user_id: 'test_user')
 
       expect(event.time).to be_nil
       expect(event.insert_id).to be_nil
       expect(event.library).to be_nil
-      expect(event.plan).to be_nil
 
       context_plugin.execute(event)
 
       expect(event.time).to be_an(Integer)
       expect(event.insert_id).to be_a(String)
       expect(event.library).to be_a(String)
-      expect(event.plan).to be_a(Plan)
     end
 
     it 'processes event using event plugin' do

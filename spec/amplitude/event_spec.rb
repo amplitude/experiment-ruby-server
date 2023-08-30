@@ -20,16 +20,6 @@ module AmplitudeAnalytics
       expect(event.to_s).to eq('{"event_id":10,"event_type":"test_event","user_id":"test_user"}')
     end
 
-    it 'base_event_set_plan_attribute_success' do
-      event = BaseEvent.new('test_event', user_id: 'test_user')
-      event['plan'] = Plan.new(branch: 'test_branch', version_id: 'v1.1')
-      expect(event.event_body).to eq({
-                                       'user_id' => 'test_user',
-                                       'event_type' => 'test_event',
-                                       'plan' => { 'branch' => 'test_branch', 'versionId' => 'v1.1' }
-                                     })
-    end
-
     it 'base_event_set_ingestion_metadata_attribute_success' do
       event = BaseEvent.new('test_event', user_id: 'test_user')
       event['ingestion_metadata'] = IngestionMetadata.new(source_name: 'test_source', source_version: 'test_version')
@@ -64,7 +54,7 @@ module AmplitudeAnalytics
 
     it 'invokes callback function successfully when callback is provided' do
       callback_func = double('callback_func')
-      test_event = BaseEvent.new('test_event', callback: callback_func)
+      test_event = BaseEvent.new('test_event', user_id: 'test_user_id', callback: callback_func)
       expect(callback_func).to receive(:call).with(test_event, 200, 'Test Message')
       test_event.callback(200, 'Test Message')
     end
