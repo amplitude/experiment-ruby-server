@@ -4,7 +4,7 @@ module AmplitudeAnalytics
   class Config
     attr_accessor :api_key, :flush_interval_millis, :flush_max_retries,
                   :logger, :min_id_length, :callback, :server_zone, :use_batch,
-                  :storage_provider, :opt_out, :plan, :ingestion_metadata
+                  :storage_provider, :opt_out, :ingestion_metadata
 
     def initialize(api_key: nil, flush_queue_size: FLUSH_QUEUE_SIZE,
                    flush_interval_millis: FLUSH_INTERVAL_MILLIS,
@@ -12,7 +12,7 @@ module AmplitudeAnalytics
                    logger: Logger.new($stdout, progname: LOGGER_NAME, level: Logger::ERROR),
                    min_id_length: nil, callback: nil, server_zone: DEFAULT_ZONE,
                    use_batch: false, server_url: nil,
-                   storage_provider: InMemoryStorageProvider.new, plan: nil, ingestion_metadata: nil)
+                   storage_provider: InMemoryStorageProvider.new, ingestion_metadata: nil)
       @api_key = api_key
       @flush_queue_size = flush_queue_size
       @flush_size_divider = 1
@@ -26,7 +26,6 @@ module AmplitudeAnalytics
       @server_url = server_url
       @storage_provider = storage_provider
       @opt_out = false
-      @plan = plan
       @ingestion_metadata = ingestion_metadata
     end
 

@@ -123,7 +123,6 @@ module AmplitudeAnalytics
     def execute(event)
       event.time ||= AmplitudeAnalytics.current_milliseconds
       event.insert_id ||= SecureRandom.uuid
-      event.plan ||= @configuration.plan if @configuration.plan
       event.ingestion_metadata ||= @configuration.ingestion_metadata if @configuration.ingestion_metadata
       apply_context_data(event)
       event
