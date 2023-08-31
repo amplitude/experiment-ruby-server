@@ -24,7 +24,7 @@ module AmplitudeAnalytics
 
   # InMemoryStorage class
   class InMemoryStorage < Storage
-    attr_accessor :total_events, :ready_queue, :workers, :buffer_data, :monitor
+    attr_reader :total_events, :ready_queue, :workers, :buffer_data, :monitor
 
     def initialize
       super
