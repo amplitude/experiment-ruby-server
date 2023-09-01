@@ -31,14 +31,12 @@ module AmplitudeAnalytics
     BEFORE = 0
     ENRICHMENT = 1
     DESTINATION = 2
-    OBSERVE = 3
 
     def self.name(value)
       mapping = {
         BEFORE => 'BEFORE',
         ENRICHMENT => 'ENRICHMENT',
         DESTINATION => 'DESTINATION',
-        OBSERVE => 'OBSERVE'
       }
 
       mapping[value]
