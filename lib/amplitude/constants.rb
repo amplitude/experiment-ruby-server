@@ -36,7 +36,7 @@ module AmplitudeAnalytics
       mapping = {
         BEFORE => 'BEFORE',
         ENRICHMENT => 'ENRICHMENT',
-        DESTINATION => 'DESTINATION',
+        DESTINATION => 'DESTINATION'
       }
 
       mapping[value]
