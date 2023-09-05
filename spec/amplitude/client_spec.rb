@@ -1,7 +1,11 @@
 module AmplitudeAnalytics
+  class TestAmplitude < Amplitude
+    attr_reader :timeline
+  end
+
   describe Amplitude do
     before(:each) do
-      @client = Amplitude.new('test api key', configuration: Config.new(flush_queue_size: 10, flush_interval_millis: 500))
+      @client = TestAmplitude.new('test api key', configuration: Config.new(flush_queue_size: 10, flush_interval_millis: 500))
       @http_client = @client.timeline.plugins[PluginType::DESTINATION][0].workers.http_client
     end
 
