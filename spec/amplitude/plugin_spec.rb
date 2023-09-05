@@ -1,15 +1,19 @@
 module AmplitudeAnalytics
+  class TestAmplitude < Amplitude
+    attr_reader :timeline
+  end
+
   describe Plugin do
     it 'initializes Amplitude client and sets up destination plugin' do
       allow(AmplitudeDestinationPlugin).to receive(:setup)
       expect_any_instance_of(AmplitudeDestinationPlugin).to receive(:setup)
-      client = Amplitude.new('test_api_key')
+      client = TestAmplitude.new('test_api_key')
       timeline = client.timeline
       expect(timeline.plugins[PluginType::DESTINATION]).to be_truthy
     end
 
     it 'initializes Amplitude client and creates context plugin' do
-      client = Amplitude.new('test_api_key')
+      client = TestAmplitude.new('test_api_key')
       timeline = client.timeline
       expect(timeline.plugins[PluginType::BEFORE]).to be_truthy
       context_plugin = timeline.plugins[PluginType::BEFORE][0]
