@@ -1,5 +1,4 @@
 module AmplitudeExperiment
-  FLAG_TYPE_MUTUAL_EXCLUSION_GROUP = 'mutual_exclusion_group'.freeze
   DAY_MILLIS = 86_400_000
   # Assignment
   class Assignment

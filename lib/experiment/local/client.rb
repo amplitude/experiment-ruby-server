@@ -3,6 +3,8 @@ require 'logger'
 require_relative '../../amplitude'
 
 module AmplitudeExperiment
+  FLAG_TYPE_MUTUAL_EXCLUSION_GROUP = 'mutual_exclusion_group'.freeze
+  FLAG_TYPE_HOLDOUT_GROUP = 'holdout-group'.freeze
   # Main client for fetching variant data.
   class LocalEvaluationClient
     # Creates a new Experiment Client instance.
@@ -80,7 +82,7 @@ module AmplitudeExperiment
           variants.store(key, Variant.new(variant_key, variant_payload))
         end
 
-        assignments[key] = value if included || value['type'] == 'mutual-exclusion-group' || value['type'] == 'holdout-group'
+        assignments[key] = value if included || value['type'] == FLAG_TYPE_MUTUAL_EXCLUSION_GROUP || value['type'] == FLAG_TYPE_HOLDOUT_GROUP
       end
       @assignment_service&.track(Assignment.new(user, assignments))
       variants
