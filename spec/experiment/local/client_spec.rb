@@ -88,20 +88,6 @@ module AmplitudeExperiment
         result = local_evaluation_client.evaluate(TEST_USER_2)
         expect(result['sdk-ci-local-dependencies-test-holdout']).to eq(nil)
       end
-
-      # TODO: remove after PR review
-      # it 'test evaluation with assignment config' do
-      #   amp_config = AmplitudeAnalytics::Config.new
-      #   assignment_config = AssignmentConfig.new('a6dd847b9d2f03c816d4f3f8458cdc1d', amp_config: amp_config)
-      #   local_config = LocalEvaluationConfig.new(assignment_config: assignment_config)
-      #   client = LocalEvaluationClient.new('server-qz35UwzJ5akieoAdIgzM4m9MIiOLXLoz', local_config)
-      #   client.start
-      #   client.evaluate(User.new(user_id: 'tim.yiu@amplitude.com'))
-      #   client.assignment_service.amplitude.flush.each do |flush_future|
-      #     flush_future&.value
-      #   end
-      #   sleep(2)
-      # end
     end
   end
 end
