@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.homepage              = 'https://github.com/amplitude/experiment-ruby-server'
   spec.license               = 'MIT'
   spec.platform              = Gem::Platform::RUBY
-  spec.required_ruby_version = '>= 2.7'
+  spec.required_ruby_version = '>= 2.0'
 
   spec.files                 = Dir['README.md',
                                    'lib/**/*.rb',

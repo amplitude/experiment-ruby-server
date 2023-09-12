@@ -110,7 +110,7 @@ module AmplitudeAnalytics
       @workers.send(events)
       @workers.flush&.value
 
-      expect(@events_dict[200]).to eq(Set.new(events[20..]))
+      expect(@events_dict[200]).to eq(Set.new(events[20..99]))
       (20..99).each { |i| expect(events[i].retry).to eq(1) }
       expect(@events_dict[400]).to eq(Set.new(events[0..19]))
       expect(@workers.http_client).to have_received(:post).twice
@@ -209,7 +209,7 @@ module AmplitudeAnalytics
         i -= 1
       end
       @workers.flush&.value
-      expect(@events_dict[200]).to eq(Set.new(events[2..]))
+      expect(@events_dict[200]).to eq(Set.new(events[2..100]))
     end
 
     it 'processes events with all responses in multithreaded mode' do

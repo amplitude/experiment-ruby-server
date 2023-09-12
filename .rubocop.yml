@@ -1,7 +1,8 @@
 AllCops:
   NewCops: enable
   SuggestExtensions: false
-  TargetRubyVersion: 2.7
+  Exclude:
+    - "amplitude-experiment.gemspec"
 
 Layout/LineLength:
   Enabled: false
