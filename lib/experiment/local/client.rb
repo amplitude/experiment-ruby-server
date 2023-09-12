@@ -28,7 +28,7 @@ module AmplitudeExperiment
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
 
       @assignment_service = nil
-      @assignment_service = AssignmentService.new(AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config.amp_config), AssignmentFilter.new(config.assignment_config.cache_capacity)) if config&.assignment_config
+      @assignment_service = AssignmentService.new(AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config), AssignmentFilter.new(config.assignment_config.cache_capacity)) if config&.assignment_config
     end
 
     # Locally evaluates flag variants for a user.

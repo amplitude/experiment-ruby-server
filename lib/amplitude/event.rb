@@ -213,10 +213,6 @@ module AmplitudeAnalytics
       event_body['ingestion_metadata'] = @ingestion_metadata.body if @ingestion_metadata.respond_to?(:body)
       %w[user_properties event_properties group_properties].each do |properties|
         next unless event_body[properties]
-        # TODO: check ENUM
-        # event_body[properties].transform_values! do |value|
-        # value.is_a?(Enum) ? value.value : value
-        # end
       end
       AmplitudeAnalytics.truncate(event_body.sort.to_h)
     end
