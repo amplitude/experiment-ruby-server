@@ -102,9 +102,7 @@ module AmplitudeExperiment
       http = PersistentHttpClient.get(@uri, { read_timeout: read_timeout }, @api_key)
       request = Net::HTTP::Post.new(@uri, headers)
       request.body = user_context.to_json
-      if request.body.length > 8000
-        @logger.warn("[Experiment] encoded user object length #{request.body.length} cannot be cached by CDN; must be < 8KB")
-      end
+      @logger.warn("[Experiment] encoded user object length #{request.body.length} cannot be cached by CDN; must be < 8KB") if request.body.length > 8000
       @logger.debug("[Experiment] Fetch variants for user: #{request.body}")
       response = http.request(request)
       end_time = Time.now

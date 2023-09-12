@@ -9,6 +9,12 @@ require 'experiment/remote/client'
 require 'experiment/local/client'
 require 'experiment/local/config'
 require 'experiment/local/fetcher'
+require 'experiment/local/assignment/assignment'
+require 'experiment/local/assignment/assignment_filter'
+require 'experiment/local/assignment/assignment_service'
+require 'experiment/local/assignment/assignment_config'
+require 'experiment/util/lru_cache'
+require 'experiment/util/hash'
 
 # Amplitude Experiment Module
 module AmplitudeExperiment

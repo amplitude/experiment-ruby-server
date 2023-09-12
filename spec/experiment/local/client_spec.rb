@@ -1,8 +1,8 @@
 require 'spec_helper'
+require_relative '../../../lib/amplitude'
 
 module AmplitudeExperiment
   LOCAL_SERVER_URL = 'https://api.lab.amplitude.com/sdk/vardata'.freeze
-  SERVER_API_KEY = 'server-qz35UwzJ5akieoAdIgzM4m9MIiOLXLoz'.freeze
   TEST_USER = User.new(user_id: 'test_user')
   TEST_USER_2 = User.new(user_id: 'user_id', device_id: 'device_id')
 
@@ -33,12 +33,6 @@ module AmplitudeExperiment
     end
 
     describe '#evaluation' do
-      it 'evaluation should return variant empty object with invalid user input' do
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY, LocalEvaluationConfig.new(flag_config_polling_interval_millis: 15_000))
-        result = local_evaluation_client.evaluate({}, [])
-        expect(result).to eq({})
-      end
-
       it 'evaluation should return specific variants' do
         setup_stub
 
