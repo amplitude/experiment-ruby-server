@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.5...v1.2.0) (2023-09-12)
+
+
+### Features
+
+* Automatic assignment tracking ([#48](https://github.com/amplitude/experiment-ruby-server/issues/48)) ([c4e4c1c](https://github.com/amplitude/experiment-ruby-server/commit/c4e4c1cbb4a0168bee38db57102d70669634bf38))
+
 ## [1.1.5](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.4...v1.1.5) (2023-08-29)
 
 
