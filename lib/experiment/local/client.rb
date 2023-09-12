@@ -41,11 +41,9 @@ module AmplitudeExperiment
       flags = @flags_mutex.synchronize do
         @flags
       end
+      return {} if flags.nil?
+
       user_str = user.to_json
-      if flags.nil?
-        @assignment_service&.track(Assignment.new(user, {}))
-        return {}
-      end
 
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
       result = evaluation(flags, user_str)
