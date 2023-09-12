@@ -5,8 +5,9 @@ module AmplitudeAnalytics
 
   describe Amplitude do
     before(:each) do
-      @client = TestAmplitude.new('test api key', configuration: Config.new(flush_queue_size: 10, flush_interval_millis: 500))
+      @client = TestAmplitude.new('test api key', configuration: Config.new(flush_queue_size: 10, flush_interval_millis: 1000))
       @http_client = @client.timeline.plugins[PluginType::DESTINATION][0].workers.http_client
+      @events_dict_mutex = Mutex.new
     end
 
     after(:each) do
@@ -18,7 +19,9 @@ module AmplitudeAnalytics
       events = []
       callback_func = lambda do |event, code, _message = nil|
         expect(code).to eq(200)
-        events << event.event_properties['id']
+        @events_dict_mutex.synchronize do
+          events << event.event_properties['id']
+        end
       end
 
       @client.configuration.callback = callback_func
@@ -29,11 +32,14 @@ module AmplitudeAnalytics
         25.times do |i|
           @client.track(BaseEvent.new('test_event', user_id: 'test_user_id', event_properties: { 'id' => i }))
         end
+        sleep(0.01) until @client.timeline.plugins[PluginType::DESTINATION][0].workers.threads_pool.queue_length == 0
         futures = @client.flush
         futures.each do |flush_future|
           flush_future&.value
         end
-        expect(events.length).to eq(25)
+        @events_dict_mutex.synchronize do
+          expect(events.length).to eq(25)
+        end
         expect(@http_client).to have_received(:post).at_least(:once)
       end
     end
