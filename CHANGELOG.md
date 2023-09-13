@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.0...v1.2.1) (2023-09-13)
+
+
+### Bug Fixes
+
+* RemoteEvaluationClient variant fetch timeout ([#51](https://github.com/amplitude/experiment-ruby-server/issues/51)) ([b4bf159](https://github.com/amplitude/experiment-ruby-server/commit/b4bf159f9d51cb6f47f538ab6b047d29010cbca9))
+
 # [1.2.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.1.5...v1.2.0) (2023-09-12)
 
 
