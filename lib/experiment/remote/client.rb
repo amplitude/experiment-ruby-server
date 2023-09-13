@@ -77,7 +77,7 @@ module AmplitudeExperiment
       delay_millis = @config.fetch_retry_backoff_min_millis
       err = nil
       @config.fetch_retries.times do
-        sleep(delay_millis / 1000.0)
+        sleep(delay_millis.to_f / 1000.0)
         begin
           return do_fetch(user, @config.fetch_retry_timeout_millis)
         rescue StandardError => e
@@ -98,7 +98,7 @@ module AmplitudeExperiment
         'Authorization' => "Api-Key #{@api_key}",
         'Content-Type' => 'application/json;charset=utf-8'
       }
-      read_timeout = timeout_millis / 1000 if (timeout_millis / 1000) > 0
+      read_timeout = timeout_millis.to_f / 1000 if (timeout_millis.to_f / 1000) > 0
       http = PersistentHttpClient.get(@uri, { read_timeout: read_timeout }, @api_key)
       request = Net::HTTP::Post.new(@uri, headers)
       request.body = user_context.to_json
