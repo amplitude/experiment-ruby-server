@@ -6,6 +6,8 @@ module AmplitudeExperiment
     end
 
     def should_track(assignment)
+      return false if assignment.results.empty?
+
       canonical_assignment = assignment.canonicalize
       track = @cache.get(canonical_assignment).nil?
       @cache.put(canonical_assignment, 0) if track
