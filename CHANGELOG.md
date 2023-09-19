@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.1...v1.2.2) (2023-09-19)
+
+
+### Bug Fixes
+
+* Do not track empty assignment events ([#52](https://github.com/amplitude/experiment-ruby-server/issues/52)) ([fccabdf](https://github.com/amplitude/experiment-ruby-server/commit/fccabdf0a6e2d63c53f2faa6b6b37bdf9361a394))
+
 ## [1.2.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.0...v1.2.1) (2023-09-13)
 
 
