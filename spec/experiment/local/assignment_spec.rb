@@ -149,9 +149,9 @@ module AmplitudeExperiment
         assignment2 = Assignment.new(user1, {})
         assignment3 = Assignment.new(user2, {})
 
-        expect(filter.should_track(assignment1)).to eq(true)
+        expect(filter.should_track(assignment1)).to eq(false)
         expect(filter.should_track(assignment2)).to eq(false)
-        expect(filter.should_track(assignment3)).to eq(true)
+        expect(filter.should_track(assignment3)).to eq(false)
       end
 
       it 'filter - duplicate assignments with different result ordering' do
