@@ -14,7 +14,7 @@ module AmplitudeExperiment
 
       it 'test valid api key return cookie name' do
         expect(AmplitudeCookie.cookie_name('1234567')).to eq('amp_123456')
-        expect(AmplitudeCookie.cookie_name('1234567890', new: true)).to eq('AMP_1234567890')
+        expect(AmplitudeCookie.cookie_name('1234567890', new_format: true)).to eq('AMP_1234567890')
       end
     end
 
@@ -23,7 +23,7 @@ module AmplitudeExperiment
         user = AmplitudeCookie.parse('deviceId...1f1gkeib1.1f1gkeib1.dv.1ir.20q')
         expect(user.device_id).to eq('deviceId')
         expect(user.user_id).to be_nil
-        user = AmplitudeCookie.parse(@device_new_cookie, new: true)
+        user = AmplitudeCookie.parse(@device_new_cookie, new_format: true)
         expect(user.device_id).to eq('deviceId')
         expect(user.user_id).to be_nil
       end
@@ -32,7 +32,7 @@ module AmplitudeExperiment
         user = AmplitudeCookie.parse('deviceId.dGVzdEBhbXBsaXR1ZGUuY29t..1f1gkeib1.1f1gkeib1.dv.1ir.20q')
         expect(user.device_id).to eq('deviceId')
         expect(user.user_id).to eq('test@amplitude.com')
-        user = AmplitudeCookie.parse(@user_and_device_new_cookie, new: true)
+        user = AmplitudeCookie.parse(@user_and_device_new_cookie, new_format: true)
         expect(user.device_id).to eq('deviceId')
         expect(user.user_id).to eq('test@amplitude.com')
       end
@@ -48,7 +48,7 @@ module AmplitudeExperiment
         user = AmplitudeCookie.parse('deviceId.Y8O3Pg==..1f1gkeib1.1f1gkeib1.dv.1ir.20q')
         expect(user.device_id).to eq('deviceId')
         expect(user.user_id).to be_nil
-        user = AmplitudeCookie.parse(@user_and_device_new_cookie, new: true)
+        user = AmplitudeCookie.parse(@user_and_device_new_cookie, new_format: true)
         expect(user.device_id).to be_nil
         expect(user.user_id).to be_nil
       end
@@ -58,7 +58,7 @@ module AmplitudeExperiment
       it 'test generate' do
         old = AmplitudeCookie.generate('deviceId')
         expect(old).to eq('deviceId..........')
-        new = AmplitudeCookie.generate('deviceId', new: true)
+        new = AmplitudeCookie.generate('deviceId', new_format: true)
         expect(new).to eq(@device_new_cookie)
       end
     end

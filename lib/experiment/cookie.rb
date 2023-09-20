@@ -7,11 +7,12 @@ module AmplitudeExperiment
     # Get the cookie name that Amplitude sets for the provided
     #
     # @param [String] api_key The Amplitude API Key
+    # @param [Boolean] new_format True if the cookie is in the Browser SDK 2.0 format
     # @return [String] The cookie name that Amplitude sets for the provided
-    def self.cookie_name(api_key, new: false)
+    def self.cookie_name(api_key, new_format: false)
       raise ArgumentError, 'Invalid Amplitude API Key' if api_key.nil?
 
-      if new
+      if new_format
         raise ArgumentError, 'Invalid Amplitude API Key' if api_key.length < 10
 
         return "AMP_#{api_key[0..9]}"
@@ -24,9 +25,10 @@ module AmplitudeExperiment
     # Parse a cookie string and returns user
     #
     # @param [String] amplitude_cookie A string from the amplitude cookie
+    # @param [Boolean] new_format True if the cookie is in the Browser SDK 2.0 format
     # @return [User] a Experiment User context containing a device_id and user_id
-    def self.parse(amplitude_cookie, new: false)
-      if new
+    def self.parse(amplitude_cookie, new_format: false)
+      if new_format
         begin
           decoding = Base64.decode64(amplitude_cookie).force_encoding('UTF-8')
           json_data = URI.decode_www_form_component(decoding)
@@ -51,9 +53,10 @@ module AmplitudeExperiment
     # Generates a cookie string to set for the Amplitude Javascript SDK
     #
     # @param [String] device_id A device id to set
+    # @param [Boolean] new_format True if the cookie is in the Browser SDK 2.0 format
     # @return [String] A cookie string to set for the Amplitude Javascript SDK to read
-    def self.generate(device_id, new: false)
-      return "#{device_id}.........." unless new
+    def self.generate(device_id, new_format: false)
+      return "#{device_id}.........." unless new_format
 
       user_session_hash = {
         'deviceId' => device_id
