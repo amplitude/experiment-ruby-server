@@ -35,7 +35,7 @@ module AmplitudeExperiment
           user_session_hash = JSON.parse(json_data)
           return User.new(user_id: user_session_hash['userId'], device_id: user_session_hash['deviceId'])
         rescue StandardError
-          return User.new()
+          return nil
         end
       end
       values = amplitude_cookie.split('.', -1)
