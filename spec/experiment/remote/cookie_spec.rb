@@ -49,8 +49,7 @@ module AmplitudeExperiment
         expect(user.device_id).to eq('deviceId')
         expect(user.user_id).to be_nil
         user = AmplitudeCookie.parse(@user_and_device_new_cookie, new_format: true)
-        expect(user.device_id).to be_nil
-        expect(user.user_id).to be_nil
+        expect(user).to eq(nil)
       end
     end
 

@@ -35,7 +35,8 @@ module AmplitudeExperiment
           user_session_hash = JSON.parse(json_data)
           return User.new(user_id: user_session_hash['userId'], device_id: user_session_hash['deviceId'])
         rescue StandardError => e
-          raise ArgumentError, "Error parsing the Amplitude cookie: #{e.message}"
+          puts "Error parsing the Amplitude cookie: #{e.message}"
+          return nil
         end
       end
       values = amplitude_cookie.split('.', -1)
