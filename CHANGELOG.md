@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.2...v1.2.3) (2023-09-25)
+
+
+### Bug Fixes
+
+* Update AmplitudeCookies util to support new cookie format ([#53](https://github.com/amplitude/experiment-ruby-server/issues/53)) ([8336cf8](https://github.com/amplitude/experiment-ruby-server/commit/8336cf83f1535ba50ec1e2a8dffd1d9e4e60d181))
+
 ## [1.2.2](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.1...v1.2.2) (2023-09-19)
 
 
