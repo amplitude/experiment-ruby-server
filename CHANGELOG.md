@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.3...v1.2.4) (2023-10-17)
+
+
+### Bug Fixes
+
+* Add error handling to local evaluation flag poller ([#55](https://github.com/amplitude/experiment-ruby-server/issues/55)) ([4df62a7](https://github.com/amplitude/experiment-ruby-server/commit/4df62a71c4a6bda4a0895956f657167c07586575))
+
 ## [1.2.3](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.2...v1.2.3) (2023-09-25)
 
 
