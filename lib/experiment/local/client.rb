@@ -88,9 +88,13 @@ module AmplitudeExperiment
 
     def run
       @is_running = true
-      flags = @fetcher.fetch_v1
-      @flags_mutex.synchronize do
-        @flags = flags
+      begin
+        flags = @fetcher.fetch_v1
+        @flags_mutex.synchronize do
+          @flags = flags
+        end
+      rescue StandardError => e
+        @logger.error("[Experiment] Flag poller - error: #{e.message}")
       end
       @poller_thread = Thread.new do
         sleep(@config.flag_config_polling_interval_millis / 1000.to_f)
