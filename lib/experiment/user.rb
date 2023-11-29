@@ -28,7 +28,7 @@ module AmplitudeExperiment
     # @return [String, nil] the value of dma
     attr_accessor :dma
 
-    # User IP address
+    # Predefined field, must be manually provided
     # @return [String, nil] the value of ip
     attr_accessor :ip
 
@@ -78,7 +78,7 @@ module AmplitudeExperiment
     # @param [String, nil] city Predefined field, must be manually provided
     # @param [String, nil] region Predefined field, must be manually provided
     # @param [String, nil] dma Predefined field, must be manually provided
-    # @param [String, nil] ip User IP address
+    # @param [String, nil] ip Predefined field, must be manually provided
     # @param [String, nil] language Predefined field, must be manually provided
     # @param [String, nil] platform Predefined field, must be manually provided
     # @param [String, nil] version Predefined field, must be manually provided
