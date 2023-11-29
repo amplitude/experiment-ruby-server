@@ -28,6 +28,10 @@ module AmplitudeExperiment
     # @return [String, nil] the value of dma
     attr_accessor :dma
 
+    # User IP address
+    # @return [String, nil] the value of ip
+    attr_accessor :ip
+
     # Predefined field, must be manually provided
     # @return [String, nil] the value of language
     attr_accessor :language
@@ -74,6 +78,7 @@ module AmplitudeExperiment
     # @param [String, nil] city Predefined field, must be manually provided
     # @param [String, nil] region Predefined field, must be manually provided
     # @param [String, nil] dma Predefined field, must be manually provided
+    # @param [String, nil] ip User IP address
     # @param [String, nil] language Predefined field, must be manually provided
     # @param [String, nil] platform Predefined field, must be manually provided
     # @param [String, nil] version Predefined field, must be manually provided
@@ -84,7 +89,7 @@ module AmplitudeExperiment
     # @param [String, nil] carrier Predefined field, must be manually provided
     # @param [String, nil] library Predefined field, auto populated, can be manually overridden
     # @param [Hash, nil] user_properties Custom user properties
-    def initialize(device_id: nil, user_id: nil, country: nil, city: nil, region: nil, dma: nil, language: nil,
+    def initialize(device_id: nil, user_id: nil, country: nil, city: nil, region: nil, dma: nil, ip: nil, language: nil,
                    platform: nil, version: nil, os: nil, device_manufacturer: nil, device_brand: nil,
                    device_model: nil, carrier: nil, library: nil, user_properties: nil)
       @device_id = device_id
@@ -93,6 +98,7 @@ module AmplitudeExperiment
       @city = city
       @region = region
       @dma = dma
+      @ip = ip
       @language = language
       @platform = platform
       @version = version
@@ -115,6 +121,7 @@ module AmplitudeExperiment
         city: @city,
         region: @region,
         dma: @dma,
+        ip: @ip,
         language: @language,
         platform: @platform,
         version: @version,
