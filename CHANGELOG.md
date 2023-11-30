@@ -1,3 +1,10 @@
+## [1.2.5](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.4...v1.2.5) (2023-11-30)
+
+
+### Bug Fixes
+
+* add IP address property to user object ([#56](https://github.com/amplitude/experiment-ruby-server/issues/56)) ([c61403a](https://github.com/amplitude/experiment-ruby-server/commit/c61403a05144c0f592aa75ece5c7f9e3dccd9528))
+
 ## [1.2.4](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.3...v1.2.4) (2023-10-17)
 
 
