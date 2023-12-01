@@ -24,26 +24,30 @@ module AmplitudeExperiment
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
 
-    # Fetch all variants for a user synchronous.
+    # Fetch variants for a user synchronously for the given flag keys.
+    # If flag key is not provided, all variants will be returned.
     #
     # This method will automatically retry if configured (default).
     # @param [User] user
+    # @param [array] flag_keys
     # @return [Hash] Variants Hash
-    def fetch(user)
-      fetch_internal(user)
+    def fetch(user, flag_keys = [])
+      fetch_internal(user, flag_keys)
     rescue StandardError => e
       @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
       {}
     end
 
-    # Fetch all variants for a user asynchronous.
+    # Fetch variants for a user asynchronously for the given flag keys.
+    # If flag key is not provided, all variants will be returned.
     #
     # This method will automatically retry if configured (default).
     # @param [User] user
+    # @param [array] flag_keys
     # @yield [User, Hash] callback block takes user object and variants hash
-    def fetch_async(user, &callback)
+    def fetch_async(user, flag_keys = [], &callback)
       Thread.new do
-        variants = fetch_internal(user)
+        variants = fetch_internal(user, flag_keys)
         yield(user, variants) unless callback.nil?
         variants
       rescue StandardError => e
@@ -56,13 +60,14 @@ module AmplitudeExperiment
     private
 
     # @param [User] user
-    def fetch_internal(user)
+    # @param [array] flag_keys
+    def fetch_internal(user, flag_keys)
       @logger.debug("[Experiment] Fetching variants for user: #{user.as_json}")
-      do_fetch(user, @config.fetch_timeout_millis)
+      do_fetch(user, flag_keys, @config.fetch_timeout_millis)
     rescue StandardError => e
       @logger.error("[Experiment] Fetch failed: #{e.message}")
       begin
-        return retry_fetch(user)
+        return retry_fetch(user, flag_keys)
       rescue StandardError => err
         @logger.error("[Experiment] Retry Fetch failed: #{err.message}")
       end
@@ -70,7 +75,8 @@ module AmplitudeExperiment
     end
 
     # @param [User] user
-    def retry_fetch(user)
+    # @param [array] flag_keys
+    def retry_fetch(user, flag_keys)
       return {} if @config.fetch_retries.zero?
 
       @logger.debug('[Experiment] Retrying fetch')
@@ -79,7 +85,7 @@ module AmplitudeExperiment
       @config.fetch_retries.times do
         sleep(delay_millis.to_f / 1000.0)
         begin
-          return do_fetch(user, @config.fetch_retry_timeout_millis)
+          return do_fetch(user, flag_keys, @config.fetch_retry_timeout_millis)
         rescue StandardError => e
           @logger.error("[Experiment] Retry failed: #{e.message}")
           err = e
@@ -90,14 +96,17 @@ module AmplitudeExperiment
     end
 
     # @param [User] user
+    # @param [array] flag_keys
     # @param [Integer] timeout_millis
-    def do_fetch(user, timeout_millis)
+    def do_fetch(user, flag_keys, timeout_millis)
       start_time = Time.now
       user_context = add_context(user)
       headers = {
         'Authorization' => "Api-Key #{@api_key}",
         'Content-Type' => 'application/json;charset=utf-8'
       }
+      headers['X-Amp-Exp-Flag-Keys'] = Base64.strict_encode64(flag_keys.to_json) unless flag_keys.empty?
+      puts headers['X-Amp-Exp-Flag-Keys']
       read_timeout = timeout_millis.to_f / 1000 if (timeout_millis.to_f / 1000) > 0
       http = PersistentHttpClient.get(@uri, { read_timeout: read_timeout }, @api_key)
       request = Net::HTTP::Post.new(@uri, headers)
