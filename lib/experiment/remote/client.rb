@@ -25,7 +25,7 @@ module AmplitudeExperiment
     end
 
     # Synchronously fetch user variants for the given flag keys.
-    # If flag key is not provided, all variants will be returned.
+    # If flag keys are not provided, all variants will be returned.
     #
     # This method will automatically retry if configured (default).
     # @param [User] user
