@@ -15,6 +15,7 @@ require 'experiment/local/assignment/assignment_service'
 require 'experiment/local/assignment/assignment_config'
 require 'experiment/util/lru_cache'
 require 'experiment/util/hash'
+require 'experiment/error'
 
 # Amplitude Experiment Module
 module AmplitudeExperiment
