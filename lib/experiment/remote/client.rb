@@ -61,13 +61,14 @@ module AmplitudeExperiment
       do_fetch(user, @config.fetch_timeout_millis)
     rescue StandardError => e
       @logger.error("[Experiment] Fetch failed: #{e.message}")
-      raise e unless should_retry_fetch?(e)
-
-      begin
-        retry_fetch(user)
-      rescue StandardError => err
-        @logger.error("[Experiment] Retry Fetch failed: #{err.message}")
+      if should_retry_fetch?(e)
+        begin
+          retry_fetch(user)
+        rescue StandardError => err
+          @logger.error("[Experiment] Retry Fetch failed: #{err.message}")
+        end
       end
+      raise e
     end
 
     # @param [User] user
