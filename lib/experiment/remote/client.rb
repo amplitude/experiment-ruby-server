@@ -110,7 +110,7 @@ module AmplitudeExperiment
       end_time = Time.now
       elapsed = (end_time - start_time) * 1000.0
       @logger.debug("[Experiment] Fetch complete in #{elapsed.round(3)} ms")
-      raise FetchError.new("Fetch error response: status=#{response.code} #{response.message}", response.code.to_i) if response.code != '200'
+      raise FetchError.new(response.code.to_i, "Fetch error response: status=#{response.code} #{response.message}") if response.code != '200'
 
       json = JSON.parse(response.body)
       variants = parse_json_variants(json)
