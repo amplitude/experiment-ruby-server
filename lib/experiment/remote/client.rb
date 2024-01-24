@@ -145,8 +145,8 @@ module AmplitudeExperiment
       user
     end
 
-    def should_retry_fetch?(e)
-      return e.status_code < 400 || e.status_code >= 500 || e.status_code == 429 if e.is_a?(FetchError)
+    def should_retry_fetch?(err)
+      return err.status_code < 400 || err.status_code >= 500 || err.status_code == 429 if err.is_a?(FetchError)
 
       true
     end
