@@ -1,3 +1,10 @@
+## [1.2.6](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.5...v1.2.6) (2024-01-29)
+
+
+### Bug Fixes
+
+* Improve remote evaluation fetch retry logic ([#59](https://github.com/amplitude/experiment-ruby-server/issues/59)) ([81feed1](https://github.com/amplitude/experiment-ruby-server/commit/81feed1df1e37793cf48f41ed5e240549bc3c390))
+
 ## [1.2.5](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.4...v1.2.5) (2023-11-30)
 
 
