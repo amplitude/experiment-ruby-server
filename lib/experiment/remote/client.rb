@@ -61,12 +61,14 @@ module AmplitudeExperiment
       do_fetch(user, @config.fetch_timeout_millis)
     rescue StandardError => e
       @logger.error("[Experiment] Fetch failed: #{e.message}")
-      begin
-        return retry_fetch(user)
-      rescue StandardError => err
-        @logger.error("[Experiment] Retry Fetch failed: #{err.message}")
+      if should_retry_fetch?(e)
+        begin
+          retry_fetch(user)
+        rescue StandardError => err
+          @logger.error("[Experiment] Retry Fetch failed: #{err.message}")
+        end
       end
-      throw e
+      raise e
     end
 
     # @param [User] user
@@ -108,6 +110,8 @@ module AmplitudeExperiment
       end_time = Time.now
       elapsed = (end_time - start_time) * 1000.0
       @logger.debug("[Experiment] Fetch complete in #{elapsed.round(3)} ms")
+      raise FetchError.new(response.code.to_i, "Fetch error response: status=#{response.code} #{response.message}") if response.code != '200'
+
       json = JSON.parse(response.body)
       variants = parse_json_variants(json)
       @logger.debug("[Experiment] Fetched variants: #{variants}")
@@ -139,6 +143,12 @@ module AmplitudeExperiment
       user = {} if user.nil?
       user.library = "experiment-ruby-server/#{VERSION}"
       user
+    end
+
+    def should_retry_fetch?(err)
+      return err.status_code < 400 || err.status_code >= 500 || err.status_code == 429 if err.is_a?(FetchError)
+
+      true
     end
   end
 end

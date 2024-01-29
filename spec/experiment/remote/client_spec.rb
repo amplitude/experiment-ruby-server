@@ -24,7 +24,7 @@ module AmplitudeExperiment
     response_without_payload = '{"sdk-ci-test":{"key":"on"}}'
     response_with_value_without_payload = '{"sdk-ci-test":{"value":"on"}}'
     variant_name = 'sdk-ci-test'
-    test_user =  User.new(user_id: 'test_user')
+    test_user = User.new(user_id: 'test_user')
     test_user_with_properties = User.new(user_id: 'test_user', device_id: 'a4edba84-dba0-405c-be9c-7ce580cb83f3', country: 'US',
                                          city: 'San Francisco', region: 'California', language: 'English', platform: 'server',
                                          version: '1.0.0', device_brand: 'Google', carrier: 'Verizon',
@@ -104,6 +104,28 @@ module AmplitudeExperiment
           expect(block_variants).to eq({})
         end
         expect(variants).to eq({})
+      end
+
+      context 'fetch retry with different response codes' do
+        [
+          [300, 'Fetch Exception 300', true],
+          [400, 'Fetch Exception 400', false],
+          [429, 'Fetch Exception 429', true],
+          [500, 'Fetch Exception 500', true],
+          [0, 'Other Exception', true]
+        ].each do |response_code, error_message, should_call_retry|
+          it "handles response code #{response_code}" do
+            client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(fetch_retries: 1))
+            allow(client).to receive(:retry_fetch)
+            allow(client).to receive(:do_fetch) do
+              response_code == 0 ? raise(StandardError, error_message) : raise(FetchError.new(response_code, error_message))
+            end
+            expect(client).to receive(:do_fetch)
+            expect(client).to receive(:retry_fetch) if should_call_retry
+            user = User.new(user_id: 'test_user')
+            client.fetch(user)
+          end
+        end
       end
     end
   end
