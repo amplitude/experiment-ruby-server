@@ -38,6 +38,10 @@ module AmplitudeExperiment
     # @return [Integer] the value of fetch_retry_timeout_millis
     attr_accessor :fetch_retry_timeout_millis
 
+    # The deployment key for the experiment. If provided, it is used instead of the Project API Key.
+    # @return [String] the value of deployment_key
+    attr_accessor :deployment_key
+
     # @param [Boolean] debug Set to true to log some extra information to the console.
     # @param [String] server_url The server endpoint from which to request variants.
     # @param [Integer] fetch_timeout_millis The request timeout, in milliseconds, used when fetching variants
@@ -51,7 +55,7 @@ module AmplitudeExperiment
     # @param [Integer] fetch_retry_timeout_millis The request timeout for retrying fetch requests.
     def initialize(debug: false, server_url: DEFAULT_SERVER_URL, fetch_timeout_millis: 10_000, fetch_retries: 0,
                    fetch_retry_backoff_min_millis: 500, fetch_retry_backoff_max_millis: 10_000,
-                   fetch_retry_backoff_scalar: 1.5, fetch_retry_timeout_millis: 10_000)
+                   fetch_retry_backoff_scalar: 1.5, fetch_retry_timeout_millis: 10_000, deployment_key: nil)
       @debug = debug
       @server_url = server_url
       @fetch_timeout_millis = fetch_timeout_millis
@@ -60,6 +64,7 @@ module AmplitudeExperiment
       @fetch_retry_backoff_max_millis = fetch_retry_backoff_max_millis
       @fetch_retry_backoff_scalar = fetch_retry_backoff_scalar
       @fetch_retry_timeout_millis = fetch_retry_timeout_millis
+      @deployment_key = @deployment_key
     end
   end
 end

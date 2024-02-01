@@ -20,17 +20,23 @@ module AmplitudeExperiment
     # @return [AssignmentConfig] the config instance
     attr_accessor :assignment_config
 
+    # The deployment key for the experiment. If provided, it is used instead of the Project API Key.
+    # @return [String] the value of deployment_key
+    attr_accessor :deployment_key
+
     # @param [Boolean] debug Set to true to log some extra information to the console.
     # @param [String] server_url The server endpoint from which to request variants.
     # @param [Hash] bootstrap The value of bootstrap.
     # @param [long] flag_config_polling_interval_millis The value of flag config polling interval in million seconds.
     def initialize(server_url: DEFAULT_SERVER_URL, bootstrap: {},
-                   flag_config_polling_interval_millis: 30_000, debug: false, assignment_config: nil)
+                   flag_config_polling_interval_millis: 30_000, debug: false, assignment_config: nil,
+                   deployment_key: nil)
       @debug = debug || false
       @server_url = server_url
       @bootstrap = bootstrap
       @flag_config_polling_interval_millis = flag_config_polling_interval_millis
       @assignment_config = assignment_config
+      @deployment_key = deployment_key
     end
   end
 end

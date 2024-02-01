@@ -6,21 +6,23 @@ module AmplitudeExperiment
   # Initializes a singleton Client. This method returns a default singleton instance, subsequent calls to
   #  init will return the initial instance regardless of input.
   #
-  # @param [String] api_key The environment API Key
+  # @param [String] api_key The environment API Key. If a deployment key is provided in the config, it will be used instead.
   # @param [Config] config Optional Config.
   def self.initialize_remote(api_key, config = nil)
-    @remote_instance.store(api_key, RemoteEvaluationClient.new(api_key, config)) unless @remote_instance.key?(api_key)
-    @remote_instance.fetch(api_key)
+    used_key = config&.deployment_key.nil? ? api_key : config.deployment_key
+    @remote_instance.store(used_key, RemoteEvaluationClient.new(used_key, config)) unless @remote_instance.key?(used_key)
+    @remote_instance.fetch(used_key)
   end
 
   # Initializes a local evaluation Client. A local evaluation client can evaluate local flags or experiments for a
   # user without requiring a remote call to the amplitude evaluation server. In order to best leverage local
   # evaluation, all flags, and experiments being evaluated server side should be configured as local.
   #
-  # @param [String] api_key The environment API Key
+  # @param [String] api_key The environment API Key. If a deployment key is provided in the config, it will be used instead.
   # @param [Config] config Optional Config.
   def self.initialize_local(api_key, config = nil)
-    @local_instance.store(api_key, LocalEvaluationClient.new(api_key, config)) unless @local_instance.key?(api_key)
-    @local_instance.fetch(api_key)
+    used_key = config&.deployment_key.nil? ? api_key : config.deployment_key
+    @local_instance.store(used_key, LocalEvaluationClient.new(used_key, config)) unless @local_instance.key?(used_key)
+    @local_instance.fetch(used_key)
   end
 end
