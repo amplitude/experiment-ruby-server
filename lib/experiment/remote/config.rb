@@ -64,7 +64,7 @@ module AmplitudeExperiment
       @fetch_retry_backoff_max_millis = fetch_retry_backoff_max_millis
       @fetch_retry_backoff_scalar = fetch_retry_backoff_scalar
       @fetch_retry_timeout_millis = fetch_retry_timeout_millis
-      @deployment_key = @deployment_key
+      @deployment_key = deployment_key
     end
   end
 end
