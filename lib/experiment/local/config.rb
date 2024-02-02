@@ -20,7 +20,7 @@ module AmplitudeExperiment
     # @return [AssignmentConfig] the config instance
     attr_accessor :assignment_config
 
-    # The deployment key for the experiment. If provided, it is used instead of the Project API Key.
+    # The deployment key for the experiment. If provided, it is used instead of the Amplitude Project API Key.
     # @return [String] the value of deployment_key
     attr_accessor :deployment_key
 

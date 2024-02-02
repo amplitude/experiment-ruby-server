@@ -38,7 +38,7 @@ module AmplitudeExperiment
     # @return [Integer] the value of fetch_retry_timeout_millis
     attr_accessor :fetch_retry_timeout_millis
 
-    # The deployment key for the experiment. If provided, it is used instead of the Project API Key.
+    # The deployment key for the experiment. If provided, it is used instead of the Amplitude Project API Key.
     # @return [String] the value of deployment_key
     attr_accessor :deployment_key
 

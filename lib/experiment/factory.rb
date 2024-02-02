@@ -6,7 +6,8 @@ module AmplitudeExperiment
   # Initializes a singleton Client. This method returns a default singleton instance, subsequent calls to
   #  init will return the initial instance regardless of input.
   #
-  # @param [String] api_key The environment API Key. If a deployment key is provided in the config, it will be used instead.
+  # @param [String] api_key The Amplitude Project API Key used in the client. If a deployment key is provided in
+  # the config, it will be used instead.
   # @param [Config] config Optional Config.
   def self.initialize_remote(api_key, config = nil)
     used_key = config&.deployment_key.nil? ? api_key : config.deployment_key
@@ -18,7 +19,8 @@ module AmplitudeExperiment
   # user without requiring a remote call to the amplitude evaluation server. In order to best leverage local
   # evaluation, all flags, and experiments being evaluated server side should be configured as local.
   #
-  # @param [String] api_key The environment API Key. If a deployment key is provided in the config, it will be used instead.
+  # @param [String] api_key The Amplitude Project API Key used in the client. If a deployment key is provided in
+  # the config, it will be used instead.
   # @param [Config] config Optional Config.
   def self.initialize_local(api_key, config = nil)
     used_key = config&.deployment_key.nil? ? api_key : config.deployment_key
