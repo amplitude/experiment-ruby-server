@@ -19,7 +19,7 @@ module AmplitudeExperiment
                       else
                         Logger::INFO
                       end
-      endpoint = "#{@config.server_url}/sdk/vardata"
+      endpoint = "#{@config.server_url}/sdk/v2/vardata?v=0"
       @uri = URI(endpoint)
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
