@@ -30,6 +30,19 @@ module AmplitudeExperiment
     # @param [User] user
     # @return [Hash] Variants Hash
     def fetch(user)
+      filter_default_variants(fetch_internal(user))
+    rescue StandardError => e
+      @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
+      {}
+    end
+
+    # Fetch all variants for a user synchronous.
+    #
+    # This method will automatically retry if configured (default). This function differs from fetch as it will
+    # return a default variant object if the flag was evaluated but the user was not assigned (i.e. off).
+    # @param [User] user
+    # @return [Hash] Variants Hash
+    def fetch_v2(user)
       fetch_internal(user)
     rescue StandardError => e
       @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
@@ -45,6 +58,24 @@ module AmplitudeExperiment
       Thread.new do
         variants = fetch_internal(user)
         yield(user, variants) unless callback.nil?
+        variants
+      rescue StandardError => e
+        @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
+        yield(user, {}) unless callback.nil?
+        {}
+      end
+    end
+
+    # Fetch all variants for a user asynchronous. This function differs from fetch as it will
+    # return a default variant object if the flag was evaluated but the user was not assigned (i.e. off).
+    #
+    # This method will automatically retry if configured (default).
+    # @param [User] user
+    # @yield [User, Hash] callback block takes user object and variants hash
+    def fetch_async_v2(user, &callback)
+      Thread.new do
+        variants = fetch_internal(user)
+        yield(user, filter_default_variants(variants)) unless callback.nil?
         variants
       rescue StandardError => e
         @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
@@ -149,6 +180,19 @@ module AmplitudeExperiment
       return err.status_code < 400 || err.status_code >= 500 || err.status_code == 429 if err.is_a?(FetchError)
 
       true
+    end
+
+    private
+
+    def filter_default_variants(variants)
+      variants.each do |key, value|
+        default = value&.metadata&.default
+        deployed = value&.metadata&.deployed
+        default ||= false
+        deployed ||= true
+        variants.delete(key) if default || !deployed
+      end
+      variants
     end
   end
 end
