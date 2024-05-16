@@ -2,7 +2,7 @@ require 'spec_helper'
 require_relative '../../../lib/amplitude'
 
 module AmplitudeExperiment
-  LOCAL_SERVER_URL = 'https://api.lab.amplitude.com/sdk/vardata'.freeze
+  LOCAL_SERVER_URL = 'https://api.lab.amplitude.com/sdk/v2/vardata?v=0'.freeze
   TEST_USER = User.new(user_id: 'test_user')
   TEST_USER_2 = User.new(user_id: 'user_id', device_id: 'device_id')
 

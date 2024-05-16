@@ -9,11 +9,14 @@ module AmplitudeExperiment
     # @return [Object, nil] the value of variant payload
     attr_accessor :payload
 
+    attr_accessor :metadata
+
     # @param [String] value The value of the variant determined by the flag configuration.
     # @param [Object, nil] payload The attached payload, if any.
-    def initialize(value, payload = nil)
+    def initialize(value, payload = nil, metadata = nil)
       @value = value
       @payload = payload
+      @metadata = metadata
     end
 
     # Determine if current variant equal other variant

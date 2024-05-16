@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module AmplitudeExperiment
   API_KEY = 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3'.freeze
-  SERVER_URL = 'https://api.lab.amplitude.com/sdk/vardata'.freeze
+  SERVER_URL = 'https://api.lab.amplitude.com//sdk/v2/vardata?v=0'.freeze
 
   describe RemoteEvaluationClient do
     describe '#initialize' do
