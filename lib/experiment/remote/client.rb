@@ -24,7 +24,7 @@ module AmplitudeExperiment
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
     end
 
-    # Fetch all variants for a user synchronous.
+    # Fetch all variants for a user synchronously.
     #
     # This method will automatically retry if configured (default).
     # @param [User] user
@@ -36,7 +36,7 @@ module AmplitudeExperiment
       {}
     end
 
-    # Fetch all variants for a user synchronous.
+    # Fetch all variants for a user synchronously.
     #
     # This method will automatically retry if configured (default). This function differs from fetch as it will
     # return a default variant object if the flag was evaluated but the user was not assigned (i.e. off).
@@ -49,7 +49,7 @@ module AmplitudeExperiment
       {}
     end
 
-    # Fetch all variants for a user asynchronous.
+    # Fetch all variants for a user asynchronously.
     #
     # This method will automatically retry if configured (default).
     # @param [User] user
@@ -66,7 +66,7 @@ module AmplitudeExperiment
       end
     end
 
-    # Fetch all variants for a user asynchronous. This function differs from fetch as it will
+    # Fetch all variants for a user asynchronously. This function differs from fetch as it will
     # return a default variant object if the flag was evaluated but the user was not assigned (i.e. off).
     #
     # This method will automatically retry if configured (default).
