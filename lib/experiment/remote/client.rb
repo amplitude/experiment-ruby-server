@@ -182,7 +182,7 @@ module AmplitudeExperiment
       true
     end
 
-    private def filter_default_variants(variants)
+    def filter_default_variants(variants)
       variants.each do |key, value|
         default = value&.metadata&.default
         deployed = value&.metadata&.deployed
@@ -192,5 +192,7 @@ module AmplitudeExperiment
       end
       variants
     end
+
+    private :filter_default_variants
   end
 end
