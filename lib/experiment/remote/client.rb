@@ -184,10 +184,10 @@ module AmplitudeExperiment
 
     def filter_default_variants(variants)
       variants.each do |key, value|
-        default = value&.metadata&.default
-        deployed = value&.metadata&.deployed
-        default ||= false
-        deployed ||= true
+        default = value&.metadata&.fetch('default', nil)
+        deployed = value&.metadata&.fetch('deployed', nil)
+        default = false if default.nil?
+        deployed = true if deployed.nil?
         variants.delete(key) if default || !deployed
       end
       variants
