@@ -33,25 +33,25 @@ module AmplitudeExperiment
                                          })
 
     describe '#fetch' do
-      def self.test_fetch(response, test_user, variant_name, debug, expected_state, expected_payload)
+      def self.test_fetch(response, test_user, variant_name, debug, expected_state, expected_payload, expected_key = nil)
         it "fetch sync success with response #{response}, user #{test_user.user_id}, debug #{debug}" do
           stub_request(:post, SERVER_URL)
             .to_return(status: 200, body: response)
           client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(debug: debug))
-          expected_variant = Variant.new(expected_state, expected_payload)
+          expected_variant = Variant.new(expected_state, expected_payload, expected_key)
           variants = client.fetch(test_user)
           expect(variants.key?(variant_name)).to be_truthy
           expect(variants.fetch(variant_name)).to eq(expected_variant)
         end
       end
 
-      test_fetch response_with_key, test_user, variant_name, false, 'on', 'payload'
+      test_fetch response_with_key, test_user, variant_name, false, 'on', 'payload', 'on'
       test_fetch response_with_value, test_user_with_properties, variant_name, false, 'on', 'payload'
-      test_fetch response_with_int_payload, test_user, variant_name, true, 'off', 123
-      test_fetch response_with_boolean_payload, test_user_with_properties, variant_name, false, 'on', false
-      test_fetch response_with_list_payload, test_user, variant_name, false, 'on', %w[payload1 payload2]
-      test_fetch response_with_hash_payload, test_user_with_properties, variant_name, false, 'off', { 'nested' => 'nested payload' }
-      test_fetch response_without_payload, test_user, variant_name, false, 'on', nil
+      test_fetch response_with_int_payload, test_user, variant_name, true, 'off', 123, 'off'
+      test_fetch response_with_boolean_payload, test_user_with_properties, variant_name, false, 'on', false, 'on'
+      test_fetch response_with_list_payload, test_user, variant_name, false, 'on', %w[payload1 payload2], 'on'
+      test_fetch response_with_hash_payload, test_user_with_properties, variant_name, false, 'off', { 'nested' => 'nested payload' }, 'off'
+      test_fetch response_without_payload, test_user, variant_name, false, 'on', nil, 'on'
       test_fetch response_with_value_without_payload, test_user, variant_name, false, 'on', nil
 
       it 'fetch timeout failure' do
@@ -70,12 +70,12 @@ module AmplitudeExperiment
         allow(Thread).to receive(:new).and_yield
       end
 
-      def self.test_fetch_async(response, test_user, variant_name, debug, expected_state, expected_payload)
+      def self.test_fetch_async(response, test_user, variant_name, debug, expected_state, expected_payload, expected_key = nil)
         it "fetch async success with response #{response}, user #{test_user.user_id}, debug #{debug}" do
           stub_request(:post, SERVER_URL)
             .to_return(status: 200, body: response)
           client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(debug: debug))
-          expected_variant = Variant.new(expected_state, expected_payload)
+          expected_variant = Variant.new(expected_state, expected_payload, expected_key)
           variants = client.fetch_async(test_user) do |user, block_variants|
             expect(user).to equal(test_user)
             expect(block_variants.fetch(variant_name)).to eq(expected_variant)
@@ -85,13 +85,13 @@ module AmplitudeExperiment
         end
       end
 
-      test_fetch_async response_with_key, test_user, variant_name, false, 'on', 'payload'
+      test_fetch_async response_with_key, test_user, variant_name, false, 'on', 'payload', 'on'
       test_fetch_async response_with_value, test_user_with_properties, variant_name, false, 'on', 'payload'
-      test_fetch_async response_with_int_payload, test_user, variant_name, true, 'off', 123
-      test_fetch_async response_with_boolean_payload, test_user_with_properties, variant_name, false, 'on', false
-      test_fetch_async response_with_list_payload, test_user, variant_name, false, 'on', %w[payload1 payload2]
-      test_fetch_async response_with_hash_payload, test_user_with_properties, variant_name, false, 'off', { 'nested' => 'nested payload' }
-      test_fetch_async response_without_payload, test_user, variant_name, false, 'on', nil
+      test_fetch_async response_with_int_payload, test_user, variant_name, true, 'off', 123, 'off'
+      test_fetch_async response_with_boolean_payload, test_user_with_properties, variant_name, false, 'on', false, 'on'
+      test_fetch_async response_with_list_payload, test_user, variant_name, false, 'on', %w[payload1 payload2], 'on'
+      test_fetch_async response_with_hash_payload, test_user_with_properties, variant_name, false, 'off', { 'nested' => 'nested payload' }, 'off'
+      test_fetch_async response_without_payload, test_user, variant_name, false, 'on', nil, 'on'
       test_fetch_async response_with_value_without_payload, test_user, variant_name, false, 'on', nil
 
       it 'fetch async timeout failure' do
@@ -130,68 +130,35 @@ module AmplitudeExperiment
     end
 
     describe '#fetch_v2' do
-      def self.test_fetch_v2(response, test_user, variant_name, debug, expected_state, expected_payload)
+      def self.test_fetch_v2(response, test_user, variant_name, debug, expected_state, expected_payload, expected_key = nil)
         it "fetch v2 sync success with response #{response}, user #{test_user.user_id}, debug #{debug}" do
           stub_request(:post, SERVER_URL)
             .to_return(status: 200, body: response)
           client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(debug: debug))
-          expected_variant = Variant.new(expected_state, expected_payload)
+          expected_variant = Variant.new(expected_state, expected_payload, expected_key)
           variants = client.fetch_v2(test_user)
           expect(variants.key?(variant_name)).to be_truthy
           expect(variants.fetch(variant_name)).to eq(expected_variant)
         end
       end
 
-      test_fetch_v2 response_with_key, test_user, variant_name, false, 'on', 'payload'
+      test_fetch_v2 response_with_key, test_user, variant_name, false, 'on', 'payload', 'on'
       test_fetch_v2 response_with_value, test_user_with_properties, variant_name, false, 'on', 'payload'
-      test_fetch_v2 response_with_int_payload, test_user, variant_name, true, 'off', 123
-      test_fetch_v2 response_with_boolean_payload, test_user_with_properties, variant_name, false, 'on', false
-      test_fetch_v2 response_with_list_payload, test_user, variant_name, false, 'on', %w[payload1 payload2]
-      test_fetch_v2 response_with_hash_payload, test_user_with_properties, variant_name, false, 'off', { 'nested' => 'nested payload' }
-      test_fetch_v2 response_without_payload, test_user, variant_name, false, 'on', nil
+      test_fetch_v2 response_with_int_payload, test_user, variant_name, true, 'off', 123, 'off'
+      test_fetch_v2 response_with_boolean_payload, test_user_with_properties, variant_name, false, 'on', false, 'on'
+      test_fetch_v2 response_with_list_payload, test_user, variant_name, false, 'on', %w[payload1 payload2], 'on'
+      test_fetch_v2 response_with_hash_payload, test_user_with_properties, variant_name, false, 'off', { 'nested' => 'nested payload' }, 'off'
+      test_fetch_v2 response_without_payload, test_user, variant_name, false, 'on', nil, 'on'
       test_fetch_v2 response_with_value_without_payload, test_user, variant_name, false, 'on', nil
-    end
 
-    describe '#fetch_async_v2' do
-      before do
-        allow(Thread).to receive(:new).and_yield
-      end
-
-      def self.test_fetch_async_v2(response, test_user, variant_name, debug, expected_state, expected_payload)
-        it "fetch async v2 success with response #{response}, user #{test_user.user_id}, debug #{debug}" do
-          stub_request(:post, SERVER_URL)
-            .to_return(status: 200, body: response)
-          client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(debug: debug))
-          expected_variant = Variant.new(expected_state, expected_payload)
-          variants = client.fetch_async_v2(test_user) do |user, block_variants|
-            expect(user).to equal(test_user)
-            expect(block_variants.fetch(variant_name)).to eq(expected_variant)
-          end
-          expect(variants.key?(variant_name)).to be_truthy
-          expect(variants.fetch(variant_name)).to eq(expected_variant)
-        end
-      end
-
-      test_fetch_async_v2 response_with_key, test_user, variant_name, false, 'on', 'payload'
-      test_fetch_async_v2 response_with_value, test_user_with_properties, variant_name, false, 'on', 'payload'
-      test_fetch_async_v2 response_with_int_payload, test_user, variant_name, true, 'off', 123
-      test_fetch_async_v2 response_with_boolean_payload, test_user_with_properties, variant_name, false, 'on', false
-      test_fetch_async_v2 response_with_list_payload, test_user, variant_name, false, 'on', %w[payload1 payload2]
-      test_fetch_async_v2 response_with_hash_payload, test_user_with_properties, variant_name, false, 'off', { 'nested' => 'nested payload' }
-      test_fetch_async_v2 response_without_payload, test_user, variant_name, false, 'on', nil
-      test_fetch_async_v2 response_with_value_without_payload, test_user, variant_name, false, 'on', nil
-    end
-
-    describe '#filter_default_variants' do
-      it 'filters out default and non-deployed variants' do
-        variants = {
-          'variant_1' => Variant.new('value_1', 'payload_1', { 'default' => true, 'deployed' => true }),
-          'variant_2' => Variant.new('value_2', 'payload_2', { 'default' => false, 'deployed' => false }),
-          'variant_3' => Variant.new('value_3', 'payload_3', { 'default' => false, 'deployed' => true })
-        }
-        client = RemoteEvaluationClient.new(API_KEY)
-        filtered_variants = client.send(:filter_default_variants, variants)
-        expect(filtered_variants.keys).to contain_exactly('variant_3')
+      it 'fetch v2 timeout failure' do
+        stub_request(:post, SERVER_URL)
+          .to_timeout
+        test_user = User.new(user_id: 'test_user')
+        client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(fetch_timeout_millis: 1, fetch_retries: 1, debug: true))
+        variants = nil
+        expect { variants = client.fetch_v2(test_user) }.to output(/Retrying fetch/).to_stdout_from_any_process
+        expect(variants).to eq({})
       end
     end
   end

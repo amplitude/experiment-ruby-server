@@ -1,6 +1,10 @@
 module AmplitudeExperiment
   # Variant
   class Variant
+    # The key of the variant determined by the flag configuration.
+    # @return [String] the value of variant key
+    attr_accessor :key
+
     # The value of the variant determined by the flag configuration.
     # @return [String] the value of variant value
     attr_accessor :value
@@ -13,7 +17,8 @@ module AmplitudeExperiment
 
     # @param [String] value The value of the variant determined by the flag configuration.
     # @param [Object, nil] payload The attached payload, if any.
-    def initialize(value, payload = nil, metadata = nil)
+    def initialize(value, payload = nil, key = nil, metadata = nil)
+      @key = key
       @value = value
       @payload = payload
       @metadata = metadata
@@ -22,7 +27,7 @@ module AmplitudeExperiment
     # Determine if current variant equal other variant
     # @param [Variant] other
     def ==(other)
-      value == other.value &&
+      key == other.key && value == other.value &&
         payload == other.payload
     end
   end

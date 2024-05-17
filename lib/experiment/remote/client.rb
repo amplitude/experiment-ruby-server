@@ -163,7 +163,7 @@ module AmplitudeExperiment
           # value was previously under the "key" field
           variant_value = value.fetch('key')
         end
-        variants.store(key, Variant.new(variant_value, value.fetch('payload', nil), value.fetch('metadata', nil)))
+        variants.store(key, Variant.new(variant_value, value.fetch('payload', nil), value.fetch('key', nil), value.fetch('metadata', nil)))
       end
       variants
     end
