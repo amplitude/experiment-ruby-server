@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.6...v1.3.0) (2024-05-17)
+
+
+### Features
+
+* fetch v2 for remote evaluation client ([#64](https://github.com/amplitude/experiment-ruby-server/issues/64)) ([9091b5d](https://github.com/amplitude/experiment-ruby-server/commit/9091b5de34f14fae7697ec25a1701977291449f9))
+
 ## [1.2.6](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.5...v1.2.6) (2024-01-29)
 
 
