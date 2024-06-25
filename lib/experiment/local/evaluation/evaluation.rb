@@ -23,7 +23,7 @@ module EvaluationInterop
 
   class Libevaluation_interop_ExportedSymbols < FFI::Struct
     layout :DisposeStablePointer, callback([:pointer], :void),
-           :DisposeString, callback([:string], :void),
+           :DisposeString, callback([:pointer], :void),
            :IsInstance, callback([:pointer, :string], :pointer),
            :createNullableByte, callback([:string], :pointer),
            :getNonNullValueOfByte, callback([:pointer], :pointer),
@@ -59,9 +59,13 @@ end
 
 def evaluation(rule_json, user_json)
   lib = EvaluationInterop.libevaluation_interop_symbols()
-  fn = lib[:kotlin][:root][:evaluate]
-  result_json = fn.call(rule_json, user_json).read_string
+  evaluate = lib[:kotlin][:root][:evaluate]
+  dispose = lib[:DisposeString]
+  result_raw = evaluate.call(rule_json, user_json)
+  result_json = result_raw.read_string
   result = JSON.parse(result_json)
+  dispose.call(result_raw)
+
   if result["error"] != nil
     raise "#{result["error"]}"
   elsif result["result"] == nil
