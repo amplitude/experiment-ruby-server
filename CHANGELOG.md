@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.3.0...v1.3.1) (2024-06-28)
+
+
+### Bug Fixes
+
+* fix memory leak with local evaluation ([#66](https://github.com/amplitude/experiment-ruby-server/issues/66)) ([50bdcfe](https://github.com/amplitude/experiment-ruby-server/commit/50bdcfef5b358eabe0f2f22cc7e5246c1a1afd1b))
+
 # [1.3.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.2.6...v1.3.0) (2024-05-17)
 
 
