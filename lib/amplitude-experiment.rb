@@ -21,6 +21,8 @@ require 'experiment/error'
 require 'experiment/util/flag_config'
 require 'experiment/flag/flag_config_fetcher'
 require 'experiment/cohort/cohort_download_api'
+require 'experiment/cohort/cohort_loader'
+require 'experiment/cohort/cohort_storage'
 
 # Amplitude Experiment Module
 module AmplitudeExperiment
