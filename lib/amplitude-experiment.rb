@@ -8,7 +8,6 @@ require 'experiment/factory'
 require 'experiment/remote/client'
 require 'experiment/local/client'
 require 'experiment/local/config'
-require 'experiment/local/fetcher'
 require 'experiment/local/assignment/assignment'
 require 'experiment/local/assignment/assignment_filter'
 require 'experiment/local/assignment/assignment_service'
@@ -19,6 +18,9 @@ require 'experiment/util/topological_sort'
 require 'experiment/util/user'
 require 'experiment/util/variant'
 require 'experiment/error'
+require 'experiment/util/flag_config'
+require 'experiment/flag/flag_config_fetcher'
+require 'experiment/cohort/cohort_download_api'
 
 # Amplitude Experiment Module
 module AmplitudeExperiment

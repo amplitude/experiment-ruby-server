@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../../../lib/amplitude'
+require '../../../lib/amplitude'
 
 module AmplitudeExperiment
   describe LocalEvaluationClient do
