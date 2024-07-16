@@ -7,7 +7,7 @@ module AmplitudeExperiment
       raise NotImplementedError
     end
 
-    def get_cohorts
+    def cohorts
       raise NotImplementedError
     end
 
@@ -34,6 +34,7 @@ module AmplitudeExperiment
 
   class InMemoryCohortStorage < CohortStorage
     def initialize
+      super
       @lock = Mutex.new
       @group_to_cohort_store = {}
       @cohort_store = {}
@@ -45,7 +46,7 @@ module AmplitudeExperiment
       end
     end
 
-    def get_cohorts
+    def cohorts
       @lock.synchronize do
         @cohort_store.dup
       end

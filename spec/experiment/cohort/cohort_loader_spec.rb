@@ -64,12 +64,9 @@ module AmplitudeExperiment
         future_b = @loader.load_cohort('b')
         future_c = @loader.load_cohort('c')
 
-        future_b.on_rejection do |reason|
-          expect(reason.message).to eq('Connection timed out')
-        end
-
-        # Extract the value from future_c's result triplet
-        fulfilled, cohort_c, reason = future_c.result
+        future_b.result
+        expect { future_b.value! }.to raise_error('Connection timed out')
+        _, cohort_c, = future_c.result
         expect(cohort_c).to eq(Cohort.new('c', 0, 1, Set.new(['1'])))
 
         expect(@storage.get_cohorts_for_user('1', Set.new(%w[a b c]))).to eq(Set.new(%w[a c]))

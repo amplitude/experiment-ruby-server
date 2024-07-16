@@ -1,2 +1,75 @@
-# frozen_string_literal: true
+require 'rspec'
+module AmplitudeExperiment
+  COHORT_ID = '1234'
 
+  describe DeploymentRunner do
+    before(:each) do
+      @flag = {
+        'key' => 'flag',
+        'variants' => {},
+        'segments' => [
+          {
+            'conditions' => [
+              [
+                {
+                  'selector' => %w[context user cohort_ids],
+                  'op' => 'set contains any',
+                  'values' => [COHORT_ID],
+                }
+              ]
+            ]
+          }
+        ]
+      }
+    end
+
+    describe '#start' do
+      it 'throws an error if the first flag config load fails' do
+        flag_fetcher = double('LocalEvaluationFetcher')
+        cohort_download_api = double('CohortLoader')
+        flag_config_storage = double('FlagConfigStorage')
+        cohort_storage = double('CohortStorage')
+        cohort_loader = CohortLoader.new(cohort_download_api, cohort_storage)
+        logger = Logger.new(STDOUT)
+        runner = DeploymentRunner.new(
+          LocalEvaluationConfig.new,
+          flag_fetcher,
+          flag_config_storage,
+          cohort_storage,
+          logger,
+          cohort_loader
+        )
+
+        allow(flag_fetcher).to receive(:fetch_v1).and_raise(RuntimeError, 'test')
+
+        expect { runner.start }.to raise_error(RuntimeError, 'test')
+      end
+
+      it 'throws an error if the first cohort load fails' do
+        flag_fetcher = double('LocalEvaluationFetcher')
+        cohort_download_api = double('CohortLoader')
+        flag_config_storage = double('FlagConfigStorage')
+        cohort_storage = double('CohortStorage')
+        cohort_loader = CohortLoader.new(cohort_download_api, cohort_storage)
+        logger = Logger.new(STDOUT)
+        runner = DeploymentRunner.new(
+          LocalEvaluationConfig.new,
+          flag_fetcher,
+          flag_config_storage,
+          cohort_storage,
+          logger,
+          cohort_loader
+        )
+
+        allow(flag_fetcher).to receive(:fetch_v1).and_return([@flag])
+        allow(flag_config_storage).to receive(:remove_if).and_return(nil)
+        allow(flag_config_storage).to receive(:flag_configs).and_return({})
+        allow(cohort_storage).to receive(:cohort_ids).and_return(Set.new)
+        allow(cohort_storage).to receive(:cohorts).and_return({})
+        allow(cohort_download_api).to receive(:get_cohort).and_raise(RuntimeError, 'test')
+
+        expect { runner.start }.to raise_error(RuntimeError, 'test')
+      end
+    end
+  end
+end

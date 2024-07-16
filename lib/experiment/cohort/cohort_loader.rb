@@ -26,6 +26,31 @@ module AmplitudeExperiment
       end
     end
 
+    def update_stored_cohorts
+      errors = []
+
+      Concurrent::Promises.future_on(@executor) do
+        begin
+          futures = @cohort_storage.cohort_ids.map do |cohort_id|
+            Concurrent::Promises.future_on(@executor) do
+              load_cohort_internal(cohort_id)
+            end
+          end
+
+          futures.each do |future|
+            future.rescue do |e|
+              errors << [future.value!, e]
+            end
+          end
+          Concurrent::Promises.zip(*futures).value!
+        rescue StandardError => e
+          errors << e
+        end
+
+        raise CohortUpdateError, errors unless errors.empty?
+      end
+    end
+
     private
 
     def load_cohort_internal(cohort_id)

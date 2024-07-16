@@ -23,49 +23,34 @@ module AmplitudeExperiment
     def start
       @lock.synchronize do
         update_flag_configs
-        start_flag_poller
-        start_cohort_poller if @cohort_loader
+        @flag_poller = Poller.new(
+          @config.flag_config_polling_interval_millis / 1000.0,
+          method(:periodic_flag_update)
+        )
+        @flag_poller.start
+        if @cohort_loader
+          @cohort_poller = Poller.new(
+            @config.flag_config_polling_interval_millis / 1000.0,
+            method(:update_cohorts)
+          )
+          @cohort_poller.start
+        end
       end
     end
 
     def stop
-      stop_flag_poller
-      stop_cohort_poller
-    end
-
-    private
-
-    def start_flag_poller
-      @flag_poller = Poller.new(
-        @config.flag_config_polling_interval_millis / 1000.0,
-        method(:periodic_flag_update)
-      )
-      @flag_poller.start
-    end
-
-    def stop_flag_poller
       @flag_poller&.stop
       @flag_poller = nil
-    end
-
-    def start_cohort_poller
-      @cohort_poller = Poller.new(
-        @config.flag_config_polling_interval_millis / 1000.0,
-        method(:update_cohorts)
-      )
-      @cohort_poller.start
-    end
-
-    def stop_cohort_poller
       @cohort_poller&.stop
       @cohort_poller = nil
     end
+
+    private
 
     def periodic_flag_update
       update_flag_configs
     rescue StandardError => e
       @logger.error("Error while updating flags: #{e}")
-
     end
 
     def update_flag_configs
@@ -84,27 +69,29 @@ module AmplitudeExperiment
 
       new_cohort_ids = Set.new
       flag_configs.each do |flag_config|
-        new_cohort_ids.merge(get_all_cohort_ids_from_flag(flag_config))
+        new_cohort_ids.merge(AmplitudeExperiment.get_all_cohort_ids_from_flag(flag_config))
       end
 
-      existing_cohort_ids = @cohort_storage.get_cohort_ids
+      existing_cohort_ids = @cohort_storage.cohort_ids
       cohort_ids_to_download = new_cohort_ids - existing_cohort_ids
       cohort_download_errors = []
 
-      cohort_ids_to_download.each do |cohort_id|
-
-        @cohort_loader.load_cohort(cohort_id).result
-      rescue StandardError => e
-        cohort_download_errors << [cohort_id, e.to_s]
-        @logger.error("Download cohort #{cohort_id} failed: #{e}")
-
+      futures = cohort_ids_to_download.map do |cohort_id|
+        future = @cohort_loader.load_cohort(cohort_id)
+        future.on_rejection do |reason|
+          cohort_download_errors << [cohort_id, reason.to_s]
+          @logger.error("Download cohort #{cohort_id} failed: #{reason}")
+        end
+        future
       end
 
-      updated_cohort_ids = @cohort_storage.get_cohort_ids
+      Concurrent::Promises.zip(*futures).value!
+
+      updated_cohort_ids = @cohort_storage.cohort_ids
       failed_flag_count = 0
 
       flag_configs.each do |flag_config|
-        cohort_ids = get_all_cohort_ids_from_flag(flag_config)
+        cohort_ids = AmplitudeExperiment.get_all_cohort_ids_from_flag(flag_config)
         if cohort_ids.empty? || !@cohort_loader
           @flag_config_storage.put_flag_config(flag_config)
           @logger.debug("Putting non-cohort flag #{flag_config['key']}")
@@ -117,39 +104,33 @@ module AmplitudeExperiment
         end
       end
 
-      _delete_unused_cohorts
+      delete_unused_cohorts
       @logger.debug("Refreshed #{flag_configs.size - failed_flag_count} flag configs.")
 
-      unless cohort_download_errors.empty?
-        error_count = cohort_download_errors.size
-        error_messages = cohort_download_errors.map { |cohort_id, error| "Cohort #{cohort_id}: #{error}" }.join("\n")
-        raise "#{error_count} cohort(s) failed to download:\n#{error_messages}"
-      end
+      raise CohortUpdateError, cohort_download_errors unless cohort_download_errors.empty?
     rescue StandardError => e
       @logger.error("Failed to fetch flag configs: #{e}")
       raise e
     end
 
     def update_cohorts
-      @cohort_loader.update_stored_cohorts.result
+      @cohort_loader.update_stored_cohorts.value!
     rescue StandardError => e
       @logger.error("Error while updating cohorts: #{e}")
     end
 
-    def _delete_unused_cohorts
+    def delete_unused_cohorts
       flag_cohort_ids = Set.new
       @flag_config_storage.flag_configs.each do |flag|
         flag_cohort_ids.merge(get_all_cohort_ids_from_flag(flag))
       end
 
-      storage_cohorts = @cohort_storage.get_cohorts
-      deleted_cohort_ids = storage_cohorts.keys - flag_cohort_ids
+      storage_cohorts = @cohort_storage.cohorts
+      deleted_cohort_ids = storage_cohorts.keys.to_set - flag_cohort_ids
 
       deleted_cohort_ids.each do |deleted_cohort_id|
         deleted_cohort = storage_cohorts[deleted_cohort_id]
-        if deleted_cohort
-          @cohort_storage.delete_cohort(deleted_cohort.group_type, deleted_cohort_id)
-        end
+        @cohort_storage.delete_cohort(deleted_cohort.group_type, deleted_cohort_id) if deleted_cohort
       end
     end
   end
