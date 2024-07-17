@@ -1,5 +1,3 @@
-require_relative '../cohort/cohort'
-
 module AmplitudeExperiment
   def self.cohort_filter?(condition)
     ['set contains any', 'set does not contain any'].include?(condition['op']) &&
@@ -10,22 +8,21 @@ module AmplitudeExperiment
   def self.get_grouped_cohort_condition_ids(segment)
     cohort_ids = {}
     conditions = segment['conditions'] || []
-    conditions.each do |outer|
-      outer.each do |condition|
-        next unless cohort_filter?(condition) && (condition['selector'].length > 2)
+    conditions.each do |condition|
+      condition = condition[0]
+      next unless cohort_filter?(condition) && (condition['selector'].length > 2)
 
-        context_subtype = condition['selector'][1]
-        group_type =
-          if context_subtype == 'user'
-            USER_GROUP_TYPE
-          elsif condition['selector'].include?('groups')
-            condition['selector'][2]
-          else
-            next
-          end
-        cohort_ids[group_type] ||= Set.new
-        cohort_ids[group_type].merge(condition['values'])
-      end
+      context_subtype = condition['selector'][1]
+      group_type =
+        if context_subtype == 'user'
+          USER_GROUP_TYPE
+        elsif condition['selector'].include?('groups')
+          condition['selector'][2]
+        else
+          next
+        end
+      cohort_ids[group_type] ||= Set.new
+      cohort_ids[group_type].merge(condition['values'])
     end
     cohort_ids
   end
@@ -48,7 +45,7 @@ module AmplitudeExperiment
 
   def self.get_grouped_cohort_ids_from_flags(flags)
     cohort_ids = {}
-    flags.each do |flag|
+    flags.each do |_, flag|
       get_grouped_cohort_ids_from_flag(flag).each do |key, values|
         cohort_ids[key] ||= Set.new
         cohort_ids[key].merge(values)

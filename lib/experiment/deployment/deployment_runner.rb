@@ -54,13 +54,13 @@ module AmplitudeExperiment
     end
 
     def update_flag_configs
-      flag_configs = @flag_config_fetcher.fetch_v1
-
-      flag_keys = flag_configs.map { |flag| flag['key'] }.to_set
+      flag_configs = @flag_config_fetcher.fetch_v2
+      flag_keys = flag_configs.values.map { |flag| flag['key'] }.to_set
       @flag_config_storage.remove_if { |f| !flag_keys.include?(f['key']) }
 
       unless @cohort_loader
         flag_configs.each do |flag_config|
+          flag_config = flag_config[1]
           @logger.debug("Putting non-cohort flag #{flag_config['key']}")
           @flag_config_storage.put_flag_config(flag_config)
         end
@@ -69,6 +69,7 @@ module AmplitudeExperiment
 
       new_cohort_ids = Set.new
       flag_configs.each do |flag_config|
+        flag_config = flag_config[1]
         new_cohort_ids.merge(AmplitudeExperiment.get_all_cohort_ids_from_flag(flag_config))
       end
 
@@ -91,6 +92,7 @@ module AmplitudeExperiment
       failed_flag_count = 0
 
       flag_configs.each do |flag_config|
+        flag_config = flag_config[1]
         cohort_ids = AmplitudeExperiment.get_all_cohort_ids_from_flag(flag_config)
         if cohort_ids.empty? || !@cohort_loader
           @flag_config_storage.put_flag_config(flag_config)
@@ -122,7 +124,8 @@ module AmplitudeExperiment
     def delete_unused_cohorts
       flag_cohort_ids = Set.new
       @flag_config_storage.flag_configs.each do |flag|
-        flag_cohort_ids.merge(get_all_cohort_ids_from_flag(flag))
+        flag = flag[1]
+        flag_cohort_ids.merge(AmplitudeExperiment.get_all_cohort_ids_from_flag(flag))
       end
 
       storage_cohorts = @cohort_storage.cohorts

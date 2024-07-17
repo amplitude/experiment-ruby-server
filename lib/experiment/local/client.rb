@@ -23,11 +23,26 @@ module AmplitudeExperiment
                       else
                         Logger::INFO
                       end
-      @fetcher = LocalEvaluationFetcher.new(api_key, @logger, @config.server_url)
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
 
       @assignment_service = nil
       @assignment_service = AssignmentService.new(AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config), AssignmentFilter.new(config.assignment_config.cache_capacity)) if config&.assignment_config
+
+      @cohort_storage = InMemoryCohortStorage.new
+      @flag_config_storage = InMemoryFlagConfigStorage.new
+      @flag_config_fetcher = LocalEvaluationFetcher.new(@api_key, @logger, @config.server_url)
+      @cohort_loader = nil
+      if @config.cohort_sync_config != nil
+        @cohort_download_api = DirectCohortDownloadApi.new(@config.cohort_sync_config.api_key,
+                                                           @config.cohort_sync_config.secret_key,
+                                                           @config.cohort_sync_config.max_cohort_size,
+                                                           @config.cohort_sync_config.cohort_request_delay_millis,
+                                                           @config.cohort_sync_config.cohort_server_url,
+                                                           @logger)
+        @cohort_loader = CohortLoader.new(@cohort_download_api, @cohort_storage)
+      end
+      @deployment_runner = DeploymentRunner.new(@config, @flag_config_fetcher, @flag_config_storage, @cohort_storage, @logger, @cohort_loader)
+
     end
 
     # Locally evaluates flag variants for a user.
@@ -63,7 +78,7 @@ module AmplitudeExperiment
       user_str = enriched_user.to_json
 
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
-      result = evaluation(flags_json, user_str)
+      result = evaluation(flags, user_str)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
       variants = AmplitudeExperiment.evaluation_variants_json_to_variants(result)
       @assignment_service&.track(Assignment.new(user, variants))
@@ -76,7 +91,7 @@ module AmplitudeExperiment
       return if @is_running
 
       @logger.debug('[Experiment] poller - start') if @debug
-      run
+      @deployment_runner.start
     end
 
     # Stop polling for flag configurations. Close resource like connection pool with client
@@ -97,13 +112,37 @@ module AmplitudeExperiment
         @flags_mutex.synchronize do
           @flags = flags_map
         end
-      rescue StandardError => e
-        @logger.error("[Experiment] Flag poller - error: #{e.message}")
       end
-      @poller_thread = Thread.new do
-        sleep(@config.flag_config_polling_interval_millis / 1000.to_f)
-        run
+    end
+
+    def enrich_user(user, flag_configs)
+      v = flag_configs.values
+      grouped_cohort_ids = AmplitudeExperiment.get_grouped_cohort_ids_from_flags(flag_configs)
+
+      if grouped_cohort_ids.key?(USER_GROUP_TYPE)
+        user_cohort_ids = grouped_cohort_ids[USER_GROUP_TYPE]
+        if user_cohort_ids && user.user_id
+          user.cohort_ids = @cohort_storage.get_cohorts_for_user(user.user_id, user_cohort_ids)
+        end
       end
+
+      if user.groups
+        user.groups.each do |group_type, group_names|
+          group_name = group_names.first if group_names
+          next unless group_name
+
+          cohort_ids = grouped_cohort_ids[group_type] || []
+          next if cohort_ids.empty?
+
+          user.add_group_cohort_ids(
+            group_type,
+            group_name,
+            @cohort_storage.get_cohorts_for_group(group_type, group_name, cohort_ids)
+          )
+        end
+      end
+
+      user
     end
   end
 end

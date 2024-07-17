@@ -43,7 +43,7 @@ module AmplitudeExperiment
       raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
 
       @logger.debug("[Experiment] Fetch flag configs: #{response.body}")
-      response.body
+      parse(response.body)
     end
 
     # Fetch local evaluation mode flag configs from the Experiment API server.
@@ -72,7 +72,7 @@ module AmplitudeExperiment
       flag_config_obj = {}
       flag_configs_array = JSON.parse(flag_configs_str)
       flag_configs_array.each do |flag_config|
-        flag_config_obj.store(flag_config['flagKey'], flag_config) if flag_config.key?('flagKey')
+        flag_config_obj.store(flag_config['key'], flag_config) if flag_config.key?('key')
       end
       flag_config_obj
     end

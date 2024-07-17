@@ -24,7 +24,6 @@ module AmplitudeExperiment
       @cohort_request_delay_millis = cohort_request_delay_millis
       @server_url = server_url
       @logger = logger
-      @http = PersistentHttpClient.get(server_url, { read_timeout: cohort_request_delay_millis }, api_key)
     end
 
     def get_cohort(cohort_id, cohort = nil)
@@ -76,8 +75,9 @@ module AmplitudeExperiment
       url = "#{@server_url}/sdk/v1/cohort/#{cohort_id}?maxCohortSize=#{@max_cohort_size}"
       url += "&lastModified=#{last_modified}" if last_modified
 
-      request = Net::HTTP::Get.new(url, headers)
-      @http.request(request)
+      request = Net::HTTP::Get.new(URI(url), headers)
+      http = PersistentHttpClient.get(@server_url, { read_timeout: @cohort_request_delay_millis }, basic_auth)
+      http.request(request)
     end
 
     def basic_auth
