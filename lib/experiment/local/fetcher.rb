@@ -31,6 +31,21 @@ module AmplitudeExperiment
       response.body
     end
 
+    def fetch_v2
+      # fetch flag_configs
+      headers = {
+        'Authorization' => "Api-Key #{@api_key}",
+        'Content-Type' => 'application/json;charset=utf-8',
+        'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}"
+      }
+      request = Net::HTTP::Get.new("#{@server_url}/sdk/v2/flags?v=0", headers)
+      response = @http.request(request)
+      raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
+
+      @logger.debug("[Experiment] Fetch flag configs: #{response.body}")
+      response.body
+    end
+
     # Fetch local evaluation mode flag configs from the Experiment API server.
     # These flag configs can be used to perform local evaluation.
     #

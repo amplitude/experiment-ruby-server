@@ -43,6 +43,8 @@ module AmplitudeExperiment
       end
       return {} if flags.nil?
 
+
+
       user_str = user.to_json
 
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
@@ -89,9 +91,11 @@ module AmplitudeExperiment
     def run
       @is_running = true
       begin
-        flags = @fetcher.fetch_v1
+        flags = @fetcher.fetch_v2
+        flags_obj = JSON.parse(flags)
+        flags_map = flags_obj.each_with_object({}) { |flag, hash| hash[flag[:key]] = flag }
         @flags_mutex.synchronize do
-          @flags = flags
+          @flags = flags_map
         end
       rescue StandardError => e
         @logger.error("[Experiment] Flag poller - error: #{e.message}")
