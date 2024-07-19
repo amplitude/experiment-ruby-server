@@ -1,42 +1,116 @@
 module AmplitudeExperiment
   describe AssignmentService do
+    user = User.new(user_id: 'user', device_id: 'device')
     it 'assignment to event as expected' do
-      filter = AssignmentFilter.new(100)
-      service = AssignmentService.new('', filter)
-      user = User.new(user_id: 'user', device_id: 'device')
-      results = {
-        'flag-key-1' => {
-          'variant' => { 'key' => 'on' },
-          'description' => 'description-1',
-          'isDefaultVariant' => false
-        },
-        'flag-key-2' => {
-          'variant' => { 'key' => 'control' },
-          'description' => 'description-2',
-          'isDefaultVariant' => true
+      basic = Variant.new(
+        key: 'control',
+        value: 'control',
+        metadata: {
+          'segmentName' => 'All Other Users',
+          'flagType' => 'experiment',
+          'flagVersion' => 10,
+          'default' => false
         }
+      )
+      different_value = Variant.new(
+        key: 'on',
+        value: 'control',
+        metadata: {
+          'segmentName' => 'All Other Users',
+          'flagType' => 'experiment',
+          'flagVersion' => 10,
+          'default' => false
+        }
+      )
+      default = Variant.new(
+        key: 'off',
+        value: nil,
+        metadata: {
+          'segmentName' => 'All Other Users',
+          'flagType' => 'experiment',
+          'flagVersion' => 10,
+          'default' => true
+        }
+      )
+      mutex = Variant.new(
+        key: 'slot-1',
+        value: 'slot-1',
+        metadata: {
+          'segmentName' => 'All Other Users',
+          'flagType' => 'mutual-exclusion-group',
+          'flagVersion' => 10,
+          'default' => false
+        }
+      )
+      holdout = Variant.new(
+        key: 'holdout',
+        value: 'holdout',
+        metadata: {
+          'segmentName' => 'All Other Users',
+          'flagType' => 'holdout-group',
+          'flagVersion' => 10,
+          'default' => false
+        }
+      )
+      partial_metadata = Variant.new(
+        key: 'on',
+        value: 'on',
+        metadata: {
+          'segmentName' => 'All Other Users',
+          'flagType' => 'release'
+        }
+      )
+      empty_metadata = Variant.new(
+        key: 'on',
+        value: 'on'
+      )
+      empty_variant = Variant.new
+      results = {
+        'basic' => basic,
+        'different_value' => different_value,
+        'default' => default,
+        'mutex' => mutex,
+        'holdout' => holdout,
+        'partial_metadata' => partial_metadata,
+        'empty_metadata' => empty_metadata,
+        'empty_variant' => empty_variant
       }
       assignment = Assignment.new(user, results)
-
-      event = service.to_event(assignment)
-
+      event = AssignmentService.to_event(assignment)
+      puts event
       expect(event.user_id).to eq(user.user_id)
       expect(event.device_id).to eq(user.device_id)
       expect(event.event_type).to eq('[Experiment] Assignment')
 
+      # Validate event properties
       event_properties = event.event_properties
-      expect(event_properties.keys.length).to eq(2)
-      expect(event_properties['flag-key-1.variant']).to eq('on')
-      expect(event_properties['flag-key-2.variant']).to eq('control')
+      expect(event_properties['basic.variant']).to eq('control')
+      expect(event_properties['basic.details']).to eq('v10 rule:All Other Users')
+      expect(event_properties['different_value.variant']).to eq('on')
+      expect(event_properties['different_value.details']).to eq('v10 rule:All Other Users')
+      expect(event_properties['default.variant']).to eq('off')
+      expect(event_properties['default.details']).to eq('v10 rule:All Other Users')
+      expect(event_properties['mutex.variant']).to eq('slot-1')
+      expect(event_properties['mutex.details']).to eq('v10 rule:All Other Users')
+      expect(event_properties['holdout.variant']).to eq('holdout')
+      expect(event_properties['holdout.details']).to eq('v10 rule:All Other Users')
+      expect(event_properties['partial_metadata.variant']).to eq('on')
+      expect(event_properties['empty_metadata.variant']).to eq('on')
 
+      # Validate user properties
       user_properties = event.user_properties
-      expect(user_properties.keys.length).to eq(2)
-      expect(user_properties['$set'].keys.length).to eq(1)
-      expect(user_properties['$unset'].keys.length).to eq(1)
+      set_properties = user_properties['$set']
+      expect(set_properties['[Experiment] basic']).to eq('control')
+      expect(set_properties['[Experiment] different_value']).to eq('on')
+      expect(set_properties['[Experiment] holdout']).to eq('holdout')
+      expect(set_properties['[Experiment] partial_metadata']).to eq('on')
+      expect(set_properties['[Experiment] empty_metadata']).to eq('on')
+      unset_properties = user_properties['$unset']
+      expect(unset_properties['[Experiment] default']).to eq('-')
 
-      canonicalization = 'user device flag-key-1 on flag-key-2 control '
+      # Validate insert id
+      canonicalization = 'user device basic control default off different_value on empty_metadata on holdout holdout mutex slot-1 partial_metadata on '
       expected = "user device #{AmplitudeExperiment.hash_code(canonicalization)} #{assignment.timestamp / DAY_MILLIS}"
-      expect(assignment.canonicalize).to eq(canonicalization)
       expect(event.insert_id).to eq(expected)
     end
 

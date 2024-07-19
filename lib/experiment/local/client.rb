@@ -43,14 +43,39 @@ module AmplitudeExperiment
       end
       return {} if flags.nil?
 
-
-
       user_str = user.to_json
 
       @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
       result = evaluation(flags, user_str)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
       parse_results(result, flag_keys, user)
+    end
+
+    # Locally evaluates flag variants for a user.
+    #  This function will only evaluate flags for the keys specified in the flag_keys argument. If flag_keys is
+    #  missing or None, all flags are evaluated. This function differs from evaluate as it will return a default
+    #  variant object if the flag was evaluated but the user was not assigned (i.e. off).
+    #
+    # @param [User] user The user to evaluate
+    # @param [String[]] flag_keys The flags to evaluate with the user, if empty all flags are evaluated
+    # @return [Hash[String, Variant]] The evaluated variants
+    def evaluate_v2(user, flag_keys = [])
+      flags = @flags_mutex.synchronize do
+        @flags
+      end
+      return {} if flags.nil?
+
+      sorted_flags = AmplitudeExperiment.topological_sort(flags, flag_keys)
+      flags_json = sorted_flags.to_json
+
+      enriched_user = AmplitudeExperiment.user_to_evaluation_context(user)
+      user_str = enriched_user.to_json
+
+      @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
+      result = evaluation(flags_json, user_str)
+      @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
+      variants = AmplitudeExperiment.evaluation_variants_json_to_variants(result)
+      variants
     end
 
     # Fetch initial flag configurations and start polling for updates.
@@ -93,7 +118,7 @@ module AmplitudeExperiment
       begin
         flags = @fetcher.fetch_v2
         flags_obj = JSON.parse(flags)
-        flags_map = flags_obj.each_with_object({}) { |flag, hash| hash[flag[:key]] = flag }
+        flags_map = flags_obj.each_with_object({}) { |flag, hash| hash[flag['key']] = flag }
         @flags_mutex.synchronize do
           @flags = flags_map
         end
