@@ -3,13 +3,13 @@ module AmplitudeExperiment
     def sort(flags, flag_keys = nil)
       flag_keys_strings = flag_keys ? flag_keys.map(&:to_s) : []
       flags_dict = flags.each_with_object({}) do |flag, hash|
-        hash[flag["key"]] = flag
+        hash[flag['key']] = flag
       end
-      AmplitudeExperiment.topological_sort(flags_dict, flag_keys_strings, true)
+      AmplitudeExperiment.topological_sort(flags_dict, flag_keys_strings, ordered: true)
     end
 
     def flag(key, dependencies)
-      { "key" => key.to_s, "dependencies" => dependencies.map(&:to_s) }
+      { 'key' => key.to_s, 'dependencies' => dependencies.map(&:to_s) }
     end
 
     it 'handles empty flags' do
@@ -77,35 +77,35 @@ module AmplitudeExperiment
     it 'handles single flag cycle' do
       flags = [flag(1, [1])]
       # no flag keys
-      expect {
+      expect do
         sort(flags)
-      }.to raise_error(CycleError) { |e| expect(e.path).to eq(['1'].to_set) }
+      end.to raise_error(CycleError) { |e| expect(e.path).to eq(['1'].to_set) }
       # with flag keys
-      expect {
+      expect do
         sort(flags, [1])
-      }.to raise_error(CycleError) { |e| expect(e.path).to eq(['1'].to_set) }
+      end.to raise_error(CycleError) { |e| expect(e.path).to eq(['1'].to_set) }
       # with flag keys, no match
-      expect {
+      expect do
         result = sort(flags, [999])
         expect(result).to eq([])
-      }.not_to raise_error
+      end.not_to raise_error
     end
 
     it 'handles two flag cycle' do
       flags = [flag(1, [2]), flag(2, [1])]
       # no flag keys
-      expect {
+      expect do
         sort(flags)
-      }.to raise_error(CycleError) { |e| expect(e.path).to eq(%w[1 2].to_set) }
+      end.to raise_error(CycleError) { |e| expect(e.path).to eq(%w[1 2].to_set) }
       # with flag keys
-      expect {
+      expect do
         sort(flags, [1, 2])
-      }.to raise_error(CycleError) { |e| expect(e.path).to eq(%w[1 2].to_set) }
+      end.to raise_error(CycleError) { |e| expect(e.path).to eq(%w[1 2].to_set) }
       # with flag keys, no match
-      expect {
+      expect do
         result = sort(flags, [999])
         expect(result).to eq([])
-      }.not_to raise_error
+      end.not_to raise_error
     end
 
     it 'handles multiple flags with complex cycle' do
@@ -122,9 +122,9 @@ module AmplitudeExperiment
         flag(20, [4]),
         flag(21, [20])
       ]
-      expect {
+      expect do
         sort(flags, [3, 1, 4, 2, 5, 6, 7, 8, 9, 20, 21])
-      }.to raise_error(CycleError) { |e| expect(e.path).to eq(['4', '21', '20'].to_set) }
+      end.to raise_error(CycleError) { |e| expect(e.path).to eq(%w[4 21 20].to_set) }
     end
 
     it 'handles multiple flags with complex dependencies without cycle starting at leaf' do
@@ -233,4 +233,3 @@ module AmplitudeExperiment
     end
   end
 end
-

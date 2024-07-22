@@ -1,5 +1,6 @@
 require_relative '../../../amplitude'
 module AmplitudeExperiment
+  # AssignmentService
   class AssignmentService
     def initialize(amplitude, assignment_filter)
       @amplitude = amplitude

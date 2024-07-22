@@ -1,5 +1,5 @@
 module AmplitudeExperiment
-  def self.topological_sort(flags, keys = nil, ordered = false)
+  def self.topological_sort(flags, keys = nil, ordered: false)
     available = flags.dup
     result = []
     starting_keys = keys.nil? || keys.empty? ? flags.keys : keys
@@ -17,7 +17,7 @@ module AmplitudeExperiment
     flag = available[flag_key]
     return nil if flag.nil?
 
-    dependencies = flag["dependencies"]
+    dependencies = flag['dependencies']
     if dependencies.nil? || dependencies.empty?
       available.delete(flag_key)
       return [flag]
@@ -26,7 +26,7 @@ module AmplitudeExperiment
     path.add(flag_key)
     result = []
     dependencies.each do |parent_key|
-      raise CycleError.new(path) if path.include?(parent_key)
+      raise CycleError, path if path.include?(parent_key)
 
       traversal = parent_traversal(parent_key, available, path)
       result.concat(traversal) unless traversal.nil?

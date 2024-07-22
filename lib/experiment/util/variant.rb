@@ -30,4 +30,3 @@ module AmplitudeExperiment
     variants
   end
 end
-

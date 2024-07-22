@@ -1,7 +1,8 @@
 module AmplitudeExperiment
   describe RemoteEvaluationClient do
-    API_KEY = 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3'.freeze
-    SERVER_URL = 'https://api.lab.amplitude.com/sdk/v2/vardata?v=0'.freeze
+    let(:api_key) { 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3' }
+    let(:server_url) { 'https://api.lab.amplitude.com/sdk/v2/vardata?v=0' }
+
     describe '#initialize' do
       it 'raises an error if api_key is nil' do
         expect { RemoteEvaluationClient.new(nil) }.to raise_error(ArgumentError)
@@ -31,9 +32,9 @@ module AmplitudeExperiment
 
     def self.test_fetch_shared(response, test_user, variant_name, debug, expected_variant)
       it "fetch sync success with response #{response}, user #{test_user.user_id}, debug #{debug}" do
-        stub_request(:post, SERVER_URL)
+        stub_request(:post, server_url)
           .to_return(status: 200, body: response)
-        client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(debug: debug))
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(debug: debug))
         variants = client.fetch(test_user)
         expect(variants.key?(variant_name)).to be_truthy
         expect(variants.fetch(variant_name)).to eq(expected_variant)
@@ -42,9 +43,9 @@ module AmplitudeExperiment
 
     def self.test_fetch_v2_shared(response, test_user, variant_name, debug, expected_variant)
       it "fetch v2 sync success with response #{response}, user #{test_user.user_id}, debug #{debug}" do
-        stub_request(:post, SERVER_URL)
+        stub_request(:post, server_url)
           .to_return(status: 200, body: response)
-        client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(debug: debug))
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(debug: debug))
         variants = client.fetch_v2(test_user)
         expect(variants.key?(variant_name)).to be_truthy
         expect(variants.fetch(variant_name)).to eq(expected_variant)
@@ -62,10 +63,10 @@ module AmplitudeExperiment
       test_fetch_shared response_with_value_without_payload, test_user, variant_name, false, Variant.new(value: 'on')
 
       it 'fetch timeout failure' do
-        stub_request(:post, SERVER_URL)
+        stub_request(:post, server_url)
           .to_timeout
         test_user = User.new(user_id: 'test_user')
-        client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(fetch_timeout_millis: 1, fetch_retries: 1, debug: true))
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(fetch_timeout_millis: 1, fetch_retries: 1, debug: true))
         variants = nil
         expect { variants = client.fetch(test_user) }.to output(/Retrying fetch/).to_stdout_from_any_process
         expect(variants).to eq({})
@@ -79,9 +80,9 @@ module AmplitudeExperiment
 
       def self.test_fetch_async_shared(response, test_user, variant_name, debug, expected_variant)
         it "fetch async success with response #{response}, user #{test_user.user_id}, debug #{debug}" do
-          stub_request(:post, SERVER_URL)
+          stub_request(:post, server_url)
             .to_return(status: 200, body: response)
-          client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(debug: debug))
+          client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(debug: debug))
           variants = client.fetch_async(test_user) do |user, block_variants|
             expect(user).to equal(test_user)
             expect(block_variants.fetch(variant_name)).to eq(expected_variant)
@@ -101,10 +102,10 @@ module AmplitudeExperiment
       test_fetch_async_shared response_with_value_without_payload, test_user, variant_name, false, Variant.new(value: 'on')
 
       it 'fetch async timeout failure' do
-        stub_request(:post, SERVER_URL)
+        stub_request(:post, server_url)
           .to_timeout
         test_user = User.new(user_id: 'test_user')
-        client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(fetch_timeout_millis: 1, fetch_retries: 1, debug: true))
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(fetch_timeout_millis: 1, fetch_retries: 1, debug: true))
         variants = client.fetch_async(test_user) do |user, block_variants|
           expect(user).to equal(test_user)
           expect(block_variants).to eq({})
@@ -121,7 +122,7 @@ module AmplitudeExperiment
           [0, 'Other Exception', true]
         ].each do |response_code, error_message, should_call_retry|
           it "handles response code #{response_code}" do
-            client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(fetch_retries: 1))
+            client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(fetch_retries: 1))
             allow(client).to receive(:retry_fetch)
             allow(client).to receive(:do_fetch) do
               response_code == 0 ? raise(StandardError, error_message) : raise(FetchError.new(response_code, error_message))
@@ -146,10 +147,10 @@ module AmplitudeExperiment
       test_fetch_v2_shared response_with_value_without_payload, test_user, variant_name, false, Variant.new(value: 'on')
 
       it 'fetch v2 timeout failure' do
-        stub_request(:post, SERVER_URL)
+        stub_request(:post, server_url)
           .to_timeout
         test_user = User.new(user_id: 'test_user')
-        client = RemoteEvaluationClient.new(API_KEY, RemoteEvaluationConfig.new(fetch_timeout_millis: 1, fetch_retries: 1, debug: true))
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(fetch_timeout_millis: 1, fetch_retries: 1, debug: true))
         variants = nil
         expect { variants = client.fetch_v2(test_user) }.to output(/Retrying fetch/).to_stdout_from_any_process
         expect(variants).to eq({})

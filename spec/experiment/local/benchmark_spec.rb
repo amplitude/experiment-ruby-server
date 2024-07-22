@@ -1,9 +1,8 @@
 require 'benchmark'
 
 module AmplitudeExperiment
-
   describe LocalEvaluationClient do
-    SERVER_API_KEY = 'server-qz35UwzJ5akieoAdIgzM4m9MIiOLXLoz'.freeze
+    let(:api_key) { 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3' }
     local_evaluation_client = nil
     def random_benchmark_flag
       n = rand(4)
@@ -34,7 +33,7 @@ module AmplitudeExperiment
     end
 
     before(:each) do
-      local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
+      local_evaluation_client = LocalEvaluationClient.new(api_key)
       response = '[{"key":"holdout-sdk-ci-local-dependencies-test-holdout","metadata":{"deployed":false,"evaluationMode":"local","flagType":"holdout-group","flagVersion":1},"segments":[{"bucket":{"allocations":[{"distributions":[{"range":[0,42520177],"variant":"holdout"},{"range":[42520175,42949673],"variant":"on"}],"range":[0,100]}],"salt":"ubvfZywq","selector":["context","user","device_id"]},"metadata":{"segmentName":"All Other Users"},"variant":"off"}],"variants":{"holdout":{"key":"holdout","payload":{"flagIds":[]},"value":"holdout"},"off":{"key":"off","metadata":{"default":true}},"on":{"key":"on","payload":{"flagIds":["44564"]},"value":"on"}}},{"key":"mutex-sdk-ci-local-dependencies-test-mutex","metadata":{"deployed":false,"evaluationMode":"local","flagType":"mutual-exclusion-group","flagVersion":1},"segments":[{"bucket":{"allocations":[{"distributions":[{"range":[0,42949673],"variant":"slot-1"}],"range":[0,100]}],"salt":"nI33zio8","selector":["context","user","device_id"]},"metadata":{"segmentName":"All Other Users"},"variant":"off"}],"variants":{"unallocated":{"key":"unallocated","payload":{"flagIds":[]},"value":"unallocated"},"slot-1":{"key":"slot-1","payload":{"flagIds":["42953"]},"value":"slot-1"},"off":{"key":"off","metadata":{"default":true}}}},{"key":"sdk-ci-local-dependencies-test","metadata":{"deployed":true,"evaluationMode":"local","experimentKey":"exp-1","flagType":"experiment","flagVersion":9},"segments":[{"conditions":[[{"op":"is not","selector":["result","holdout-sdk-ci-local-dependencies-test-holdout","key"],"values":["on"]}],[{"op":"is not","selector":["result","mutex-sdk-ci-local-dependencies-test-mutex","key"],"values":["slot-1"]}]],"metadata":{"segmentName":"flag-dependencies"},"variant":"off"},{"metadata":{"segmentName":"All Other Users"},"variant":"control"}],"variants":{"control":{"key":"control","value":"control"},"off":{"key":"off","metadata":{"default":true}},"treatment":{"key":"treatment","value":"treatment"}}},{"key":"sdk-cohort-ci-test","metadata":{"deployed":true,"evaluationMode":"local","flagType":"release","flagVersion":29},"segments":[{"conditions":[[{"op":"IS","selector":["userdata_cohort"],"values":["ursx46e","mg7og2z"]}]],"metadata":{"segmentName":"Segment 1"},"variant":"on"},{"metadata":{"segmentName":"All Other Users"},"variant":"off"}],"variants":{"on":{"key":"on","value":"on"},"off":{"key":"off","metadata":{"default":true}}}},{"key":"sdk-local-evaluation-ci-test","metadata":{"deployed":true,"evaluationMode":"local","flagType":"release","flagVersion":7},"segments":[{"metadata":{"segmentName":"All Other Users"},"variant":"on"}],"variants":{"on":{"key":"on","value":"on","payload":"payload"},"off":{"key":"off","metadata":{"default":true}}}},{"key":"holdout-sdk-ci-dependencies-test-force-holdout","metadata":{"deployed":false,"evaluationMode":"local","flagType":"holdout-group","flagVersion":2},"segments":[{"bucket":{"allocations":[{"distributions":[{"range":[0,42520177],"variant":"holdout"},{"range":[42520175,42949673],"variant":"on"}],"range":[0,100]}],"salt":"ubvfZywq","selector":["context","user","device_id"]},"metadata":{"segmentName":"All Other Users"},"variant":"off"}],"variants":{"holdout":{"key":"holdout","payload":{"flagIds":[]},"value":"holdout"},"off":{"key":"off","metadata":{"default":true}},"on":{"key":"on","payload":{"flagIds":["44564"]},"value":"on"}}},{"key":"sdk-ci-local-dependencies-test-holdout","metadata":{"deployed":true,"evaluationMode":"local","experimentKey":"exp-1","flagType":"experiment","flagVersion":5},"segments":[{"conditions":[[{"op":"is not","selector":["result","holdout-sdk-ci-dependencies-test-force-holdout","key"],"values":["on"]}]],"metadata":{"segmentName":"flag-dependencies"},"variant":"off"},{"metadata":{"segmentName":"All Other Users"},"variant":"control"}],"variants":{"control":{"key":"control","value":"control"},"off":{"key":"off","metadata":{"default":true}},"treatment":{"key":"treatment","value":"treatment"}}},{"key":"local-cohort-target-cacheing","metadata":{"deployed":true,"evaluationMode":"local","flagType":"release","flagVersion":5},"segments":[{"conditions":[[{"op":"set contains any","selector":["context","user","cohort_ids"],"values":["7irdlavw","wv1dk06","57vw40k","ysm884hm"]}]],"metadata":{"segmentName":"Segment 1"},"variant":"on"},{"metadata":{"segmentName":"All Other Users"},"variant":"off"}],"variants":{"off":{"key":"off","metadata":{"default":true}},"on":{"key":"on","value":"on"}}}]'
 
       stub_request(:get, 'https://api.lab.amplitude.com/sdk/v2/flags?v=0')
@@ -42,7 +41,7 @@ module AmplitudeExperiment
           headers: {
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => "Api-Key #{SERVER_API_KEY}",
+            'Authorization' => "Api-Key #{api_key}",
             'Content-Type' => 'application/json;charset=utf-8',
             'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}",
             'User-Agent' => 'Ruby'
