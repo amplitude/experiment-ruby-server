@@ -7,7 +7,7 @@ module AmplitudeExperiment
     end
 
     def track(assignment)
-      @amplitude.track(to_event(assignment)) if @assignment_filter.should_track(assignment)
+      @amplitude.track(AssignmentService.to_event(assignment)) if @assignment_filter.should_track(assignment)
     end
 
     def self.to_event(assignment)
@@ -46,4 +46,3 @@ module AmplitudeExperiment
     end
   end
 end
-# AssignmentService

@@ -30,7 +30,7 @@ module AmplitudeExperiment
     # @param [User] user
     # @return [Hash] Variants Hash
     def fetch(user)
-      filter_default_variants(fetch_internal(user))
+      AmplitudeExperiment.filter_default_variants(fetch_internal(user))
     rescue StandardError => e
       @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
       {}
@@ -144,27 +144,8 @@ module AmplitudeExperiment
       raise FetchError.new(response.code.to_i, "Fetch error response: status=#{response.code} #{response.message}") if response.code != '200'
 
       json = JSON.parse(response.body)
-      variants = parse_json_variants(json)
+      variants = AmplitudeExperiment.evaluation_variants_json_to_variants(json)
       @logger.debug("[Experiment] Fetched variants: #{variants}")
-      variants
-    end
-
-    # Parse JSON response hash
-    #
-    # @param [Hash] json
-    # @return [Hash] Hash with String => Variant
-    def parse_json_variants(json)
-      variants = {}
-      json.each do |key, value|
-        variant_value = ''
-        if value.key?('value')
-          variant_value = value.fetch('value')
-        elsif value.key?('key')
-          # value was previously under the "key" field
-          variant_value = value.fetch('key')
-        end
-        variants.store(key, Variant.new(variant_value, value.fetch('payload', nil), value.fetch('key', nil), value.fetch('metadata', nil)))
-      end
       variants
     end
 
@@ -181,18 +162,5 @@ module AmplitudeExperiment
 
       true
     end
-
-    def filter_default_variants(variants)
-      variants.each do |key, value|
-        default = value&.metadata&.fetch('default', nil)
-        deployed = value&.metadata&.fetch('deployed', nil)
-        default = false if default.nil?
-        deployed = true if deployed.nil?
-        variants.delete(key) if default || !deployed
-      end
-      variants
-    end
-
-    private :filter_default_variants
   end
 end

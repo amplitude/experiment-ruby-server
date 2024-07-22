@@ -17,7 +17,7 @@ module AmplitudeExperiment
     flag = available[flag_key]
     return nil if flag.nil?
 
-    dependencies = flag[:dependencies]
+    dependencies = flag["dependencies"]
     if dependencies.nil? || dependencies.empty?
       available.delete(flag_key)
       return [flag]

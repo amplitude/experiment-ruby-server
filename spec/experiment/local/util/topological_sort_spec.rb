@@ -1,16 +1,15 @@
 module AmplitudeExperiment
-
   RSpec.describe 'TopologicalSort' do
     def sort(flags, flag_keys = nil)
       flag_keys_strings = flag_keys ? flag_keys.map(&:to_s) : []
       flags_dict = flags.each_with_object({}) do |flag, hash|
-        hash[flag[:key]] = flag
+        hash[flag["key"]] = flag
       end
       AmplitudeExperiment.topological_sort(flags_dict, flag_keys_strings, true)
     end
 
     def flag(key, dependencies)
-      { key: key.to_s, dependencies: dependencies.map(&:to_s) }
+      { "key" => key.to_s, "dependencies" => dependencies.map(&:to_s) }
     end
 
     it 'handles empty flags' do
@@ -160,7 +159,7 @@ module AmplitudeExperiment
         flag(21, [20]),
         flag(30, [])
       ]
-      expect(result.sort_by { |f| f[:key] }).to eq(expected.sort_by { |f| f[:key] })
+      expect(result.sort_by { |f| f['key'] }).to eq(expected.sort_by { |f| f['key'] })
     end
 
     it 'handles multiple flags with complex dependencies without cycle starting at middle' do
@@ -195,7 +194,7 @@ module AmplitudeExperiment
         flag(21, [20]),
         flag(30, [])
       ]
-      expect(result.sort_by { |f| f[:key] }).to eq(expected.sort_by { |f| f[:key] })
+      expect(result.sort_by { |f| f['key'] }).to eq(expected.sort_by { |f| f['key'] })
     end
 
     it 'handles multiple flags with complex dependencies without cycle starting at root' do
@@ -230,7 +229,7 @@ module AmplitudeExperiment
         flag(21, [20]),
         flag(30, [])
       ]
-      expect(result.sort_by { |f| f[:key] }).to eq(expected.sort_by { |f| f[:key] })
+      expect(result.sort_by { |f| f['key'] }).to eq(expected.sort_by { |f| f['key'] })
     end
   end
 end

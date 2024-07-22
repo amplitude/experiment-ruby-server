@@ -18,5 +18,16 @@ module AmplitudeExperiment
       metadata: variant_json['metadata']
     )
   end
+
+  def self.filter_default_variants(variants)
+    variants.each do |key, value|
+      default = value&.metadata&.fetch('default', nil)
+      deployed = value&.metadata&.fetch('deployed', nil)
+      default = false if default.nil?
+      deployed = true if deployed.nil?
+      variants.delete(key) if default || !deployed
+    end
+    variants
+  end
 end
 
