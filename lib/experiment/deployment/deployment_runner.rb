@@ -54,7 +54,8 @@ module AmplitudeExperiment
     end
 
     def update_flag_configs
-      flag_configs = @flag_config_fetcher.fetch_v2
+      flags = @flag_config_fetcher.fetch_v2
+      flag_configs = flags.each_with_object({}) { |flag, hash| hash[flag['key']] = flag }
       flag_keys = flag_configs.values.map { |flag| flag['key'] }.to_set
       @flag_config_storage.remove_if { |f| !flag_keys.include?(f['key']) }
 

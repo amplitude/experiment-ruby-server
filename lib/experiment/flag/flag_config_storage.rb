@@ -48,7 +48,7 @@ module AmplitudeExperiment
 
     def remove_if
       @flag_configs_lock.synchronize do
-        @flag_configs.delete_if { |key, value| yield(value) }
+        @flag_configs.delete_if { |_key, value| yield(value) }
       end
     end
   end

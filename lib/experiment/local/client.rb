@@ -32,7 +32,7 @@ module AmplitudeExperiment
       @flag_config_storage = InMemoryFlagConfigStorage.new
       @flag_config_fetcher = LocalEvaluationFetcher.new(@api_key, @logger, @config.server_url)
       @cohort_loader = nil
-      if @config.cohort_sync_config != nil
+      unless @config.cohort_sync_config.nil?
         @cohort_download_api = DirectCohortDownloadApi.new(@config.cohort_sync_config.api_key,
                                                            @config.cohort_sync_config.secret_key,
                                                            @config.cohort_sync_config.max_cohort_size,
@@ -42,7 +42,6 @@ module AmplitudeExperiment
         @cohort_loader = CohortLoader.new(@cohort_download_api, @cohort_storage)
       end
       @deployment_runner = DeploymentRunner.new(@config, @flag_config_fetcher, @flag_config_storage, @cohort_storage, @logger, @cohort_loader)
-
     end
 
     # Locally evaluates flag variants for a user.
@@ -66,19 +65,17 @@ module AmplitudeExperiment
     # @param [String[]] flag_keys The flags to evaluate with the user, if empty all flags are evaluated
     # @return [Hash[String, Variant]] The evaluated variants
     def evaluate_v2(user, flag_keys = [])
-      flags = @flags_mutex.synchronize do
-        @flags
-      end
+      flags = @flag_config_storage.flag_configs
       return {} if flags.nil?
 
       sorted_flags = AmplitudeExperiment.topological_sort(flags, flag_keys.to_set)
       flags_json = sorted_flags.to_json
 
-      enriched_user = AmplitudeExperiment.user_to_evaluation_context(user)
-      user_str = enriched_user.to_json
+      context = AmplitudeExperiment.user_to_evaluation_context(enrich_user(user, flags))
+      context_json = context.to_json
 
-      @logger.debug("[Experiment] Evaluate: User: #{user_str} - Rules: #{flags}") if @config.debug
-      result = evaluation(flags, user_str)
+      @logger.debug("[Experiment] Evaluate: User: #{context_json} - Rules: #{flags}") if @config.debug
+      result = evaluation(flags_json, context_json)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
       variants = AmplitudeExperiment.evaluation_variants_json_to_variants(result)
       @assignment_service&.track(Assignment.new(user, variants))
@@ -96,52 +93,33 @@ module AmplitudeExperiment
 
     # Stop polling for flag configurations. Close resource like connection pool with client
     def stop
-      @poller_thread&.exit
       @is_running = false
-      @poller_thread = nil
+      @deployment_runner.stop
     end
 
     private
 
-    def run
-      @is_running = true
-      begin
-        flags = @fetcher.fetch_v2
-        flags_obj = JSON.parse(flags)
-        flags_map = flags_obj.each_with_object({}) { |flag, hash| hash[flag['key']] = flag }
-        @flags_mutex.synchronize do
-          @flags = flags_map
-        end
-      end
-    end
-
     def enrich_user(user, flag_configs)
-      v = flag_configs.values
       grouped_cohort_ids = AmplitudeExperiment.get_grouped_cohort_ids_from_flags(flag_configs)
 
       if grouped_cohort_ids.key?(USER_GROUP_TYPE)
         user_cohort_ids = grouped_cohort_ids[USER_GROUP_TYPE]
-        if user_cohort_ids && user.user_id
-          user.cohort_ids = @cohort_storage.get_cohorts_for_user(user.user_id, user_cohort_ids)
-        end
+        user.cohort_ids = Array(@cohort_storage.get_cohorts_for_user(user.user_id, user_cohort_ids)) if user_cohort_ids && user.user_id
       end
 
-      if user.groups
-        user.groups.each do |group_type, group_names|
-          group_name = group_names.first if group_names
-          next unless group_name
+      user.groups&.each do |group_type, group_names|
+        group_name = group_names.first if group_names
+        next unless group_name
 
-          cohort_ids = grouped_cohort_ids[group_type] || []
-          next if cohort_ids.empty?
+        cohort_ids = grouped_cohort_ids[group_type] || []
+        next if cohort_ids.empty?
 
-          user.add_group_cohort_ids(
-            group_type,
-            group_name,
-            @cohort_storage.get_cohorts_for_group(group_type, group_name, cohort_ids)
-          )
-        end
+        user.add_group_cohort_ids(
+          group_type,
+          group_name,
+          Array(@cohort_storage.get_cohorts_for_group(group_type, group_name, cohort_ids))
+        )
       end
-
       user
     end
   end

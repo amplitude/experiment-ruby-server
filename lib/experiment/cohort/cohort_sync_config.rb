@@ -15,7 +15,7 @@ module AmplitudeExperiment
 
     attr_accessor :api_key, :secret_key, :max_cohort_size, :cohort_request_delay_millis, :cohort_server_url
 
-    def initialize(api_key:, secret_key:, max_cohort_size: 2_147_483_647, cohort_request_delay_millis: 5000, cohort_server_url: DEFAULT_COHORT_SYNC_URL)
+    def initialize(api_key, secret_key, max_cohort_size: 2_147_483_647, cohort_request_delay_millis: 5000, cohort_server_url: DEFAULT_COHORT_SYNC_URL)
       @api_key = api_key
       @secret_key = secret_key
       @max_cohort_size = max_cohort_size

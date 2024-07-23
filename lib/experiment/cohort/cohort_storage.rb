@@ -62,9 +62,7 @@ module AmplitudeExperiment
         group_type_cohorts = @group_to_cohort_store[group_type] || Set.new
         group_type_cohorts.each do |cohort_id|
           members = @cohort_store[cohort_id]&.member_ids || Set.new
-          if cohort_ids.include?(cohort_id) && members.include?(group_name)
-            result.add(cohort_id)
-          end
+          result.add(cohort_id) if cohort_ids.include?(cohort_id) && members.include?(group_name)
         end
       end
       result

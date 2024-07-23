@@ -173,7 +173,6 @@ module AmplitudeExperiment
         expect(result_cohort.group_type).to eq(cohort.group_type)
       end
 
-
       it 'retries on 429s for group cohort request' do
         group_name = 'org name'
         cohort = Cohort.new(cohort_id, 0, 1, ['group'], group_name)
@@ -214,7 +213,6 @@ module AmplitudeExperiment
 
         expect { api.get_cohort(cohort_id, cohort) }.to raise_error(CohortTooLargeError)
       end
-
 
       it 'raises CohortNotModifiedError for cohort not modified' do
         last_modified = 1000

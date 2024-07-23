@@ -10,7 +10,7 @@ module AmplitudeExperiment
     conditions = segment['conditions'] || []
     conditions.each do |condition|
       condition = condition[0]
-      next unless cohort_filter?(condition) && (condition['selector'].length > 2)
+      next unless cohort_filter?(condition) && (condition['selector'][1].length > 2)
 
       context_subtype = condition['selector'][1]
       group_type =

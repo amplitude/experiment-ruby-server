@@ -1,6 +1,3 @@
-require 'spec_helper'
-require '../../../lib/amplitude'
-
 module AmplitudeExperiment
   describe LocalEvaluationClient do
     let(:api_key) { 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3' }

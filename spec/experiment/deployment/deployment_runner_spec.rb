@@ -1,6 +1,6 @@
 require 'rspec'
 module AmplitudeExperiment
-  COHORT_ID = '1234'
+  COHORT_ID = '1234'.freeze
 
   describe DeploymentRunner do
     before(:each) do
@@ -14,7 +14,7 @@ module AmplitudeExperiment
                 {
                   'selector' => %w[context user cohort_ids],
                   'op' => 'set contains any',
-                  'values' => [COHORT_ID],
+                  'values' => [COHORT_ID]
                 }
               ]
             ]
@@ -30,7 +30,7 @@ module AmplitudeExperiment
         flag_config_storage = double('FlagConfigStorage')
         cohort_storage = double('CohortStorage')
         cohort_loader = CohortLoader.new(cohort_download_api, cohort_storage)
-        logger = Logger.new(STDOUT)
+        logger = Logger.new($stdout)
         runner = DeploymentRunner.new(
           LocalEvaluationConfig.new,
           flag_fetcher,
@@ -40,7 +40,7 @@ module AmplitudeExperiment
           cohort_loader
         )
 
-        allow(flag_fetcher).to receive(:fetch_v1).and_raise(RuntimeError, 'test')
+        allow(flag_fetcher).to receive(:fetch_v2).and_raise(RuntimeError, 'test')
 
         expect { runner.start }.to raise_error(RuntimeError, 'test')
       end
@@ -51,7 +51,7 @@ module AmplitudeExperiment
         flag_config_storage = double('FlagConfigStorage')
         cohort_storage = double('CohortStorage')
         cohort_loader = CohortLoader.new(cohort_download_api, cohort_storage)
-        logger = Logger.new(STDOUT)
+        logger = Logger.new($stdout)
         runner = DeploymentRunner.new(
           LocalEvaluationConfig.new,
           flag_fetcher,
@@ -61,7 +61,7 @@ module AmplitudeExperiment
           cohort_loader
         )
 
-        allow(flag_fetcher).to receive(:fetch_v1).and_return([@flag])
+        allow(flag_fetcher).to receive(:fetch_v2).and_return([@flag])
         allow(flag_config_storage).to receive(:remove_if).and_return(nil)
         allow(flag_config_storage).to receive(:flag_configs).and_return({})
         allow(cohort_storage).to receive(:cohort_ids).and_return(Set.new)

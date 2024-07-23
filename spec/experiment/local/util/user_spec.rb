@@ -9,26 +9,26 @@ module AmplitudeExperiment
         language: 'language',
         platform: 'platform',
         version: 'version',
-        user_properties: { k: 'v' },
-        groups: { type: 'name' },
-        group_properties: { type: { name: { gk: 'gv' } } }
+        user_properties: { 'k' => 'v' },
+        groups: { 'type' => 'name' },
+        group_properties: { 'type' => { 'name' => { 'gk' => 'gv' } } }
       )
       context = AmplitudeExperiment.user_to_evaluation_context(user)
       expected_context = {
-        user: {
-          device_id: 'device_id',
-          user_id: 'user_id',
-          country: 'country',
-          city: 'city',
-          language: 'language',
-          platform: 'platform',
-          version: 'version',
-          user_properties: { k: 'v' }
+        'user' => {
+          'device_id' => 'device_id',
+          'user_id' => 'user_id',
+          'country' => 'country',
+          'city' => 'city',
+          'language' => 'language',
+          'platform' => 'platform',
+          'version' => 'version',
+          'user_properties' => { 'k' => 'v' }
         },
-        groups: {
-          type: {
-            group_name: 'name',
-            group_properties: { gk: 'gv' }
+        'groups' => {
+          'type' => {
+            'group_name' => 'name',
+            'group_properties' => { 'gk' => 'gv' }
           }
         }
       }
@@ -44,19 +44,19 @@ module AmplitudeExperiment
         language: 'language',
         platform: 'platform',
         version: 'version',
-        user_properties: { k: 'v' }
+        user_properties: { 'k' => 'v' }
       )
       context = AmplitudeExperiment.user_to_evaluation_context(user)
       expected_context = {
-        user: {
-          device_id: 'device_id',
-          user_id: 'user_id',
-          country: 'country',
-          city: 'city',
-          language: 'language',
-          platform: 'platform',
-          version: 'version',
-          user_properties: { k: 'v' }
+        'user' => {
+          'device_id' => 'device_id',
+          'user_id' => 'user_id',
+          'country' => 'country',
+          'city' => 'city',
+          'language' => 'language',
+          'platform' => 'platform',
+          'version' => 'version',
+          'user_properties' => { 'k' => 'v' }
         }
       }
       expect(context).to eq(expected_context)
@@ -64,15 +64,15 @@ module AmplitudeExperiment
 
     it 'returns the correct context with only groups' do
       user = User.new(
-        groups: { type: 'name' },
-        group_properties: { type: { name: { gk: 'gv' } } }
+        groups: { 'type' => 'name' },
+        group_properties: { 'type' => { 'name' => { 'gk' => 'gv' } } }
       )
       context = AmplitudeExperiment.user_to_evaluation_context(user)
       expected_context = {
-        groups: {
-          type: {
-            group_name: 'name',
-            group_properties: { gk: 'gv' }
+        'groups' => {
+          'type' => {
+            'group_name' => 'name',
+            'group_properties' => { 'gk' => 'gv' }
           }
         }
       }
@@ -81,13 +81,13 @@ module AmplitudeExperiment
 
     it 'returns the correct context with only groups but no group properties' do
       user = User.new(
-        groups: { type: 'name' }
+        groups: { 'type' => 'name' }
       )
       context = AmplitudeExperiment.user_to_evaluation_context(user)
       expected_context = {
-        groups: {
-          type: {
-            group_name: 'name'
+        'groups' => {
+          'type' => {
+            'group_name' => 'name'
           }
         }
       }

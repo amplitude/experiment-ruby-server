@@ -71,7 +71,6 @@ module AmplitudeExperiment
 
         expect(@storage.get_cohorts_for_user('1', Set.new(%w[a b c]))).to eq(Set.new(%w[a c]))
       end
-
     end
   end
 end

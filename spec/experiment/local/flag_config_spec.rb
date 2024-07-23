@@ -1,12 +1,10 @@
-require 'spec_helper'
-require 'experiment/util/flag_config'
 require 'set'
 
 module AmplitudeExperiment
   RSpec.describe 'CohortUtils' do
     before(:each) do
-      @flags = [
-        {
+      @flags = {
+        'flag-1' => {
           'key' => 'flag-1',
           'metadata' => {
             'deployed' => true,
@@ -44,7 +42,7 @@ module AmplitudeExperiment
             }
           }
         },
-        {
+        'flag-2' => {
           'key' => 'flag-2',
           'metadata' => {
             'deployed' => true,
@@ -82,7 +80,7 @@ module AmplitudeExperiment
             }
           }
         },
-        {
+        'flag-3' => {
           'key' => 'flag-3',
           'metadata' => {
             'deployed' => true,
@@ -120,13 +118,13 @@ module AmplitudeExperiment
             }
           }
         }
-      ]
+      }
     end
 
     describe '#get_all_cohort_ids_from_flag' do
       it 'returns all cohort ids from a single flag' do
         expected_cohort_ids = Set.new(%w[cohort1 cohort2 cohort3 cohort4 cohort5 cohort6 cohort7 cohort8])
-        @flags.each do |flag|
+        @flags.each do |_, flag|
           cohort_ids = AmplitudeExperiment.get_all_cohort_ids_from_flag(flag)
           expect(cohort_ids).to be_subset(expected_cohort_ids)
         end
@@ -139,7 +137,7 @@ module AmplitudeExperiment
           'User' => Set.new(%w[cohort1 cohort2 cohort3 cohort4 cohort5 cohort6]),
           'group_name' => Set.new(%w[cohort7 cohort8])
         }
-        @flags.each do |flag|
+        @flags.each do |_, flag|
           grouped_cohort_ids = AmplitudeExperiment.get_grouped_cohort_ids_from_flag(flag)
           grouped_cohort_ids.each do |key, values|
             expect(expected_grouped_cohort_ids.keys).to include(key)

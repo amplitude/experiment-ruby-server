@@ -30,7 +30,7 @@ module AmplitudeExperiment
     # @param [long] flag_config_polling_interval_millis The value of flag config polling interval in million seconds.
     def initialize(server_url: DEFAULT_SERVER_URL, bootstrap: {},
                    flag_config_polling_interval_millis: 30_000, debug: false, assignment_config: nil,
-      cohort_sync_config: nil)
+                   cohort_sync_config: nil)
       @debug = debug || false
       @server_url = server_url
       @bootstrap = bootstrap
