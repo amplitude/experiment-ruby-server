@@ -145,21 +145,21 @@ module AmplitudeExperiment
       ]
       result = sort(flags, [1, 2, 3, 4, 5, 7, 6, 8, 9, 10, 20, 21, 30])
       expected = [
+        flag(8, []),
+        flag(7, [8]),
+        flag(4, [8, 7]),
+        flag(6, [7, 4]),
+        flag(10, [7]),
+        flag(5, [10, 7]),
+        flag(3, [6, 5]),
         flag(1, [6, 3]),
         flag(2, [8, 5, 3, 1]),
-        flag(3, [6, 5]),
-        flag(4, [8, 7]),
-        flag(5, [10, 7]),
-        flag(6, [7, 4]),
-        flag(7, [8]),
-        flag(8, []),
         flag(9, [10, 7, 5]),
-        flag(10, [7]),
         flag(20, []),
         flag(21, [20]),
         flag(30, [])
       ]
-      expect(result.sort_by { |f| f['key'] }).to eq(expected.sort_by { |f| f['key'] })
+      expect(result).to eq(expected)
     end
 
     it 'handles multiple flags with complex dependencies without cycle starting at middle' do
@@ -180,21 +180,21 @@ module AmplitudeExperiment
       ]
       result = sort(flags, [6, 1, 2, 3, 4, 5, 7, 8, 9, 10, 20, 21, 30])
       expected = [
+        flag(8, []),
+        flag(7, [8]),
+        flag(4, [8, 7]),
+        flag(6, [7, 4]),
+        flag(10, [7]),
+        flag(5, [10, 7]),
+        flag(3, [6, 5]),
         flag(1, [6, 3]),
         flag(2, [8, 5, 3, 1]),
-        flag(3, [6, 5]),
-        flag(4, [8, 7]),
-        flag(5, [10, 7]),
-        flag(6, [7, 4]),
-        flag(7, [8]),
-        flag(8, []),
         flag(9, [10, 7, 5]),
-        flag(10, [7]),
         flag(20, []),
         flag(21, [20]),
         flag(30, [])
       ]
-      expect(result.sort_by { |f| f['key'] }).to eq(expected.sort_by { |f| f['key'] })
+      expect(result).to eq(expected)
     end
 
     it 'handles multiple flags with complex dependencies without cycle starting at root' do
@@ -215,21 +215,21 @@ module AmplitudeExperiment
       ]
       result = sort(flags, [8, 1, 2, 3, 4, 5, 6, 7, 9, 10, 20, 21, 30])
       expected = [
+        flag(8, []),
+        flag(7, [8]),
+        flag(4, [8, 7]),
+        flag(6, [7, 4]),
+        flag(10, [7]),
+        flag(5, [10, 7]),
+        flag(3, [6, 5]),
         flag(1, [6, 3]),
         flag(2, [8, 5, 3, 1]),
-        flag(3, [6, 5]),
-        flag(4, [8, 7]),
-        flag(5, [10, 7]),
-        flag(6, [7, 4]),
-        flag(7, [8]),
-        flag(8, []),
         flag(9, [10, 7, 5]),
-        flag(10, [7]),
         flag(20, []),
         flag(21, [20]),
         flag(30, [])
       ]
-      expect(result.sort_by { |f| f['key'] }).to eq(expected.sort_by { |f| f['key'] })
+      expect(result).to eq(expected)
     end
   end
 end

@@ -4,7 +4,6 @@ require_relative '../../amplitude'
 
 module AmplitudeExperiment
   FLAG_TYPE_MUTUAL_EXCLUSION_GROUP = 'mutual_exclusion_group'.freeze
-  FLAG_TYPE_HOLDOUT_GROUP = 'holdout-group'.freeze
   # Main client for fetching variant data.
   class LocalEvaluationClient
     # Creates a new Experiment Client instance.
@@ -38,6 +37,7 @@ module AmplitudeExperiment
     #
     # @return [Hash[String, Variant]] The evaluated variants
     def evaluate(user, flag_keys = [])
+      warn 'evaluate is deprecated, please use evaluate_v2 instead.'
       variants = evaluate_v2(user, flag_keys)
       AmplitudeExperiment.filter_default_variants(variants)
     end
