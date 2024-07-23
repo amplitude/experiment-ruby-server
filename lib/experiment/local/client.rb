@@ -3,7 +3,7 @@ require 'logger'
 require_relative '../../amplitude'
 
 module AmplitudeExperiment
-  FLAG_TYPE_MUTUAL_EXCLUSION_GROUP = 'mutual_exclusion_group'.freeze
+  FLAG_TYPE_MUTUAL_EXCLUSION_GROUP = 'mutual-exclusion-group'.freeze
   # Main client for fetching variant data.
   class LocalEvaluationClient
     # Creates a new Experiment Client instance.
