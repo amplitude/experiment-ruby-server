@@ -9,20 +9,29 @@ module AmplitudeExperiment
     end
   end
 
+  class CohortDownloadError < StandardError
+    attr_reader :cohort_id
+
+    def initialize(cohort_id, message)
+      super(message)
+      @cohort_id = cohort_id
+    end
+  end
+
   # CohortNotModifiedError
-  class CohortNotModifiedError < StandardError
+  class CohortNotModifiedError < CohortDownloadError
   end
 
   # CohortTooLargeError
-  class CohortTooLargeError < StandardError
+  class CohortTooLargeError < CohortDownloadError
   end
 
   # HTTPErrorResponseError
-  class HTTPErrorResponseError < StandardError
+  class HTTPErrorResponseError < CohortDownloadError
     attr_reader :status_code
 
-    def initialize(status_code, message)
-      super(message)
+    def initialize(status_code, cohort_id, message)
+      super(cohort_id, message)
       @status_code = status_code
     end
   end
@@ -45,7 +54,7 @@ module AmplitudeExperiment
           item.to_s
         end
       end
-      "One or more cohorts failed to update:\n#{error_messages.join("\n")}"
+      "#{@errors.length} cohort(s) failed to update:\n#{error_messages.join("\n")}"
     end
   end
 

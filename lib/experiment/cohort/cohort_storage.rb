@@ -3,7 +3,7 @@ require_relative './cohort'
 module AmplitudeExperiment
   # CohortStorage
   class CohortStorage
-    def get_cohort(cohort_id)
+    def cohort(cohort_id)
       raise NotImplementedError
     end
 
@@ -40,7 +40,7 @@ module AmplitudeExperiment
       @cohort_store = {}
     end
 
-    def get_cohort(cohort_id)
+    def cohort(cohort_id)
       @lock.synchronize do
         @cohort_store[cohort_id]
       end

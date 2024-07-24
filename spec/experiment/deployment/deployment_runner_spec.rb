@@ -66,6 +66,7 @@ module AmplitudeExperiment
         allow(flag_config_storage).to receive(:flag_configs).and_return({})
         allow(cohort_storage).to receive(:cohort_ids).and_return(Set.new)
         allow(cohort_storage).to receive(:cohorts).and_return({})
+        allow(cohort_storage).to receive(:cohort).and_return(nil)
         allow(cohort_download_api).to receive(:get_cohort).and_raise(RuntimeError, 'test')
 
         expect { runner.start }.to raise_error(RuntimeError, 'test')

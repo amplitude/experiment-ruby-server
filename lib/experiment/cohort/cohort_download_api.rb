@@ -48,11 +48,11 @@ module AmplitudeExperiment
               cohort_info['groupType']
             )
           when 204
-            raise CohortNotModifiedError, "Cohort not modified: #{response.code}"
+            raise CohortNotModifiedError.new(cohort_id, "Cohort not modified: #{response.code}")
           when 413
-            raise CohortTooLargeError, "Cohort exceeds max cohort size: #{response.code}"
+            raise CohortTooLargeError.new(cohort_id, "Cohort exceeds max cohort size: #{response.code}")
           else
-            raise HTTPErrorResponseError.new(response.code, "Unexpected response code: #{response.code}") if response.code.to_i != 202
+            raise HTTPErrorResponseError.new(response.code, cohort_id, "Unexpected response code: #{response.code}") if response.code.to_i != 202
 
           end
         rescue StandardError => e

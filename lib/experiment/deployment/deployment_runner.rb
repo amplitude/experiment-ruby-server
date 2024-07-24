@@ -124,8 +124,7 @@ module AmplitudeExperiment
 
     def delete_unused_cohorts
       flag_cohort_ids = Set.new
-      @flag_config_storage.flag_configs.each do |flag|
-        flag = flag[1]
+      @flag_config_storage.flag_configs.each do |_, flag|
         flag_cohort_ids.merge(AmplitudeExperiment.get_all_cohort_ids_from_flag(flag))
       end
 

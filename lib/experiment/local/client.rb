@@ -51,7 +51,7 @@ module AmplitudeExperiment
     #
     # @return [Hash[String, Variant]] The evaluated variants
     def evaluate(user, flag_keys = [])
-      warn 'evaluate is deprecated, please use evaluate_v2 instead.'
+      @logger.warn('evaluate is deprecated, please use evaluate_v2 instead.')
       variants = evaluate_v2(user, flag_keys)
       AmplitudeExperiment.filter_default_variants(variants)
     end

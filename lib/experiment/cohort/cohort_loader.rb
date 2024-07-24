@@ -30,21 +30,21 @@ module AmplitudeExperiment
       errors = []
 
       Concurrent::Promises.future_on(@executor) do
-        begin
-          futures = @cohort_storage.cohort_ids.map do |cohort_id|
-            Concurrent::Promises.future_on(@executor) do
-              load_cohort_internal(cohort_id)
-            end
+        futures = @cohort_storage.cohort_ids.map do |cohort_id|
+          Concurrent::Promises.future_on(@executor) do
+            load_cohort_internal(cohort_id)
+          rescue StandardError => e
+            [cohort_id, e]  # Return the cohort_id and the error
           end
+        end
 
-          futures.each do |future|
-            future.rescue do |e|
-              errors << [future.value!, e]
-            end
+        results = Concurrent::Promises.zip(*futures).value!
+
+        # Collect errors from the results
+        results.each do |result|
+          if result.is_a?(Array) && result[1].is_a?(StandardError)
+            errors << result
           end
-          Concurrent::Promises.zip(*futures).value!
-        rescue StandardError => e
-          errors << e
         end
 
         raise CohortUpdateError, errors unless errors.empty?
@@ -54,8 +54,9 @@ module AmplitudeExperiment
     private
 
     def load_cohort_internal(cohort_id)
-      cohort = @cohort_download_api.get_cohort(cohort_id)
-      @cohort_storage.put_cohort(cohort)
+      stored_cohort = @cohort_storage.cohort(cohort_id)
+      updated_cohort = @cohort_download_api.get_cohort(cohort_id, stored_cohort)
+      @cohort_storage.put_cohort(updated_cohort)
     end
 
     def remove_job(cohort_id)
