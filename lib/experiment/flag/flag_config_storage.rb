@@ -1,5 +1,3 @@
-require 'json'
-
 module AmplitudeExperiment
   # FlagConfigStorage
   class FlagConfigStorage

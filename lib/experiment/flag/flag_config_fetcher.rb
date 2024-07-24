@@ -72,7 +72,7 @@ module AmplitudeExperiment
       flag_config_obj = {}
       flag_configs_array = JSON.parse(flag_configs_str)
       flag_configs_array.each do |flag_config|
-        flag_config_obj.store(flag_config['key'], flag_config) if flag_config.key?('key')
+        flag_config_obj.store(flag_config['flagKey'], flag_config) if flag_config.key?('flagKey')
       end
       flag_config_obj
     end

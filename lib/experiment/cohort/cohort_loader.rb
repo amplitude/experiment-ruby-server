@@ -34,7 +34,7 @@ module AmplitudeExperiment
           Concurrent::Promises.future_on(@executor) do
             load_cohort_internal(cohort_id)
           rescue StandardError => e
-            [cohort_id, e]  # Return the cohort_id and the error
+            [cohort_id, e] # Return the cohort_id and the error
           end
         end
 
@@ -42,9 +42,7 @@ module AmplitudeExperiment
 
         # Collect errors from the results
         results.each do |result|
-          if result.is_a?(Array) && result[1].is_a?(StandardError)
-            errors << result
-          end
+          errors << result if result.is_a?(Array) && result[1].is_a?(StandardError)
         end
 
         raise CohortUpdateError, errors unless errors.empty?

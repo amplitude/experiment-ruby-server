@@ -1,5 +1,3 @@
-require 'time'
-require 'logger'
 require 'base64'
 require 'json'
 require 'net/http'
