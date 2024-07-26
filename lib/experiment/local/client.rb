@@ -71,7 +71,8 @@ module AmplitudeExperiment
       sorted_flags = AmplitudeExperiment.topological_sort(flags, flag_keys.to_set)
       flags_json = sorted_flags.to_json
 
-      context = AmplitudeExperiment.user_to_evaluation_context(enrich_user(user, flags))
+      user = enrich_user_with_cohorts(user, flags) if @config.cohort_sync_config
+      context = AmplitudeExperiment.user_to_evaluation_context(user)
       context_json = context.to_json
 
       @logger.debug("[Experiment] Evaluate: User: #{context_json} - Rules: #{flags}") if @config.debug
@@ -99,7 +100,7 @@ module AmplitudeExperiment
 
     private
 
-    def enrich_user(user, flag_configs)
+    def enrich_user_with_cohorts(user, flag_configs)
       grouped_cohort_ids = AmplitudeExperiment.get_grouped_cohort_ids_from_flags(flag_configs)
 
       if grouped_cohort_ids.key?(USER_GROUP_TYPE)

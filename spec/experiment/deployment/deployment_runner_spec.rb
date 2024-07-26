@@ -1,8 +1,7 @@
 require 'rspec'
 module AmplitudeExperiment
-  COHORT_ID = '1234'.freeze
-
   describe DeploymentRunner do
+    let(:cohort_id) { '1234' }
     before(:each) do
       @flag = {
         'key' => 'flag',
@@ -14,7 +13,7 @@ module AmplitudeExperiment
                 {
                   'selector' => %w[context user cohort_ids],
                   'op' => 'set contains any',
-                  'values' => [COHORT_ID]
+                  'values' => [cohort_id]
                 }
               ]
             ]

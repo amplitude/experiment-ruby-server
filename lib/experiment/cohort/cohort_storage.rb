@@ -1,5 +1,3 @@
-require_relative './cohort'
-
 module AmplitudeExperiment
   # CohortStorage
   class CohortStorage
