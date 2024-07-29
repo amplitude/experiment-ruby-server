@@ -17,7 +17,9 @@ module AmplitudeExperiment
 
     # @param [String] value The value of the variant determined by the flag configuration.
     # @param [Object, nil] payload The attached payload, if any.
-    def initialize(value, payload = nil, key = nil, metadata = nil)
+    # @param [String] key The key of the variant determined by the flag configuration.
+    # @param [Object, nil] metadata The attached metadata, if any.
+    def initialize(value: nil, payload: nil, key: nil, metadata: nil)
       @key = key
       @value = value
       @payload = payload

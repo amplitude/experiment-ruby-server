@@ -57,11 +57,11 @@ module EvaluationInterop
   attach_function :libevaluation_interop_symbols, [], Libevaluation_interop_ExportedSymbols.by_ref
 end
 
-def evaluation(rule_json, user_json)
+def evaluation(rule_json, context_json)
   lib = EvaluationInterop.libevaluation_interop_symbols()
   evaluate = lib[:kotlin][:root][:evaluate]
   dispose = lib[:DisposeString]
-  result_raw = evaluate.call(rule_json, user_json)
+  result_raw = evaluate.call(rule_json, context_json)
   result_json = result_raw.read_string
   result = JSON.parse(result_json)
   dispose.call(result_raw)

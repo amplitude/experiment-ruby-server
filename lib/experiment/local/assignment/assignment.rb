@@ -13,7 +13,9 @@ module AmplitudeExperiment
     def canonicalize
       sb = "#{@user&.user_id&.strip} #{@user&.device_id&.strip} "
       results.sort.to_h.each do |key, value|
-        sb += "#{key.strip} #{value['variant']&.fetch('key', '')&.strip} "
+        next unless value.key
+
+        sb += "#{key.strip} #{value.key&.strip} "
       end
       sb
     end

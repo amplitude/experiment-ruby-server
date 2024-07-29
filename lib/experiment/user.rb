@@ -72,6 +72,14 @@ module AmplitudeExperiment
     # @return [Hash, nil] the value of user properties
     attr_accessor :user_properties
 
+    # Predefined field, must be manually provided
+    # @return [Hash, nil] the value of groups
+    attr_accessor :groups
+
+    # Predefined field, must be manually provided
+    # @return [Hash, nil] the value of group properties
+    attr_accessor :group_properties
+
     # @param [String, nil] device_id Device ID for associating with an identity in Amplitude
     # @param [String, nil] user_id User ID for associating with an identity in Amplitude
     # @param [String, nil] country Predefined field, must be manually provided
@@ -89,9 +97,11 @@ module AmplitudeExperiment
     # @param [String, nil] carrier Predefined field, must be manually provided
     # @param [String, nil] library Predefined field, auto populated, can be manually overridden
     # @param [Hash, nil] user_properties Custom user properties
+    # @param [Hash, nil] groups List of groups the user belongs to
+    # @param [Hash, nil] group_properties Custom properties for groups
     def initialize(device_id: nil, user_id: nil, country: nil, city: nil, region: nil, dma: nil, ip_address: nil, language: nil,
                    platform: nil, version: nil, os: nil, device_manufacturer: nil, device_brand: nil,
-                   device_model: nil, carrier: nil, library: nil, user_properties: nil)
+                   device_model: nil, carrier: nil, library: nil, user_properties: nil, groups: nil, group_properties: nil)
       @device_id = device_id
       @user_id = user_id
       @country = country
@@ -109,6 +119,8 @@ module AmplitudeExperiment
       @carrier = carrier
       @library = library
       @user_properties = user_properties
+      @groups = groups
+      @group_properties = group_properties
     end
 
     # Return User as Hash.
@@ -131,8 +143,10 @@ module AmplitudeExperiment
         device_model: @device_model,
         carrier: @carrier,
         library: @library,
-        user_properties: @user_properties
-      }
+        user_properties: @user_properties,
+        groups: @groups,
+        group_properties: @group_properties
+      }.compact
     end
 
     # Return user information as JSON string.

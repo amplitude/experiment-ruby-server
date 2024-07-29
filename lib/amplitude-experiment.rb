@@ -15,6 +15,9 @@ require 'experiment/local/assignment/assignment_service'
 require 'experiment/local/assignment/assignment_config'
 require 'experiment/util/lru_cache'
 require 'experiment/util/hash'
+require 'experiment/util/topological_sort'
+require 'experiment/util/user'
+require 'experiment/util/variant'
 require 'experiment/error'
 
 # Amplitude Experiment Module

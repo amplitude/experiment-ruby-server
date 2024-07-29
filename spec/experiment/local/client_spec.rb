@@ -2,19 +2,19 @@ require 'spec_helper'
 require_relative '../../../lib/amplitude'
 
 module AmplitudeExperiment
-  LOCAL_SERVER_URL = 'https://api.lab.amplitude.com/sdk/v2/vardata?v=0'.freeze
-  TEST_USER = User.new(user_id: 'test_user')
-  TEST_USER_2 = User.new(user_id: 'user_id', device_id: 'device_id')
-
   describe LocalEvaluationClient do
+    let(:api_key) { 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3' }
+    let(:test_user) { User.new(user_id: 'test_user') }
+    let(:test_user2) { User.new(user_id: 'user_id', device_id: 'device_id') }
+
     def setup_stub
-      response = '[{"allUsersTargetingConfig":{"allocations":[{"percentage":10000,"weights":{"holdout":1,"on":99}}],"bucketingGroupType":null,"bucketingKey":"device_id","conditions":[],"name":"All Other Users"},"bucketingGroupType":null,"bucketingSalt":"nI33zio8","customSegmentTargetingConfigs":[],"defaultValue":"off","deployed":false,"enabled":true,"experimentKey":null,"flagKey":"holdout-sdk-ci-local-dependencies-test-holdout","flagVersion":1,"parentDependencies":null,"type":"holdout-group","variants":[{"key":"holdout","payload":{"flagIds":[]}},{"key":"on","payload":{"flagIds":["42953"]}}],"variantsInclusions":{}},{"allUsersTargetingConfig":{"allocations":[{"percentage":10000,"weights":{"slot-1":100,"unallocated":0}}],"bucketingGroupType":null,"bucketingKey":"device_id","conditions":[],"name":"All Other Users"},"bucketingGroupType":null,"bucketingSalt":"sVlTAPmD","customSegmentTargetingConfigs":[],"defaultValue":"off","deployed":false,"enabled":true,"experimentKey":null,"flagKey":"mutex-sdk-ci-local-dependencies-test-mutex","flagVersion":1,"parentDependencies":null,"type":"mutual-exclusion-group","variants":[{"key":"unallocated","payload":{"flagIds":[]}},{"key":"slot-1","payload":{"flagIds":["42953"]}}],"variantsInclusions":{}},{"allUsersTargetingConfig":{"allocations":[{"percentage":10000,"weights":{"control":1,"treatment":0}}],"bucketingGroupType":null,"bucketingKey":"device_id","conditions":[],"name":"All Other Users"},"bucketingGroupType":null,"bucketingSalt":"ne4upNtg","customSegmentTargetingConfigs":[],"defaultValue":"off","deployed":true,"enabled":true,"experimentKey":"exp-1","flagKey":"sdk-ci-local-dependencies-test","flagVersion":9,"parentDependencies":{"flags":{"holdout-sdk-ci-local-dependencies-test-holdout":["on"],"mutex-sdk-ci-local-dependencies-test-mutex":["slot-1"]},"operator":"ALL"},"type":"experiment","variants":[{"key":"control","payload":null},{"key":"treatment","payload":null}],"variantsInclusions":{}},{"allUsersTargetingConfig":{"allocations":[{"percentage":0,"weights":{"on":1}}],"bucketingGroupType":null,"bucketingKey":"user_id","conditions":[],"name":"All Other Users"},"bucketingGroupType":null,"bucketingSalt":"e4BrRQzR","customSegmentTargetingConfigs":[{"allocations":[{"percentage":10000,"weights":{"on":1}}],"bucketingGroupType":null,"bucketingKey":"user_id","conditions":[{"op":"IS","prop":"userdata_cohort","values":["ursx46e","mg7og2z"]}],"name":"Segment 1"}],"defaultValue":"off","deployed":true,"enabled":true,"experimentKey":null,"flagKey":"sdk-cohort-ci-test","flagVersion":29,"parentDependencies":null,"type":"release","variants":[{"key":"on","payload":null}],"variantsInclusions":{}},{"allUsersTargetingConfig":{"allocations":[{"percentage":10000,"weights":{"on":1}}],"bucketingGroupType":null,"bucketingKey":"user_id","conditions":[],"name":"All Other Users"},"bucketingGroupType":null,"bucketingSalt":"LM8tqPRS","customSegmentTargetingConfigs":[],"defaultValue":"off","deployed":true,"enabled":true,"experimentKey":null,"flagKey":"sdk-local-evaluation-ci-test","flagVersion":7,"parentDependencies":null,"type":"release","variants":[{"key":"on","payload":"payload"}],"variantsInclusions":{}},{"allUsersTargetingConfig":{"allocations":[{"percentage":10000,"weights":{"holdout":99,"on":1}}],"bucketingGroupType":null,"bucketingKey":"device_id","conditions":[],"name":"All Other Users"},"bucketingGroupType":null,"bucketingSalt":"ubvfZywq","customSegmentTargetingConfigs":[],"defaultValue":"off","deployed":false,"enabled":true,"experimentKey":null,"flagKey":"holdout-sdk-ci-dependencies-test-force-holdout","flagVersion":2,"parentDependencies":null,"type":"holdout-group","variants":[{"key":"holdout","payload":{"flagIds":[]}},{"key":"on","payload":{"flagIds":["44564"]}}],"variantsInclusions":{}},{"allUsersTargetingConfig":{"allocations":[{"percentage":10000,"weights":{"control":1,"treatment":0}}],"bucketingGroupType":null,"bucketingKey":"device_id","conditions":[],"name":"All Other Users"},"bucketingGroupType":null,"bucketingSalt":"OI9rGc1K","customSegmentTargetingConfigs":[],"defaultValue":"off","deployed":true,"enabled":true,"experimentKey":"exp-1","flagKey":"sdk-ci-local-dependencies-test-holdout","flagVersion":5,"parentDependencies":{"flags":{"holdout-sdk-ci-dependencies-test-force-holdout":["on"]},"operator":"ALL"},"type":"experiment","variants":[{"key":"control","payload":null},{"key":"treatment","payload":null}],"variantsInclusions":{}}]'
-      stub_request(:get, 'https://api.lab.amplitude.com/sdk/v1/flags')
+      response = '[{"key":"holdout-sdk-ci-local-dependencies-test-holdout","metadata":{"deployed":false,"evaluationMode":"local","flagType":"holdout-group","flagVersion":1},"segments":[{"bucket":{"allocations":[{"distributions":[{"range":[0,429497],"variant":"holdout"},{"range":[429496,42949673],"variant":"on"}],"range":[0,100]}],"salt":"nI33zio8","selector":["context","user","device_id"]},"metadata":{"segmentName":"All Other Users"},"variant":"off"}],"variants":{"holdout":{"key":"holdout","payload":{"flagIds":[]},"value":"holdout"},"off":{"key":"off","metadata":{"default":true}},"on":{"key":"on","payload":{"flagIds":["42953"]},"value":"on"}}},{"key":"mutex-sdk-ci-local-dependencies-test-mutex","metadata":{"deployed":false,"evaluationMode":"local","flagType":"mutual-exclusion-group","flagVersion":1},"segments":[{"metadata":{"segmentName":"All Other Users"},"variant":"slot-1"}],"variants":{"off":{"key":"off","metadata":{"default":true}},"slot-1":{"key":"slot-1","payload":{"flagIds":["42953"]},"value":"slot-1"},"unallocated":{"key":"unallocated","payload":{"flagIds":[]},"value":"unallocated"}}},{"dependencies":["holdout-sdk-ci-local-dependencies-test-holdout","mutex-sdk-ci-local-dependencies-test-mutex"],"key":"sdk-ci-local-dependencies-test","metadata":{"deployed":true,"evaluationMode":"local","experimentKey":"exp-1","flagType":"experiment","flagVersion":9},"segments":[{"conditions":[[{"op":"is not","selector":["result","holdout-sdk-ci-local-dependencies-test-holdout","key"],"values":["on"]}],[{"op":"is not","selector":["result","mutex-sdk-ci-local-dependencies-test-mutex","key"],"values":["slot-1"]}]],"metadata":{"segmentName":"flag-dependencies"},"variant":"off"},{"metadata":{"segmentName":"All Other Users"},"variant":"control"}],"variants":{"control":{"key":"control","value":"control"},"off":{"key":"off","metadata":{"default":true}},"treatment":{"key":"treatment","value":"treatment"}}},{"key":"sdk-local-evaluation-ci-test","metadata":{"deployed":true,"evaluationMode":"local","flagType":"release","flagVersion":7},"segments":[{"metadata":{"segmentName":"All Other Users"},"variant":"on"}],"variants":{"off":{"key":"off","metadata":{"default":true}},"on":{"key":"on","payload":"payload","value":"on"}}},{"key":"holdout-sdk-ci-dependencies-test-force-holdout","metadata":{"deployed":false,"evaluationMode":"local","flagType":"holdout-group","flagVersion":2},"segments":[{"bucket":{"allocations":[{"distributions":[{"range":[0,42520177],"variant":"holdout"},{"range":[42520175,42949673],"variant":"on"}],"range":[0,100]}],"salt":"ubvfZywq","selector":["context","user","device_id"]},"metadata":{"segmentName":"All Other Users"},"variant":"off"}],"variants":{"holdout":{"key":"holdout","payload":{"flagIds":[]},"value":"holdout"},"off":{"key":"off","metadata":{"default":true}},"on":{"key":"on","payload":{"flagIds":["44564"]},"value":"on"}}},{"dependencies":["holdout-sdk-ci-dependencies-test-force-holdout"],"key":"sdk-ci-local-dependencies-test-holdout","metadata":{"deployed":true,"evaluationMode":"local","experimentKey":"exp-1","flagType":"experiment","flagVersion":5},"segments":[{"conditions":[[{"op":"is not","selector":["result","holdout-sdk-ci-dependencies-test-force-holdout","key"],"values":["on"]}]],"metadata":{"segmentName":"flag-dependencies"},"variant":"off"},{"metadata":{"segmentName":"All Other Users"},"variant":"control"}],"variants":{"control":{"key":"control","value":"control"},"off":{"key":"off","metadata":{"default":true}},"treatment":{"key":"treatment","value":"treatment"}}}]'
+      stub_request(:get, 'https://api.lab.amplitude.com/sdk/v2/flags?v=0')
         .with(
           headers: {
             'Accept' => '*/*',
             'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'Authorization' => "Api-Key #{SERVER_API_KEY}",
+            'Authorization' => "Api-Key #{api_key}",
             'Content-Type' => 'application/json;charset=utf-8',
             'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}",
             'User-Agent' => 'Ruby'
@@ -36,56 +36,56 @@ module AmplitudeExperiment
       it 'evaluation should return specific variants' do
         setup_stub
 
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
+        local_evaluation_client = LocalEvaluationClient.new(api_key)
         local_evaluation_client.start
 
-        result = local_evaluation_client.evaluate(TEST_USER, ['sdk-local-evaluation-ci-test'])
-        expect(result['sdk-local-evaluation-ci-test']).to eq(Variant.new('on', 'payload'))
+        result = local_evaluation_client.evaluate(test_user, ['sdk-local-evaluation-ci-test'])
+        expect(result['sdk-local-evaluation-ci-test']).to eq(Variant.new(key: 'on', value: 'on', payload: 'payload'))
       end
 
       it 'evaluation should return all variants' do
         setup_stub
 
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
+        local_evaluation_client = LocalEvaluationClient.new(api_key)
         local_evaluation_client.start
 
-        result = local_evaluation_client.evaluate(TEST_USER)
-        expect(result['sdk-local-evaluation-ci-test']).to eq(Variant.new('on', 'payload'))
+        result = local_evaluation_client.evaluate(test_user)
+        expect(result['sdk-local-evaluation-ci-test']).to eq(Variant.new(key: 'on', value: 'on', payload: 'payload'))
       end
 
       it 'evaluation with dependencies should return variant' do
         setup_stub
 
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
+        local_evaluation_client = LocalEvaluationClient.new(api_key)
         local_evaluation_client.start
-        result = local_evaluation_client.evaluate(TEST_USER_2)
-        expect(result['sdk-ci-local-dependencies-test']).to eq(Variant.new('control', nil))
+        result = local_evaluation_client.evaluate(test_user2)
+        expect(result['sdk-ci-local-dependencies-test']).to eq(Variant.new(key: 'control', value: 'control'))
       end
 
       it 'evaluation with dependencies and flag keys should return variant' do
         setup_stub
 
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
+        local_evaluation_client = LocalEvaluationClient.new(api_key)
         local_evaluation_client.start
-        result = local_evaluation_client.evaluate(TEST_USER_2, ['sdk-ci-local-dependencies-test'])
-        expect(result['sdk-ci-local-dependencies-test']).to eq(Variant.new('control', nil))
+        result = local_evaluation_client.evaluate(test_user2, ['sdk-ci-local-dependencies-test'])
+        expect(result['sdk-ci-local-dependencies-test']).to eq(Variant.new(key: 'control', value: 'control'))
       end
 
       it 'evaluation with dependencies and flag keys not existing should not return variant' do
         setup_stub
 
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
+        local_evaluation_client = LocalEvaluationClient.new(api_key)
         local_evaluation_client.start
-        result = local_evaluation_client.evaluate(TEST_USER_2, ['does-not-exist'])
+        result = local_evaluation_client.evaluate(test_user2, ['does-not-exist'])
         expect(result['sdk-ci-local-dependencies-test']).to eq(nil)
       end
 
       it 'evaluation with dependencies holdout excludes variant from experiment' do
         setup_stub
 
-        local_evaluation_client = LocalEvaluationClient.new(SERVER_API_KEY)
+        local_evaluation_client = LocalEvaluationClient.new(api_key)
         local_evaluation_client.start
-        result = local_evaluation_client.evaluate(TEST_USER_2)
+        result = local_evaluation_client.evaluate(test_user2)
         expect(result['sdk-ci-local-dependencies-test-holdout']).to eq(nil)
       end
     end

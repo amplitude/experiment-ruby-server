@@ -42,3 +42,6 @@ Metrics/ClassLength:
 
 Metrics/ModuleLength:
   Enabled: false
+
+Style/Documentation:
+  Enabled: false
