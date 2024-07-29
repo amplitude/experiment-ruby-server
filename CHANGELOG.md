@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.3.1...v1.4.0) (2024-07-29)
+
+
+### Features
+
+* local evaluation v2 ([#67](https://github.com/amplitude/experiment-ruby-server/issues/67)) ([4c883ad](https://github.com/amplitude/experiment-ruby-server/commit/4c883adca90d88cf4c034877220fbd3ddad9a4a9))
+
 ## [1.3.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.3.0...v1.3.1) (2024-06-28)
 
 
