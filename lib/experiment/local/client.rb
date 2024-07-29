@@ -50,8 +50,8 @@ module AmplitudeExperiment
     # @param [String[]] flag_keys The flags to evaluate with the user. If empty, all flags from the flag cache are evaluated
     #
     # @return [Hash[String, Variant]] The evaluated variants
+    # @deprecated Please use {evaluate_v2} instead
     def evaluate(user, flag_keys = [])
-      @logger.warn('evaluate is deprecated, please use evaluate_v2 instead.')
       variants = evaluate_v2(user, flag_keys)
       AmplitudeExperiment.filter_default_variants(variants)
     end
