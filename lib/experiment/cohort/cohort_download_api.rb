@@ -46,7 +46,8 @@ module AmplitudeExperiment
               cohort_info['groupType']
             )
           when 204
-            raise CohortNotModifiedError.new(cohort_id, "Cohort not modified: #{response.code}")
+            @logger.debug("getCohortMembers(#{cohort_id}): Cohort not modified")
+            return nil
           when 413
             raise CohortTooLargeError.new(cohort_id, "Cohort exceeds max cohort size: #{response.code}")
           else
@@ -56,7 +57,7 @@ module AmplitudeExperiment
         rescue StandardError => e
           errors += 1 unless response && e.is_a?(HTTPErrorResponseError) && response.code.to_i == 429
           @logger.debug("getCohortMembers(#{cohort_id}): request-status error #{errors} - #{e}")
-          raise e if errors >= 3 || e.is_a?(CohortNotModifiedError) || e.is_a?(CohortTooLargeError)
+          raise e if errors >= 3 || e.is_a?(CohortTooLargeError)
         end
 
         sleep(@cohort_request_delay_millis / 1000.0)

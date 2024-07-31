@@ -54,7 +54,7 @@ module AmplitudeExperiment
     def load_cohort_internal(cohort_id)
       stored_cohort = @cohort_storage.cohort(cohort_id)
       updated_cohort = @cohort_download_api.get_cohort(cohort_id, stored_cohort)
-      @cohort_storage.put_cohort(updated_cohort)
+      @cohort_storage.put_cohort(updated_cohort) unless updated_cohort.nil?
     end
 
     def remove_job(cohort_id)

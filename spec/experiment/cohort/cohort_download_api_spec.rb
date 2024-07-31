@@ -94,14 +94,15 @@ module AmplitudeExperiment
         expect { api.get_cohort(cohort_id, cohort) }.to raise_error(CohortTooLargeError)
       end
 
-      it 'raises CohortNotModifiedError for cohort not modified' do
+      it 'return nil for cohort not modified' do
         last_modified = 1000
         cohort = Cohort.new(cohort_id, last_modified, 1, [])
 
         stub_request(:get, "#{server_url}/sdk/v1/cohort/#{cohort_id}?lastModified=#{last_modified}&maxCohortSize=#{max_cohort_size}")
           .with(headers: headers).to_return(response(204))
 
-        expect { api.get_cohort(cohort_id, cohort) }.to raise_error(CohortNotModifiedError)
+        result = api.get_cohort(cohort_id, cohort)
+        expect(result).to eq(nil)
       end
     end
   end

@@ -18,10 +18,6 @@ module AmplitudeExperiment
     end
   end
 
-  # CohortNotModifiedError
-  class CohortNotModifiedError < CohortDownloadError
-  end
-
   # CohortTooLargeError
   class CohortTooLargeError < CohortDownloadError
   end
