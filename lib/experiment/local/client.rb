@@ -69,8 +69,8 @@ module AmplitudeExperiment
       return {} if flags.nil?
 
       sorted_flags = AmplitudeExperiment.topological_sort(flags, flag_keys.to_set)
+      required_cohorts_in_storage(sorted_flags)
       flags_json = sorted_flags.to_json
-
       user = enrich_user_with_cohorts(user, flags) if @config.cohort_sync_config
       context = AmplitudeExperiment.user_to_evaluation_context(user)
       context_json = context.to_json
@@ -99,6 +99,29 @@ module AmplitudeExperiment
     end
 
     private
+
+    def required_cohorts_in_storage(flag_configs)
+      stored_cohort_ids = @cohort_storage.cohort_ids
+
+      flag_configs.each do |flag|
+        flag_cohort_ids = AmplitudeExperiment.get_all_cohort_ids_from_flag(flag)
+        missing_cohorts = flag_cohort_ids - stored_cohort_ids
+
+        next unless missing_cohorts.any?
+
+        # Convert cohort IDs to a comma-separated string
+        cohort_ids_str = "[#{flag_cohort_ids.map(&:to_s).join(', ')}]"
+        missing_cohorts_str = "[#{missing_cohorts.map(&:to_s).join(', ')}]"
+
+        message = if @config.cohort_sync_config
+                    "Evaluating flag #{flag['key']} dependent on cohorts #{cohort_ids_str} without #{missing_cohorts_str} in storage"
+                  else
+                    "Evaluating flag #{flag['key']} dependent on cohorts #{cohort_ids_str} without cohort syncing configured"
+                  end
+
+        @logger.warn(message)
+      end
+    end
 
     def enrich_user_with_cohorts(user, flag_configs)
       grouped_cohort_ids = AmplitudeExperiment.get_grouped_cohort_ids_from_flags(flag_configs)

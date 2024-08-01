@@ -76,44 +76,34 @@ module AmplitudeExperiment
 
       existing_cohort_ids = @cohort_storage.cohort_ids
       cohort_ids_to_download = new_cohort_ids - existing_cohort_ids
-      cohort_download_errors = []
 
       futures = cohort_ids_to_download.map do |cohort_id|
         future = @cohort_loader.load_cohort(cohort_id)
         future.on_rejection do |reason|
-          cohort_download_errors << [cohort_id, reason.to_s]
-          @logger.error("Download cohort #{cohort_id} failed: #{reason}")
+          @logger.warn("Download cohort #{cohort_id} failed: #{reason}")
         end
         future
       end
 
-      Concurrent::Promises.zip(*futures).value!
+      begin
+        Concurrent::Promises.zip(*futures).value!
+      rescue StandardError => e
+        @logger.error("Failed to download cohorts: #{e}")
+      end
 
       updated_cohort_ids = @cohort_storage.cohort_ids
-      failed_flag_count = 0
 
-      flag_configs.each do |flag_config|
-        flag_config = flag_config[1]
+      flag_configs.each do |flag_key, flag_config|
         cohort_ids = AmplitudeExperiment.get_all_cohort_ids_from_flag(flag_config)
-        if cohort_ids.empty? || !@cohort_loader
-          @flag_config_storage.put_flag_config(flag_config)
-          @logger.debug("Putting non-cohort flag #{flag_config['key']}")
-        elsif cohort_ids.subset?(updated_cohort_ids)
-          @flag_config_storage.put_flag_config(flag_config)
-          @logger.debug("Putting flag #{flag_config['key']}")
-        else
-          @logger.error("Flag #{flag_config['key']} not updated because not all required cohorts could be loaded")
-          failed_flag_count += 1
-        end
+        @logger.debug("Storing flag #{flag_key}")
+        @flag_config_storage.put_flag_config(flag_config)
+        missing_cohorts = cohort_ids - updated_cohort_ids
+
+        @logger.warn("Flag #{flag_key} - failed to load cohorts: #{missing_cohorts}") if missing_cohorts.any?
       end
 
       delete_unused_cohorts
-      @logger.debug("Refreshed #{flag_configs.size - failed_flag_count} flag configs.")
-
-      raise CohortUpdateError, cohort_download_errors unless cohort_download_errors.empty?
-    rescue StandardError => e
-      @logger.error("Failed to fetch flag configs: #{e}")
-      raise e
+      @logger.debug("Refreshed #{flag_configs.size} flag configs.")
     end
 
     def update_cohorts
