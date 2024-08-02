@@ -9,7 +9,6 @@ module AmplitudeExperiment
       @api_key = api_key
       @server_url = server_url
       @logger = logger
-      @http = PersistentHttpClient.get(server_url, { read_timeout: FLAG_CONFIG_TIMEOUT }, @api_key)
     end
 
     # Fetch local evaluation mode flag configs from the Experiment API server.
@@ -24,7 +23,8 @@ module AmplitudeExperiment
         'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}"
       }
       request = Net::HTTP::Get.new("#{@server_url}/sdk/v1/flags", headers)
-      response = @http.request(request)
+      http = PersistentHttpClient.get(@server_url, { read_timeout: FLAG_CONFIG_TIMEOUT }, @api_key)
+      response = http.request(request)
       raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
 
       @logger.debug("[Experiment] Fetch flag configs: #{response.body}")
@@ -39,7 +39,8 @@ module AmplitudeExperiment
         'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}"
       }
       request = Net::HTTP::Get.new("#{@server_url}/sdk/v2/flags?v=0", headers)
-      response = @http.request(request)
+      http = PersistentHttpClient.get(@server_url, { read_timeout: FLAG_CONFIG_TIMEOUT }, @api_key)
+      response = http.request(request)
       raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
 
       @logger.debug("[Experiment] Fetch flag configs: #{response.body}")
@@ -58,7 +59,8 @@ module AmplitudeExperiment
         'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}"
       }
       request = Net::HTTP::Get.new("#{@server_url}/sdk/rules?eval_mode=local", headers)
-      response = @http.request(request)
+      http = PersistentHttpClient.get(@server_url, { read_timeout: FLAG_CONFIG_TIMEOUT }, @api_key)
+      response = http.request(request)
       raise "flagConfigs - received error response: #{response.code}: #{response.body}" unless response.is_a?(Net::HTTPOK)
 
       flag_configs = parse(response.body)
