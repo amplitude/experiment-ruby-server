@@ -7,6 +7,7 @@ require 'set'
 module AmplitudeExperiment
   # CohortDownloadApi
   class CohortDownloadApi
+    COHORT_REQUEST_TIMEOUT_MILLIS = 5000
     def get_cohort(cohort_id, cohort = nil)
       raise NotImplementedError
     end
@@ -75,7 +76,7 @@ module AmplitudeExperiment
       url += "&lastModified=#{last_modified}" if last_modified
 
       request = Net::HTTP::Get.new(URI(url), headers)
-      http = PersistentHttpClient.get(@server_url, { read_timeout: @cohort_request_delay_millis }, basic_auth)
+      http = PersistentHttpClient.get(@server_url, { read_timeout: COHORT_REQUEST_TIMEOUT_MILLIS }, basic_auth)
       http.request(request)
     end
 

@@ -1,6 +1,7 @@
 require 'set'
 
 module AmplitudeExperiment
+  COHORT_POLLING_INTERVAL_MILLIS = 60_000
   # DeploymentRunner
   class DeploymentRunner
     def initialize(
@@ -18,6 +19,10 @@ module AmplitudeExperiment
       @cohort_loader = cohort_loader
       @lock = Mutex.new
       @logger = logger
+      @executor = Concurrent::ThreadPoolExecutor.new(
+        max_threads: 10,
+        name: 'DeploymentRunnerExecutor'
+      )
     end
 
     def start
@@ -30,7 +35,7 @@ module AmplitudeExperiment
         @flag_poller.start
         if @cohort_loader
           @cohort_poller = Poller.new(
-            @config.flag_config_polling_interval_millis / 1000.0,
+            COHORT_POLLING_INTERVAL_MILLIS / 1000.0,
             method(:update_cohorts)
           )
           @cohort_poller.start
@@ -60,36 +65,22 @@ module AmplitudeExperiment
       @flag_config_storage.remove_if { |f| !flag_keys.include?(f['key']) }
 
       unless @cohort_loader
-        flag_configs.each do |flag_config|
-          flag_config = flag_config[1]
-          @logger.debug("Putting non-cohort flag #{flag_config['key']}")
+        flag_configs.each do |flag_key, flag_config|
+          @logger.debug("Putting non-cohort flag #{flag_key}")
           @flag_config_storage.put_flag_config(flag_config)
         end
         return
       end
 
       new_cohort_ids = Set.new
-      flag_configs.each do |flag_config|
-        flag_config = flag_config[1]
+      flag_configs.each do |_, flag_config|
         new_cohort_ids.merge(AmplitudeExperiment.get_all_cohort_ids_from_flag(flag_config))
       end
 
       existing_cohort_ids = @cohort_storage.cohort_ids
       cohort_ids_to_download = new_cohort_ids - existing_cohort_ids
 
-      futures = cohort_ids_to_download.map do |cohort_id|
-        future = @cohort_loader.load_cohort(cohort_id)
-        future.on_rejection do |reason|
-          @logger.warn("Download cohort #{cohort_id} failed: #{reason}")
-        end
-        future
-      end
-
-      begin
-        Concurrent::Promises.zip(*futures).value!
-      rescue StandardError => e
-        @logger.error("Failed to download cohorts: #{e}")
-      end
+      download_cohorts(cohort_ids_to_download)
 
       updated_cohort_ids = @cohort_storage.cohort_ids
 
@@ -106,10 +97,24 @@ module AmplitudeExperiment
       @logger.debug("Refreshed #{flag_configs.size} flag configs.")
     end
 
+    def download_cohorts(cohort_ids)
+      futures = cohort_ids.map do |cohort_id|
+        Concurrent::Promises.future_on(@executor) do
+          future = @cohort_loader.load_cohort(cohort_id)
+          future.value!
+        rescue StandardError => e
+          @logger.error("Failed to download cohort #{cohort_id}: #{e.message}")
+          nil
+
+        end
+      end
+
+      Concurrent::Promises.zip(*futures).value!
+    end
+
     def update_cohorts
-      @cohort_loader.update_stored_cohorts.value!
-    rescue StandardError => e
-      @logger.error("Error while updating cohorts: #{e}")
+      @logger.debug('Updating cohorts in storage')
+      download_cohorts(@cohort_storage.cohort_ids)
     end
 
     def delete_unused_cohorts
