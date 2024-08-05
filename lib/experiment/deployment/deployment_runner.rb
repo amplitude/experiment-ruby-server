@@ -105,7 +105,6 @@ module AmplitudeExperiment
         rescue StandardError => e
           @logger.error("Failed to download cohort #{cohort_id}: #{e.message}")
           nil
-
         end
       end
 
