@@ -1,4 +1,9 @@
 module AmplitudeExperiment
+  module ServerZone
+    US = 'US'.freeze
+    EU = 'EU'.freeze
+  end
+
   # LocalEvaluationConfig
   class LocalEvaluationConfig
     # Default server url
@@ -36,14 +41,14 @@ module AmplitudeExperiment
     # @param [long] flag_config_polling_interval_millis The value of flag config polling interval in million seconds.
     # @param [AssignmentConfig] assignment_config Configuration for automatically tracking assignment events after an evaluation.
     # @param [CohortSyncConfig] cohort_sync_config Configuration for downloading cohorts required for flag evaluation
-    def initialize(server_url: DEFAULT_SERVER_URL, server_zone: 'us', bootstrap: {},
+    def initialize(server_url: DEFAULT_SERVER_URL, server_zone: ServerZone::US, bootstrap: {},
                    flag_config_polling_interval_millis: 30_000, debug: false, assignment_config: nil,
                    cohort_sync_config: nil)
       @debug = debug || false
       @server_url = server_url
-      @server_zone = server_zone.downcase
+      @server_zone = server_zone
       @cohort_sync_config = cohort_sync_config
-      if server_url == DEFAULT_SERVER_URL && @server_zone == 'eu'
+      if server_url == DEFAULT_SERVER_URL && @server_zone == ServerZone::EU
         @server_url = EU_SERVER_URL
         @cohort_sync_config.cohort_server_url = EU_COHORT_SYNC_URL if @cohort_sync_config && @cohort_sync_config.cohort_server_url == DEFAULT_COHORT_SYNC_URL
       end

@@ -36,7 +36,6 @@ module AmplitudeExperiment
         @cohort_download_api = DirectCohortDownloadApi.new(@config.cohort_sync_config.api_key,
                                                            @config.cohort_sync_config.secret_key,
                                                            @config.cohort_sync_config.max_cohort_size,
-                                                           @config.cohort_sync_config.cohort_request_delay_millis,
                                                            @config.cohort_sync_config.cohort_server_url,
                                                            @logger)
         @cohort_loader = CohortLoader.new(@cohort_download_api, @cohort_storage)

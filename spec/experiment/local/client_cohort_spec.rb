@@ -6,16 +6,14 @@ module AmplitudeExperiment
     let(:api_key_eu) { 'server-Qlp7XiSu6JtP2S3JzA95PnP27duZgQCF' }
     cohort_sync_config = CohortSyncConfig.new(
       ENV['API_KEY'],
-      ENV['SECRET_KEY'],
-      cohort_request_delay_millis: 100
+      ENV['SECRET_KEY']
     )
     cohort_sync_config_eu = CohortSyncConfig.new(
       ENV['EU_API_KEY'],
-      ENV['EU_SECRET_KEY'],
-      cohort_request_delay_millis: 100
+      ENV['EU_SECRET_KEY']
     )
     let(:config) { LocalEvaluationConfig.new(cohort_sync_config: cohort_sync_config) }
-    let(:config_eu) { LocalEvaluationConfig.new(cohort_sync_config: cohort_sync_config_eu, server_zone: 'eu') }
+    let(:config_eu) { LocalEvaluationConfig.new(cohort_sync_config: cohort_sync_config_eu, server_zone: ServerZone::EU) }
 
     before(:each) do
       WebMock.allow_net_connect!

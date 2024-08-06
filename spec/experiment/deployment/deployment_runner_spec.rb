@@ -31,7 +31,7 @@ module AmplitudeExperiment
         cohort_loader = CohortLoader.new(cohort_download_api, cohort_storage)
         logger = Logger.new($stdout)
         runner = DeploymentRunner.new(
-          LocalEvaluationConfig.new,
+          LocalEvaluationConfig.new(cohort_sync_config: CohortSyncConfig.new('api_key', 'secret_key')),
           flag_fetcher,
           flag_config_storage,
           cohort_storage,
@@ -52,7 +52,7 @@ module AmplitudeExperiment
         cohort_loader = CohortLoader.new(cohort_download_api, cohort_storage)
         logger = Logger.new($stdout)
         runner = DeploymentRunner.new(
-          LocalEvaluationConfig.new,
+          LocalEvaluationConfig.new(cohort_sync_config: CohortSyncConfig.new('api_key', 'secret_key')),
           flag_fetcher,
           flag_config_storage,
           cohort_storage,

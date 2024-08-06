@@ -1,7 +1,6 @@
 require 'set'
 
 module AmplitudeExperiment
-  COHORT_POLLING_INTERVAL_MILLIS = 60_000
   # DeploymentRunner
   class DeploymentRunner
     def initialize(
@@ -35,7 +34,7 @@ module AmplitudeExperiment
         @flag_poller.start
         if @cohort_loader
           @cohort_poller = Poller.new(
-            COHORT_POLLING_INTERVAL_MILLIS / 1000.0,
+            @config.cohort_sync_config.cohort_polling_interval_millis / 1000.0,
             method(:update_cohorts)
           )
           @cohort_poller.start

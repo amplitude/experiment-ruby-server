@@ -11,7 +11,7 @@ module AmplitudeExperiment
     let(:server_url) { 'https://example.amplitude.com' }
     let(:max_cohort_size) { 15_000 }
     let(:cohort_request_delay_millis) { 100 }
-    let(:api) { AmplitudeExperiment::DirectCohortDownloadApi.new(api_key, secret_key, max_cohort_size, cohort_request_delay_millis, server_url, logger) }
+    let(:api) { AmplitudeExperiment::DirectCohortDownloadApi.new(api_key, secret_key, max_cohort_size, server_url, logger) }
 
     def response(code, body = nil)
       { status: code, body: body.nil? ? '' : JSON.dump(body), headers: { 'Content-Type' => 'application/json' } }

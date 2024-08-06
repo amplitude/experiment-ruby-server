@@ -8,6 +8,7 @@ module AmplitudeExperiment
   # CohortDownloadApi
   class CohortDownloadApi
     COHORT_REQUEST_TIMEOUT_MILLIS = 5000
+    COHORT_REQUEST_RETRY_DELAY_MILLIS = 100
     def get_cohort(cohort_id, cohort = nil)
       raise NotImplementedError
     end
@@ -15,12 +16,11 @@ module AmplitudeExperiment
 
   # DirectCohortDownloadApi
   class DirectCohortDownloadApi < CohortDownloadApi
-    def initialize(api_key, secret_key, max_cohort_size, cohort_request_delay_millis, server_url, logger)
+    def initialize(api_key, secret_key, max_cohort_size, server_url, logger)
       super()
       @api_key = api_key
       @secret_key = secret_key
       @max_cohort_size = max_cohort_size
-      @cohort_request_delay_millis = cohort_request_delay_millis
       @server_url = server_url
       @logger = logger
     end
@@ -61,7 +61,7 @@ module AmplitudeExperiment
           raise e if errors >= 3 || e.is_a?(CohortTooLargeError)
         end
 
-        sleep(@cohort_request_delay_millis / 1000.0)
+        sleep(COHORT_REQUEST_RETRY_DELAY_MILLIS / 1000.0)
       end
     end
 
