@@ -53,6 +53,7 @@ module AmplitudeExperiment
     private
 
     def periodic_flag_update
+      @logger.debug('Periodic flag update: start')
       update_flag_configs
     rescue StandardError => e
       @logger.error("Error while updating flags: #{e}")
@@ -112,7 +113,7 @@ module AmplitudeExperiment
     end
 
     def update_cohorts
-      @logger.debug('Updating cohorts in storage')
+      @logger.debug('Periodic cohort update: start')
       cohort_ids = AmplitudeExperiment.get_all_cohort_ids_from_flags(@flag_config_storage.flag_configs)
       download_cohorts(cohort_ids)
     end
