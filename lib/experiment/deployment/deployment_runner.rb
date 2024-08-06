@@ -32,7 +32,7 @@ module AmplitudeExperiment
           method(:periodic_flag_update)
         )
         @flag_poller.start
-        if @cohort_loader
+        if @config.cohort_sync_config
           @cohort_poller = Poller.new(
             @config.cohort_sync_config.cohort_polling_interval_millis / 1000.0,
             method(:update_cohorts)
