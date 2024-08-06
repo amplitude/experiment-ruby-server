@@ -113,7 +113,8 @@ module AmplitudeExperiment
 
     def update_cohorts
       @logger.debug('Updating cohorts in storage')
-      download_cohorts(@cohort_storage.cohort_ids)
+      cohort_ids = AmplitudeExperiment.get_all_cohort_ids_from_flags(@flag_config_storage.flag_configs)
+      download_cohorts(cohort_ids)
     end
 
     def delete_unused_cohorts
