@@ -9,6 +9,7 @@ module AmplitudeExperiment
   class CohortDownloadApi
     COHORT_REQUEST_TIMEOUT_MILLIS = 5000
     COHORT_REQUEST_RETRY_DELAY_MILLIS = 100
+
     def get_cohort(cohort_id, cohort = nil)
       raise NotImplementedError
     end
@@ -70,7 +71,8 @@ module AmplitudeExperiment
     def get_cohort_members_request(cohort_id, last_modified)
       headers = {
         'Authorization' => "Basic #{basic_auth}",
-        'Content-Type' => 'application/json;charset=utf-8'
+        'Content-Type' => 'application/json;charset=utf-8',
+        'X-Amp-Exp-Library' => "experiment-ruby-server/#{VERSION}"
       }
       url = "#{@server_url}/sdk/v1/cohort/#{cohort_id}?maxCohortSize=#{@max_cohort_size}"
       url += "&lastModified=#{last_modified}" if last_modified
