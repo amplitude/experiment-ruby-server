@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.4.0...v1.5.0) (2024-08-27)
+
+
+### Features
+
+* support cohort targeting for local evaluation  ([#68](https://github.com/amplitude/experiment-ruby-server/issues/68)) ([f7a8de0](https://github.com/amplitude/experiment-ruby-server/commit/f7a8de0bdaa8d8358ba30c6eb10a935f03b6e806))
+
 # [1.4.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.3.1...v1.4.0) (2024-07-29)
 
 
