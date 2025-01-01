@@ -1,3 +1,5 @@
+require_relative '../spec_helper'
+
 module AmplitudeAnalytics
   describe Config do
     let(:api_key) { 'test_api_key' }
