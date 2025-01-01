@@ -3,23 +3,25 @@ module AmplitudeExperiment
   describe DeploymentRunner do
     let(:cohort_id) { '1234' }
     before(:each) do
-      @flag = Evaluation::Flag.from_hash({
-                                           'key' => 'flag',
-                                           'variants' => {},
-                                           'segments' => [
-                                             {
-                                               'conditions' => [
-                                                 [
-                                                   {
-                                                     'selector' => %w[context user cohort_ids],
-                                                     'op' => 'set contains any',
-                                                     'values' => [cohort_id]
-                                                   }
-                                                 ]
-                                               ]
-                                             }
-                                           ]
-                                         })
+      @flag = Evaluation::Flag.from_hash(
+        {
+          'key' => 'flag',
+          'variants' => {},
+          'segments' => [
+            {
+              'conditions' => [
+                [
+                  {
+                    'selector' => %w[context user cohort_ids],
+                    'op' => 'set contains any',
+                    'values' => [cohort_id]
+                  }
+                ]
+              ]
+            }
+          ]
+        }
+      )
     end
 
     describe '#start' do
