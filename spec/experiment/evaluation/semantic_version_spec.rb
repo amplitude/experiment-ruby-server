@@ -1,4 +1,4 @@
-RSpec.describe SemanticVersion do
+describe SemanticVersion do
   def assert_invalid_version(version)
     expect(SemanticVersion.parse(version)).to be_nil
   end

@@ -15,14 +15,6 @@ module AmplitudeExperiment
     let(:config) { LocalEvaluationConfig.new(cohort_sync_config: cohort_sync_config) }
     let(:config_eu) { LocalEvaluationConfig.new(cohort_sync_config: cohort_sync_config_eu, server_zone: ServerZone::EU) }
 
-    before(:each) do
-      WebMock.allow_net_connect!
-    end
-
-    after(:all) do
-      WebMock.disable_net_connect!(allow_localhost: true)
-    end
-
     describe '#evaluate with cohorts' do
       it 'evaluates targeted and non-targeted users' do
         client = LocalEvaluationClient.new(api_key, config)
