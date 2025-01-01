@@ -118,7 +118,7 @@ module AmplitudeExperiment
             }
           }
         }
-      }
+      }.transform_values { |f| Evaluation::Flag.from_hash(f) }
     end
 
     describe '#get_all_cohort_ids_from_flag' do

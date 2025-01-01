@@ -60,9 +60,9 @@ module AmplitudeExperiment
 
     def update_flag_configs
       flags = @flag_config_fetcher.fetch_v2
-      flag_configs = flags.each_with_object({}) { |flag, hash| hash[flag['key']] = flag }
-      flag_keys = flag_configs.values.map { |flag| flag['key'] }.to_set
-      @flag_config_storage.remove_if { |f| !flag_keys.include?(f['key']) }
+      flag_configs = flags.map { |f| [f.key, f] }.to_h
+      flag_keys = flag_configs.keys.to_set
+      @flag_config_storage.remove_if { |f| !flag_keys.include?(f.key) }
 
       unless @cohort_loader
         flag_configs.each do |flag_key, flag_config|

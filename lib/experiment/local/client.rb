@@ -12,7 +12,6 @@ module AmplitudeExperiment
     # @param [LocalEvaluationConfig] config The config object
 
     def initialize(api_key, config = nil)
-      require 'experiment/local/evaluation/evaluation'
       @api_key = api_key
       @config = config || LocalEvaluationConfig.new
       @flags = nil
@@ -24,6 +23,7 @@ module AmplitudeExperiment
                         Logger::INFO
                       end
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
+      @engine = Evaluation::Engine.new
 
       @assignment_service = nil
       @assignment_service = AssignmentService.new(AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config), AssignmentFilter.new(config.assignment_config.cache_capacity)) if config&.assignment_config
@@ -67,15 +67,13 @@ module AmplitudeExperiment
       flags = @flag_config_storage.flag_configs
       return {} if flags.nil?
 
-      sorted_flags = AmplitudeExperiment.topological_sort(flags, flag_keys.to_set)
+      sorted_flags = TopologicalSort.sort(flags, flag_keys)
       required_cohorts_in_storage(sorted_flags)
-      flags_json = sorted_flags.to_json
       user = enrich_user_with_cohorts(user, flags) if @config.cohort_sync_config
       context = AmplitudeExperiment.user_to_evaluation_context(user)
-      context_json = context.to_json
 
-      @logger.debug("[Experiment] Evaluate: User: #{context_json} - Rules: #{flags}") if @config.debug
-      result = evaluation(flags_json, context_json)
+      @logger.debug("[Experiment] Evaluate: User: #{context} - Rules: #{flags}") if @config.debug
+      result = @engine.evaluate(context, sorted_flags)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
       variants = AmplitudeExperiment.evaluation_variants_json_to_variants(result)
       @assignment_service&.track(Assignment.new(user, variants))
@@ -113,9 +111,9 @@ module AmplitudeExperiment
         missing_cohorts_str = "[#{missing_cohorts.map(&:to_s).join(', ')}]"
 
         message = if @config.cohort_sync_config
-                    "Evaluating flag #{flag['key']} dependent on cohorts #{cohort_ids_str} without #{missing_cohorts_str} in storage"
+                    "Evaluating flag #{flag.key} dependent on cohorts #{cohort_ids_str} without #{missing_cohorts_str} in storage"
                   else
-                    "Evaluating flag #{flag['key']} dependent on cohorts #{cohort_ids_str} without cohort syncing configured"
+                    "Evaluating flag #{flag.key} dependent on cohorts #{cohort_ids_str} without cohort syncing configured"
                   end
 
         @logger.warn(message)

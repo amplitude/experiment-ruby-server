@@ -3,7 +3,7 @@ module AmplitudeExperiment
   describe DeploymentRunner do
     let(:cohort_id) { '1234' }
     before(:each) do
-      @flag = {
+      @flag = Evaluation::Flag.from_hash({
         'key' => 'flag',
         'variants' => {},
         'segments' => [
@@ -19,7 +19,7 @@ module AmplitudeExperiment
             ]
           }
         ]
-      }
+      })
     end
 
     describe '#start' do
