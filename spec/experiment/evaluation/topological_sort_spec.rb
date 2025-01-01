@@ -3,11 +3,11 @@
 RSpec.describe TopologicalSort do
   def create_flag(key, dependencies = nil)
     Evaluation::Flag.from_hash({
-      'key' => key.to_s,
-      'variants' => {},
-      'segments' => [],
-      'dependencies' => dependencies&.map(&:to_s)
-    })
+                                 'key' => key.to_s,
+                                 'variants' => {},
+                                 'segments' => [],
+                                 'dependencies' => dependencies&.map(&:to_s)
+                               })
   end
 
   describe '.sort' do
@@ -36,8 +36,8 @@ RSpec.describe TopologicalSort do
         '2' => create_flag(2)
       }
       expect(TopologicalSort.sort(flags)).to eq([create_flag(1), create_flag(2)])
-      expect(TopologicalSort.sort(flags, ['1', '2'])).to eq([create_flag(1), create_flag(2)])
-      expect(TopologicalSort.sort(flags, ['99', '999'])).to eq([])
+      expect(TopologicalSort.sort(flags, %w[1 2])).to eq([create_flag(1), create_flag(2)])
+      expect(TopologicalSort.sort(flags, %w[99 999])).to eq([])
     end
 
     it 'handles multiple flags with dependencies' do
@@ -48,8 +48,8 @@ RSpec.describe TopologicalSort do
       }
       expected = [create_flag(3), create_flag(2, [3]), create_flag(1, [2])]
       expect(TopologicalSort.sort(flags)).to eq(expected)
-      expect(TopologicalSort.sort(flags, ['1', '2'])).to eq(expected)
-      expect(TopologicalSort.sort(flags, ['99', '999'])).to eq([])
+      expect(TopologicalSort.sort(flags, %w[1 2])).to eq(expected)
+      expect(TopologicalSort.sort(flags, %w[99 999])).to eq([])
     end
 
     it 'detects single flag cycle' do

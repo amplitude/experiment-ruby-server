@@ -7,6 +7,7 @@ module Evaluation
 
     selector.each do |selector_element|
       return nil if selector_element.nil? || selectable.nil?
+
       selectable = selectable[selector_element]
     end
 

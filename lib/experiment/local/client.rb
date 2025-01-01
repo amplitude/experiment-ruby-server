@@ -23,6 +23,7 @@ module AmplitudeExperiment
                         Logger::INFO
                       end
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
+
       @engine = Evaluation::Engine.new
 
       @assignment_service = nil

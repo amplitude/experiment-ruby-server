@@ -84,9 +84,9 @@ class Murmur3
 
     def read_int_le(data, index = 0)
       n = (data[index] << 24) |
-        (data[index + 1] << 16) |
-        (data[index + 2] << 8) |
-        data[index + 3]
+          (data[index + 1] << 16) |
+          (data[index + 2] << 8) |
+          data[index + 3]
       reverse_bytes(n)
     end
 

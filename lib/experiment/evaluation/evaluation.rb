@@ -24,30 +24,30 @@ module Evaluation
       result = nil
       flag.segments.each do |segment|
         result = evaluate_segment(target, flag, segment)
-        if result
-          # Merge all metadata into the result
-          metadata = {}
-          metadata.merge!(flag.metadata) if flag.metadata
-          metadata.merge!(segment.metadata) if segment.metadata
-          metadata.merge!(result.metadata) if result.metadata
-          result.metadata = metadata
-          break
-        end
+        next unless result
+
+        # Merge all metadata into the result
+        metadata = {}
+        metadata.merge!(flag.metadata) if flag.metadata
+        metadata.merge!(segment.metadata) if segment.metadata
+        metadata.merge!(result.metadata) if result.metadata
+        result.metadata = metadata
+        break
       end
       result
     end
 
     def evaluate_segment(target, flag, segment)
-      if !segment.conditions
-        # Null conditions always match
-        variant_key = bucket(target, segment)
-        variant_key ? flag.variants[variant_key] : nil
-      else
+      if segment.conditions
         match = evaluate_conditions(target, segment.conditions)
         if match
           variant_key = bucket(target, segment)
           variant_key ? flag.variants[variant_key] : nil
         end
+      else
+        # Null conditions always match
+        variant_key = bucket(target, segment)
+        variant_key ? flag.variants[variant_key] : nil
       end
     end
 
@@ -71,6 +71,7 @@ module Evaluation
       elsif set_operator?(condition.op)
         prop_value_string_list = coerce_string_array(prop_value)
         return false unless prop_value_string_list
+
         match_set(prop_value_string_list, condition.op, condition.values)
       else
         prop_value_string = coerce_string(prop_value)
@@ -87,7 +88,7 @@ module Evaluation
     end
 
     def bucket(target, segment)
-      if !segment.bucket
+      unless segment.bucket
         # Null bucket means segment is fully rolled out
         return segment.variant
       end
@@ -106,14 +107,12 @@ module Evaluation
       segment.bucket.allocations.each do |allocation|
         allocation_start = allocation.range[0]
         allocation_end = allocation.range[1]
-        if allocation_value >= allocation_start && allocation_value < allocation_end
-          allocation.distributions.each do |distribution|
-            distribution_start = distribution.range[0]
-            distribution_end = distribution.range[1]
-            if distribution_value >= distribution_start && distribution_value < distribution_end
-              return distribution.variant
-            end
-          end
+        next unless allocation_value >= allocation_start && allocation_value < allocation_end
+
+        allocation.distributions.each do |distribution|
+          distribution_start = distribution.range[0]
+          distribution_end = distribution.range[1]
+          return distribution.variant if distribution_value >= distribution_start && distribution_value < distribution_end
         end
       end
 
@@ -189,7 +188,7 @@ module Evaluation
     def matches_is?(prop_value, filter_values)
       if contains_booleans?(filter_values)
         lower = prop_value.downcase
-        return filter_values.any? { |value| value.downcase == lower } if ['true', 'false'].include?(lower)
+        return filter_values.any? { |value| value.downcase == lower } if %w[true false].include?(lower)
       end
       filter_values.any? { |value| prop_value == value }
     end
@@ -203,8 +202,8 @@ module Evaluation
     def matches_comparable?(prop_value, op, filter_values, type_transformer, type_comparator)
       prop_value_transformed = type_transformer.call(prop_value)
       filter_values_transformed = filter_values
-                                    .map { |filter_value| type_transformer.call(filter_value) }
-                                    .compact
+                                  .map { |filter_value| type_transformer.call(filter_value) }
+                                  .compact
 
       if !prop_value_transformed || filter_values_transformed.empty?
         filter_values.any? { |filter_value| comparator(prop_value, op, filter_value) }
@@ -258,6 +257,7 @@ module Evaluation
     def coerce_string(value)
       return nil if value.nil?
       return value.to_json if value.is_a?(Hash)
+
       value.to_s
     end
 
@@ -300,6 +300,7 @@ module Evaluation
 
     def matches_set_contains_all?(prop_values, filter_values)
       return false if prop_values.length < filter_values.length
+
       filter_values.all? { |filter_value| matches_is?(filter_value, prop_values) }
     end
 

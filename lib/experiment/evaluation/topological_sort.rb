@@ -2,6 +2,7 @@
 
 class CycleError < StandardError
   attr_accessor :path
+
   def initialize(path)
     super("Detected a cycle between flags #{path}")
     self.path = path
@@ -14,7 +15,7 @@ class TopologicalSort
   def self.sort(flags, flag_keys = nil)
     available = flags.clone
     result = []
-    starting_keys = flag_keys == nil || flag_keys.length == 0 ? flags.keys : flag_keys
+    starting_keys = flag_keys.nil? || flag_keys.empty? ? flags.keys : flag_keys
 
     starting_keys.each do |flag_key|
       traversal = parent_traversal(flag_key, available)
@@ -23,8 +24,6 @@ class TopologicalSort
 
     result
   end
-
-  private
 
   # Perform depth-first traversal of flag dependencies
   def self.parent_traversal(flag_key, available, path = [])
@@ -42,9 +41,7 @@ class TopologicalSort
     result = []
 
     flag.dependencies.each do |parent_key|
-      if path.any? { |p| p == parent_key }
-        raise CycleError, path
-      end
+      raise CycleError, path if path.any? { |p| p == parent_key }
 
       traversal = parent_traversal(parent_key, available, path)
       result.concat(traversal) if traversal

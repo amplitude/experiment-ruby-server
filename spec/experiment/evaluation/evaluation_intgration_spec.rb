@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'net/http'
 require 'json'
 
@@ -62,8 +63,8 @@ describe Evaluation::Engine do
     it 'tests sticky bucketing' do
       # On
       user = user_context('user_id', 'device_id', nil, {
-        '[Experiment] test-sticky-bucketing' => 'on'
-      })
+                            '[Experiment] test-sticky-bucketing' => 'on'
+                          })
 
       result = engine.evaluate(user, flags)['test-sticky-bucketing']
       expect(result.key).to eq('on')
@@ -71,16 +72,16 @@ describe Evaluation::Engine do
 
       # Off
       user = user_context('user_id', 'device_id', nil, {
-        '[Experiment] test-sticky-bucketing' => 'off'
-      })
+                            '[Experiment] test-sticky-bucketing' => 'off'
+                          })
       result = engine.evaluate(user, flags)['test-sticky-bucketing']
       expect(result.key).to eq('off')
       expect(result.metadata['segmentName']).to eq('All Other Users')
 
       # Non-variant
       user = user_context('user_id', 'device_id', nil, {
-        '[Experiment] test-sticky-bucketing' => 'not-a-variant'
-      })
+                            '[Experiment] test-sticky-bucketing' => 'not-a-variant'
+                          })
       result = engine.evaluate(user, flags)['test-sticky-bucketing']
       expect(result.key).to eq('off')
       expect(result.metadata['segmentName']).to eq('All Other Users')
@@ -107,18 +108,18 @@ describe Evaluation::Engine do
     it 'tests multiple conditions and values' do
       # All match
       user = user_context('user_id', 'device_id', nil, {
-        'key-1' => 'value-1',
-        'key-2' => 'value-2',
-        'key-3' => 'value-3'
-      })
+                            'key-1' => 'value-1',
+                            'key-2' => 'value-2',
+                            'key-3' => 'value-3'
+                          })
       result = engine.evaluate(user, flags)['test-multiple-conditions-and-values']
       expect(result.key).to eq('on')
 
       # Some match
       user = user_context('user_id', 'device_id', nil, {
-        'key-1' => 'value-1',
-        'key-2' => 'value-2'
-      })
+                            'key-1' => 'value-1',
+                            'key-2' => 'value-2'
+                          })
       result = engine.evaluate(user, flags)['test-multiple-conditions-and-values']
       expect(result.key).to eq('off')
     end
@@ -132,11 +133,11 @@ describe Evaluation::Engine do
     end
 
     it 'tests cohort targeting' do
-      user = user_context(nil, nil, nil, nil, ['u0qtvwla', '12345678'])
+      user = user_context(nil, nil, nil, nil, %w[u0qtvwla 12345678])
       result = engine.evaluate(user, flags)['test-cohort-targeting']
       expect(result.key).to eq('on')
 
-      user = user_context(nil, nil, nil, nil, ['12345678', '87654321'])
+      user = user_context(nil, nil, nil, nil, %w[12345678 87654321])
       result = engine.evaluate(user, flags)['test-cohort-targeting']
       expect(result.key).to eq('off')
     end
@@ -231,9 +232,10 @@ describe Evaluation::Engine do
       10_000.times do |i|
         user = user_context(nil, (i + 1).to_s)
         result = engine.evaluate(user, flags)['test-1-percent-distribution']
-        if result&.key == 'control'
+        case result&.key
+        when 'control'
           control += 1
-        elsif result&.key == 'treatment'
+        when 'treatment'
           treatment += 1
         end
       end
@@ -247,9 +249,10 @@ describe Evaluation::Engine do
       10_000.times do |i|
         user = user_context(nil, (i + 1).to_s)
         result = engine.evaluate(user, flags)['test-50-percent-distribution']
-        if result&.key == 'control'
+        case result&.key
+        when 'control'
           control += 1
-        elsif result&.key == 'treatment'
+        when 'treatment'
           treatment += 1
         end
       end
@@ -263,9 +266,10 @@ describe Evaluation::Engine do
       10_000.times do |i|
         user = user_context(nil, (i + 1).to_s)
         result = engine.evaluate(user, flags)['test-99-percent-distribution']
-        if result&.key == 'control'
+        case result&.key
+        when 'control'
           control += 1
-        elsif result&.key == 'treatment'
+        when 'treatment'
           treatment += 1
         end
       end
@@ -369,37 +373,37 @@ describe Evaluation::Engine do
     end
 
     it 'tests set is' do
-      user = user_context(nil, nil, nil, { 'key' => ['1', '2', '3'] })
+      user = user_context(nil, nil, nil, { 'key' => %w[1 2 3] })
       result = engine.evaluate(user, flags)['test-set-is']
       expect(result.key).to eq('on')
     end
 
     it 'tests set is not' do
-      user = user_context(nil, nil, nil, { 'key' => ['1', '2'] })
+      user = user_context(nil, nil, nil, { 'key' => %w[1 2] })
       result = engine.evaluate(user, flags)['test-set-is-not']
       expect(result.key).to eq('on')
     end
 
     it 'tests set contains' do
-      user = user_context(nil, nil, nil, { 'key' => ['1', '2', '3', '4'] })
+      user = user_context(nil, nil, nil, { 'key' => %w[1 2 3 4] })
       result = engine.evaluate(user, flags)['test-set-contains']
       expect(result.key).to eq('on')
     end
 
     it 'tests set does not contain' do
-      user = user_context(nil, nil, nil, { 'key' => ['1', '2', '4'] })
+      user = user_context(nil, nil, nil, { 'key' => %w[1 2 4] })
       result = engine.evaluate(user, flags)['test-set-does-not-contain']
       expect(result.key).to eq('on')
     end
 
     it 'tests set contains any' do
-      user = user_context(nil, nil, nil, nil, ['u0qtvwla', '12345678'])
+      user = user_context(nil, nil, nil, nil, %w[u0qtvwla 12345678])
       result = engine.evaluate(user, flags)['test-set-contains-any']
       expect(result.key).to eq('on')
     end
 
     it 'tests set does not contain any' do
-      user = user_context(nil, nil, nil, nil, ['12345678', '87654321'])
+      user = user_context(nil, nil, nil, nil, %w[12345678 87654321])
       result = engine.evaluate(user, flags)['test-set-does-not-contain-any']
       expect(result.key).to eq('on')
     end
@@ -419,25 +423,25 @@ describe Evaluation::Engine do
     it 'tests is with booleans' do
       # Test with uppercase TRUE/FALSE
       user = user_context(nil, nil, nil, {
-        'true' => 'TRUE',
-        'false' => 'FALSE'
-      })
+                            'true' => 'TRUE',
+                            'false' => 'FALSE'
+                          })
       result = engine.evaluate(user, flags)['test-is-with-booleans']
       expect(result.key).to eq('on')
 
       # Test with title case True/False
       user = user_context(nil, nil, nil, {
-        'true' => 'True',
-        'false' => 'False'
-      })
+                            'true' => 'True',
+                            'false' => 'False'
+                          })
       result = engine.evaluate(user, flags)['test-is-with-booleans']
       expect(result.key).to eq('on')
 
       # Test with lowercase true/false
       user = user_context(nil, nil, nil, {
-        'true' => 'true',
-        'false' => 'false'
-      })
+                            'true' => 'true',
+                            'false' => 'false'
+                          })
       result = engine.evaluate(user, flags)['test-is-with-booleans']
       expect(result.key).to eq('on')
     end
@@ -485,6 +489,7 @@ describe Evaluation::Engine do
     end
 
     raise "Response error #{response.code}" unless response.code == '200'
+
     JSON.parse(response.body).map { |flag| Evaluation::Flag.from_hash(flag) }
   end
 end

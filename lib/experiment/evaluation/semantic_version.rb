@@ -8,7 +8,7 @@ class SemanticVersion
   MAJOR_MINOR_REGEX = '(\d+)\.(\d+)'
   PATCH_REGEX = '(\d+)'
   PRERELEASE_REGEX = '(-(([-\w]+\.?)*))?'
-  VERSION_PATTERN = /^#{MAJOR_MINOR_REGEX}(\.#{PATCH_REGEX}#{PRERELEASE_REGEX})?$/
+  VERSION_PATTERN = /^#{MAJOR_MINOR_REGEX}(\.#{PATCH_REGEX}#{PRERELEASE_REGEX})?$/.freeze
 
   def initialize(major, minor, patch, pre_release = nil)
     @major = major
