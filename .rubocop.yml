@@ -37,6 +37,12 @@ Naming/FileName:
   Exclude:
     - lib/amplitude-experiment.rb # Gem name, added for easier Gemfile usage
 
+Naming/AccessorMethodName:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
 Metrics/ClassLength:
   Enabled: false
 

@@ -40,7 +40,7 @@ module AmplitudeExperiment
 
     def put_flag_config(flag_config)
       @flag_configs_lock.synchronize do
-        @flag_configs[flag_config['key']] = flag_config
+        @flag_configs[flag_config.key] = flag_config
       end
     end
 
