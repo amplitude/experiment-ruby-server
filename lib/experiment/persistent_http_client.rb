@@ -5,7 +5,7 @@ module AmplitudeExperiment
   # WARNING: these connections are not safe for concurrent requests. Callers
   # must synchronize requests per connection.
   class PersistentHttpClient
-    DEFAULT_OPTIONS = { read_timeout: 80 }.freeze
+    DEFAULT_OPTIONS = { open_timeout: 60, read_timeout: 80 }.freeze
 
     class << self
       # url: URI / String

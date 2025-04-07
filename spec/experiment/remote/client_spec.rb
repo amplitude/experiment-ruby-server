@@ -62,6 +62,16 @@ module AmplitudeExperiment
       test_fetch_shared response_without_payload, test_user, variant_name, false, Variant.new(key: 'on')
       test_fetch_shared response_with_value_without_payload, test_user, variant_name, false, Variant.new(value: 'on')
 
+      it 'open timeout failure' do
+        stub_request(:post, server_url)
+          .to_timeout
+        test_user = User.new(user_id: 'test_user')
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(open_timeout_millis: 1, fetch_retries: 1, debug: true))
+        variants = nil
+        expect { variants = client.fetch(test_user) }.to output(/Retrying fetch/).to_stdout_from_any_process
+        expect(variants).to eq({})
+      end
+
       it 'fetch timeout failure' do
         stub_request(:post, server_url)
           .to_timeout
@@ -145,6 +155,16 @@ module AmplitudeExperiment
       test_fetch_v2_shared response_with_hash_payload, test_user_with_properties, variant_name, false, Variant.new(key: 'off', payload: { 'nested' => 'nested payload' })
       test_fetch_v2_shared response_without_payload, test_user, variant_name, false, Variant.new(key: 'on')
       test_fetch_v2_shared response_with_value_without_payload, test_user, variant_name, false, Variant.new(value: 'on')
+
+      it 'fetch v2 open timeout failure' do
+        stub_request(:post, server_url)
+          .to_timeout
+        test_user = User.new(user_id: 'test_user')
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(open_timeout_millis: 1, fetch_retries: 1, debug: true))
+        variants = nil
+        expect { variants = client.fetch_v2(test_user) }.to output(/Retrying fetch/).to_stdout_from_any_process
+        expect(variants).to eq({})
+      end
 
       it 'fetch v2 timeout failure' do
         stub_request(:post, server_url)
