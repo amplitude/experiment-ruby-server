@@ -66,7 +66,7 @@ module AmplitudeExperiment
         stub_request(:post, server_url)
           .to_timeout
         test_user = User.new(user_id: 'test_user')
-        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(open_timeout_millis: 1, fetch_retries: 1, debug: true))
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(connect_timeout_millis: 1, fetch_retries: 1, debug: true))
         variants = nil
         expect { variants = client.fetch(test_user) }.to output(/Retrying fetch/).to_stdout_from_any_process
         expect(variants).to eq({})
@@ -160,7 +160,7 @@ module AmplitudeExperiment
         stub_request(:post, server_url)
           .to_timeout
         test_user = User.new(user_id: 'test_user')
-        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(open_timeout_millis: 1, fetch_retries: 1, debug: true))
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(connect_timeout_millis: 1, fetch_retries: 1, debug: true))
         variants = nil
         expect { variants = client.fetch_v2(test_user) }.to output(/Retrying fetch/).to_stdout_from_any_process
         expect(variants).to eq({})

@@ -89,7 +89,7 @@ module AmplitudeExperiment
     # @param [User] user
     def fetch_internal(user)
       @logger.debug("[Experiment] Fetching variants for user: #{user.as_json}")
-      do_fetch(user, @config.open_timeout_millis, @config.fetch_timeout_millis)
+      do_fetch(user, @config.connect_timeout_millis, @config.fetch_timeout_millis)
     rescue StandardError => e
       @logger.error("[Experiment] Fetch failed: #{e.message}")
       if should_retry_fetch?(e)
@@ -112,7 +112,7 @@ module AmplitudeExperiment
       @config.fetch_retries.times do
         sleep(delay_millis.to_f / 1000.0)
         begin
-          return do_fetch(user, @config.open_timeout_millis, @config.fetch_retry_timeout_millis)
+          return do_fetch(user, @config.connect_timeout_millis, @config.fetch_retry_timeout_millis)
         rescue StandardError => e
           @logger.error("[Experiment] Retry failed: #{e.message}")
           err = e
@@ -124,16 +124,16 @@ module AmplitudeExperiment
 
     # @param [User] user
     # @param [Integer] timeout_millis
-    def do_fetch(user, open_timeout_millis, fetch_timeout_millis)
+    def do_fetch(user, connect_timeout_millis, fetch_timeout_millis)
       start_time = Time.now
       user_context = add_context(user)
       headers = {
         'Authorization' => "Api-Key #{@api_key}",
         'Content-Type' => 'application/json;charset=utf-8'
       }
-      open_timeout = open_timeout_millis.to_f / 1000 if (open_timeout_millis.to_f / 1000) > 0
+      connect_timeout = connect_timeout_millis.to_f / 1000 if (connect_timeout_millis.to_f / 1000) > 0
       read_timeout = fetch_timeout_millis.to_f / 1000 if (fetch_timeout_millis.to_f / 1000) > 0
-      http = PersistentHttpClient.get(@uri, { open_timeout: open_timeout, read_timeout: read_timeout }, @api_key)
+      http = PersistentHttpClient.get(@uri, { open_timeout: connect_timeout, read_timeout: read_timeout }, @api_key)
       request = Net::HTTP::Post.new(@uri, headers)
       request.body = user_context.to_json
       @logger.warn("[Experiment] encoded user object length #{request.body.length} cannot be cached by CDN; must be < 8KB") if request.body.length > 8000

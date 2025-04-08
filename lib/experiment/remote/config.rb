@@ -13,8 +13,8 @@ module AmplitudeExperiment
     attr_accessor :server_url
 
     # The request connection open timeout, in milliseconds, used when fetching variants triggered by calling start() or setUser().
-    # @return [Integer] the value of open_timeout_millis
-    attr_accessor :open_timeout_millis
+    # @return [Integer] the value of connect_timeout_millis
+    attr_accessor :connect_timeout_millis
 
     # The request timeout, in milliseconds, used when fetching variants triggered by calling start() or setUser().
     # @return [Integer] the value of fetch_timeout_millis
@@ -44,7 +44,7 @@ module AmplitudeExperiment
 
     # @param [Boolean] debug Set to true to log some extra information to the console.
     # @param [String] server_url The server endpoint from which to request variants.
-    # @param [Integer] open_timeout_millis The request connection open timeout, in milliseconds, used when
+    # @param [Integer] connect_timeout_millis The request connection open timeout, in milliseconds, used when
     #  fetching variants triggered by calling start() or setUser().
     # @param [Integer] fetch_timeout_millis The request timeout, in milliseconds, used when fetching variants
     #  triggered by calling start() or setUser().
@@ -55,12 +55,12 @@ module AmplitudeExperiment
     #  greater than the max, the max is used for all subsequent retries.
     # @param [Float] fetch_retry_backoff_scalar Scales the minimum backoff exponentially.
     # @param [Integer] fetch_retry_timeout_millis The request timeout for retrying fetch requests.
-    def initialize(debug: false, server_url: DEFAULT_SERVER_URL, open_timeout_millis: 60_000, fetch_timeout_millis: 10_000, fetch_retries: 0,
+    def initialize(debug: false, server_url: DEFAULT_SERVER_URL, connect_timeout_millis: 60_000, fetch_timeout_millis: 10_000, fetch_retries: 0,
                    fetch_retry_backoff_min_millis: 500, fetch_retry_backoff_max_millis: 10_000,
                    fetch_retry_backoff_scalar: 1.5, fetch_retry_timeout_millis: 10_000)
       @debug = debug
       @server_url = server_url
-      @open_timeout_millis = open_timeout_millis
+      @connect_timeout_millis = connect_timeout_millis
       @fetch_timeout_millis = fetch_timeout_millis
       @fetch_retries = fetch_retries
       @fetch_retry_backoff_min_millis = fetch_retry_backoff_min_millis
