@@ -123,7 +123,8 @@ module AmplitudeExperiment
     end
 
     # @param [User] user
-    # @param [Integer] timeout_millis
+    # @param [Integer] connect_timeout_millis
+    # @param [Integer] fetch_timeout_millis
     def do_fetch(user, connect_timeout_millis, fetch_timeout_millis)
       start_time = Time.now
       user_context = add_context(user)
