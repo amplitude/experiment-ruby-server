@@ -17,11 +17,11 @@ module.exports = {
         ["@semantic-release/changelog", {
             "changelogFile": "CHANGELOG.md"
         }],
+        "semantic-release-rubygem",
         ["@semantic-release/git", {
             "assets": ["lib/experiment/version.rb", "CHANGELOG.md"],
             "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
         }],
-        "semantic-release-rubygem",
         "@semantic-release/github",
     ],
 }
