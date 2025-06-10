@@ -14,12 +14,12 @@ Gem::Specification.new do |spec|
   spec.files                 = Dir['README.md',
                                    'lib/**/*.rb',
                                    'amplitude-experiment.gemspec',
-                                   'Gemfile',
-                                   'lib/experiment/local/evaluation/lib/**/*']
+                                   'Gemfile']
   spec.require_paths         = ['lib']
   spec.extra_rdoc_files      = ['README.md']
 
-  spec.add_development_dependency 'concurrent-ruby', '~> 1.2.2'
+  spec.add_dependency 'concurrent-ruby', '~> 1.2.2'
+
   spec.add_development_dependency 'psych', '~> 4.0'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rdoc', '= 6.10'
