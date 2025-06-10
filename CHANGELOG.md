@@ -1,3 +1,16 @@
+# [1.6.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.5.0...v1.6.0) (2025-06-10)
+
+
+### Bug Fixes
+
+* update gemspec and release action ([8bd973b](https://github.com/amplitude/experiment-ruby-server/commit/8bd973b58bd6b8c37e031507b7f7b0d845a59a08))
+
+
+### Features
+
+* added connect timeout ([#72](https://github.com/amplitude/experiment-ruby-server/issues/72)) ([94d2a94](https://github.com/amplitude/experiment-ruby-server/commit/94d2a949e4355c71f37496619c731a77b5eea501))
+* local evaluation reimplementation in pure ruby ([#69](https://github.com/amplitude/experiment-ruby-server/issues/69)) ([2a26335](https://github.com/amplitude/experiment-ruby-server/commit/2a263357c003372218a80beb230e9830f3e6ee9c))
+
 # [1.5.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.4.0...v1.5.0) (2024-08-27)
 
 
