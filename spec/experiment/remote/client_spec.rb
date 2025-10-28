@@ -93,10 +93,13 @@ module AmplitudeExperiment
           stub_request(:post, server_url)
             .to_return(status: 200, body: response)
           client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(debug: debug))
+          callback_called = false
           variants = client.fetch_async(test_user) do |user, block_variants|
             expect(user).to equal(test_user)
             expect(block_variants.fetch(variant_name)).to eq(expected_variant)
+            callback_called = true
           end
+          sleep 1 until callback_called
           expect(variants.key?(variant_name)).to be_truthy
           expect(variants.fetch(variant_name)).to eq(expected_variant)
         end

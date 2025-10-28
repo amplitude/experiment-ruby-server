@@ -57,7 +57,7 @@ module AmplitudeExperiment
     # @yield [User, Hash] callback block takes user object and variants hash
     def fetch_async(user, &callback)
       Thread.new do
-        variants = fetch_internal(user, nil)
+        variants = AmplitudeExperiment.filter_default_variants(fetch_internal(user, nil))
         yield(user, variants) unless callback.nil?
         variants
       rescue StandardError => e
@@ -76,7 +76,7 @@ module AmplitudeExperiment
     def fetch_async_v2(user, fetch_options = nil, &callback)
       Thread.new do
         variants = fetch_internal(user, fetch_options)
-        yield(user, filter_default_variants(variants)) unless callback.nil?
+        yield(user, variants) unless callback.nil?
         variants
       rescue StandardError => e
         @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
