@@ -180,11 +180,13 @@ module AmplitudeExperiment
         stub_request(:post, server_url)
           .to_return(status: 200, body: response_with_key)
         test_user = User.new(user_id: 'test_user')
+        client = RemoteEvaluationClient.new(api_key)
+
+        WebMock.reset!
         fetch_options = FetchOptions.new(tracks_assignment: true, tracks_exposure: true)
-        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(debug: true))
         variants = client.fetch_v2(test_user, fetch_options)
         expect(variants.key?(variant_name)).to be_truthy
-        expect(variants.fetch(variant_name)).to eq(Variant.new(key: 'on', payload: 'payload'))
+        expect(variants.fetch(variant_name)).to eq(Variant.new(key: 'on', payload: 'payload', value: 'on'))
 
         expect(a_request(:post, server_url).with(headers: { 'X-Amp-Exp-Track' => 'track', 'X-Amp-Exp-Exposure-Track' => 'track' })).to have_been_made.once
 
