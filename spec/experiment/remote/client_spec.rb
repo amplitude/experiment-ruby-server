@@ -175,6 +175,49 @@ module AmplitudeExperiment
         expect { variants = client.fetch_v2(test_user) }.to output(/Retrying fetch/).to_stdout_from_any_process
         expect(variants).to eq({})
       end
+
+      it 'fetch v2 with fetch options' do
+        stub_request(:post, server_url)
+          .to_return(status: 200, body: response_with_key)
+        test_user = User.new(user_id: 'test_user')
+        fetch_options = FetchOptions.new(tracks_assignment: true, tracks_exposure: true)
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(debug: true))
+        variants = client.fetch_v2(test_user, fetch_options)
+        expect(variants.key?(variant_name)).to be_truthy
+        expect(variants.fetch(variant_name)).to eq(Variant.new(key: 'on', payload: 'payload'))
+
+        expect(a_request(:post, server_url).with(headers: { 'X-Amp-Exp-Track' => 'track', 'X-Amp-Exp-Exposure-Track' => 'track' })).to have_been_made.once
+
+        WebMock.reset!
+        fetch_options = FetchOptions.new(tracks_assignment: false, tracks_exposure: false)
+        client.fetch_v2(test_user, fetch_options)
+        expect(a_request(:post, server_url).with(headers: { 'X-Amp-Exp-Track' => 'no-track', 'X-Amp-Exp-Exposure-Track' => 'no-track' })).to have_been_made.once
+
+        WebMock.reset!
+        last_request = nil
+        WebMock.after_request { |request_signature, _response| last_request = request_signature }
+        fetch_options = FetchOptions.new
+        client.fetch_v2(test_user, fetch_options)
+        expect(a_request(:post, server_url)).to have_been_made.once
+        expect(last_request.headers.key?('X-Amp-Exp-Track')).to be_falsy
+        expect(last_request.headers.key?('X-Amp-Exp-Exposure-Track')).to be_falsy
+      end
+    end
+
+    describe '#fetch_async_v2' do
+      it 'fetch async v2 with fetch options' do
+        stub_request(:post, server_url)
+          .to_return(status: 200, body: response_with_key)
+        test_user = User.new(user_id: 'test_user')
+        fetch_options = FetchOptions.new(tracks_assignment: true, tracks_exposure: true)
+        client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(debug: true))
+        client.fetch_async_v2(test_user, fetch_options) do |user, block_variants|
+          expect(user).to equal(test_user)
+          expect(block_variants.key?(variant_name)).to be_truthy
+          expect(block_variants.fetch(variant_name)).to eq(Variant.new(key: 'on', payload: 'payload'))
+          expect(a_request(:post, server_url).with(headers: { 'X-Amp-Exp-Track' => 'track', 'X-Amp-Exp-Exposure-Track' => 'track' })).to have_been_made.once
+        end
+      end
     end
   end
 end
