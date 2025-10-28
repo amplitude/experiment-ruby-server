@@ -213,12 +213,15 @@ module AmplitudeExperiment
         test_user = User.new(user_id: 'test_user')
         fetch_options = FetchOptions.new(tracks_assignment: true, tracks_exposure: true)
         client = RemoteEvaluationClient.new(api_key, RemoteEvaluationConfig.new(debug: true))
+        callback_called = false
         client.fetch_async_v2(test_user, fetch_options) do |user, block_variants|
           expect(user).to equal(test_user)
           expect(block_variants.key?(variant_name)).to be_truthy
           expect(block_variants.fetch(variant_name)).to eq(Variant.new(key: 'on', payload: 'payload'))
           expect(a_request(:post, server_url).with(headers: { 'X-Amp-Exp-Track' => 'track', 'X-Amp-Exp-Exposure-Track' => 'track' })).to have_been_made.once
+          callback_called = true
         end
+        sleep 1 until callback_called
       end
     end
   end
