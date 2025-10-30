@@ -13,12 +13,7 @@ module AmplitudeExperiment
     def initialize(api_key, config = nil)
       @api_key = api_key
       @config = config || RemoteEvaluationConfig.new
-      @logger = Logger.new($stdout)
-      @logger.level = if @config.debug
-                        Logger::DEBUG
-                      else
-                        Logger::INFO
-                      end
+      @logger = @config.logger
       endpoint = "#{@config.server_url}/sdk/v2/vardata?v=0"
       @uri = URI(endpoint)
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?

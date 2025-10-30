@@ -87,7 +87,7 @@ module AmplitudeAnalytics
         @configuration.callback.call(event, code, message) if @configuration.callback.respond_to?(:call)
         event.callback(code, message)
       rescue StandardError => e
-        @configuration.logger.exception("Error callback for event #{event}: #{e.message}")
+        @configuration.logger.error("Error callback for event #{event}: #{e.message}")
       end
     end
 

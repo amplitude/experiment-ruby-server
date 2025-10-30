@@ -14,14 +14,9 @@ module AmplitudeExperiment
     def initialize(api_key, config = nil)
       @api_key = api_key
       @config = config || LocalEvaluationConfig.new
+      @logger = @config.logger
       @flags = nil
       @flags_mutex = Mutex.new
-      @logger = Logger.new($stdout)
-      @logger.level = if @config.debug
-                        Logger::DEBUG
-                      else
-                        Logger::INFO
-                      end
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
 
       @engine = Evaluation::Engine.new

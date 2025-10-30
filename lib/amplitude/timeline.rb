@@ -49,7 +49,7 @@ module AmplitudeAnalytics
         @plugins[PluginType::DESTINATION].each do |destination|
           destination_futures << destination.flush
         rescue StandardError
-          logger.exception('Error for flush events')
+          logger.error('Error for flush events')
         end
       end
       destination_futures
