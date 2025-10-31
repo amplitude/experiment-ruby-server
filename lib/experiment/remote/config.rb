@@ -65,7 +65,7 @@ module AmplitudeExperiment
     # @param [Float] fetch_retry_backoff_scalar Scales the minimum backoff exponentially.
     # @param [Integer] fetch_retry_timeout_millis The request timeout for retrying fetch requests.
     def initialize(debug: false,
-                   logger: RemoteEvaluationConfig.new_default_logger,
+                   logger: nil,
                    server_url: DEFAULT_SERVER_URL,
                    connect_timeout_millis: 60_000,
                    fetch_timeout_millis: 10_000,
@@ -75,7 +75,10 @@ module AmplitudeExperiment
                    fetch_retry_backoff_scalar: 1.5,
                    fetch_retry_timeout_millis: 10_000)
       @logger = logger
-      @logger.level = Logger::DEBUG if debug
+      if logger.nil?
+        @logger = Logger.new(DEFAULT_LOGDEV)
+        @logger.level = debug ? Logger::DEBUG : DEFAULT_LOG_LEVEL
+      end
       @server_url = server_url
       @connect_timeout_millis = connect_timeout_millis
       @fetch_timeout_millis = fetch_timeout_millis
@@ -84,12 +87,6 @@ module AmplitudeExperiment
       @fetch_retry_backoff_max_millis = fetch_retry_backoff_max_millis
       @fetch_retry_backoff_scalar = fetch_retry_backoff_scalar
       @fetch_retry_timeout_millis = fetch_retry_timeout_millis
-    end
-
-    def self.new_default_logger
-      logger = Logger.new(DEFAULT_LOGDEV)
-      logger.level = DEFAULT_LOG_LEVEL
-      logger
     end
   end
 end

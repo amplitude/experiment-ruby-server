@@ -36,19 +36,17 @@ module AmplitudeExperiment
         expect(client.instance_variable_get(:@logger)).to eq(custom_logger)
       end
 
-      it 'debug flag overrides logger level to DEBUG when debug is true' do
-        custom_logger = Logger.new($stdout)
-        custom_logger.level = Logger::WARN
-        config = LocalEvaluationConfig.new(logger: custom_logger, debug: true)
+      it 'debug flag overrides logger level to DEBUG when not provided a custom logger ' do
+        config = LocalEvaluationConfig.new(debug: true)
         client = LocalEvaluationClient.new(api_key, config)
 
         expect(client.instance_variable_get(:@logger).level).to eq(Logger::DEBUG)
       end
 
-      it 'debug flag does not modify logger level when debug is false' do
+      it 'debug flag does not modify logger level when provided a custom logger' do
         custom_logger = Logger.new($stdout)
         custom_logger.level = Logger::WARN
-        config = LocalEvaluationConfig.new(logger: custom_logger, debug: false)
+        config = LocalEvaluationConfig.new(logger: custom_logger, debug: true)
         client = LocalEvaluationClient.new(api_key, config)
 
         expect(client.instance_variable_get(:@logger).level).to eq(Logger::WARN)

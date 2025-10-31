@@ -55,11 +55,14 @@ module AmplitudeExperiment
                    bootstrap: {},
                    flag_config_polling_interval_millis: 30_000,
                    debug: false,
-                   logger: LocalEvaluationConfig.new_default_logger,
+                   logger: nil,
                    assignment_config: nil,
                    cohort_sync_config: nil)
       @logger = logger
-      @logger.level = Logger::DEBUG if debug
+      if logger.nil?
+        @logger = Logger.new(DEFAULT_LOGDEV)
+        @logger.level = debug ? Logger::DEBUG : DEFAULT_LOG_LEVEL
+      end
       @server_url = server_url
       @server_zone = server_zone
       @cohort_sync_config = cohort_sync_config
@@ -70,12 +73,6 @@ module AmplitudeExperiment
       @bootstrap = bootstrap
       @flag_config_polling_interval_millis = flag_config_polling_interval_millis
       @assignment_config = assignment_config
-    end
-
-    def self.new_default_logger
-      logger = Logger.new(DEFAULT_LOGDEV)
-      logger.level = DEFAULT_LOG_LEVEL
-      logger
     end
   end
 end
