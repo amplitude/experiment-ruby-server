@@ -11,6 +11,30 @@ module AmplitudeExperiment
       it 'raises an error if api_key is empty' do
         expect { RemoteEvaluationClient.new('') }.to raise_error(ArgumentError)
       end
+
+      it 'uses custom logger when provided' do
+        custom_logger = Logger.new($stdout)
+        config = RemoteEvaluationConfig.new(logger: custom_logger)
+        client = RemoteEvaluationClient.new(api_key, config)
+
+        expect(client.instance_variable_get(:@logger)).to eq(custom_logger)
+      end
+
+      it 'debug flag overrides logger level to DEBUG when not provided a custom logger ' do
+        config = RemoteEvaluationConfig.new(debug: true)
+        client = RemoteEvaluationClient.new(api_key, config)
+
+        expect(client.instance_variable_get(:@logger).level).to eq(Logger::DEBUG)
+      end
+
+      it 'debug flag does not modify logger level when provided a custom logger' do
+        custom_logger = Logger.new($stdout)
+        custom_logger.level = Logger::WARN
+        config = RemoteEvaluationConfig.new(logger: custom_logger, debug: true)
+        client = RemoteEvaluationClient.new(api_key, config)
+
+        expect(client.instance_variable_get(:@logger).level).to eq(Logger::WARN)
+      end
     end
 
     response_with_key = '{"sdk-ci-test":{"key":"on","payload":"payload"}}'
