@@ -25,7 +25,7 @@ module AmplitudeExperiment
     # @param [User] user
     # @return [Hash] Variants Hash
     def fetch(user)
-      AmplitudeExperiment.filter_default_variants(fetch_internal(user))
+      AmplitudeExperiment.filter_default_variants(fetch_internal(user, nil))
     rescue StandardError => e
       @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
       {}
@@ -36,9 +36,10 @@ module AmplitudeExperiment
     # This method will automatically retry if configured (default). This function differs from fetch as it will
     # return a default variant object if the flag was evaluated but the user was not assigned (i.e. off).
     # @param [User] user
+    # @param [FetchOptions] fetch_options
     # @return [Hash] Variants Hash
-    def fetch_v2(user)
-      fetch_internal(user)
+    def fetch_v2(user, fetch_options = nil)
+      fetch_internal(user, fetch_options)
     rescue StandardError => e
       @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
       {}
@@ -51,7 +52,7 @@ module AmplitudeExperiment
     # @yield [User, Hash] callback block takes user object and variants hash
     def fetch_async(user, &callback)
       Thread.new do
-        variants = fetch_internal(user)
+        variants = AmplitudeExperiment.filter_default_variants(fetch_internal(user, nil))
         yield(user, variants) unless callback.nil?
         variants
       rescue StandardError => e
@@ -67,10 +68,10 @@ module AmplitudeExperiment
     # This method will automatically retry if configured (default).
     # @param [User] user
     # @yield [User, Hash] callback block takes user object and variants hash
-    def fetch_async_v2(user, &callback)
+    def fetch_async_v2(user, fetch_options = nil, &callback)
       Thread.new do
-        variants = fetch_internal(user)
-        yield(user, filter_default_variants(variants)) unless callback.nil?
+        variants = fetch_internal(user, fetch_options)
+        yield(user, variants) unless callback.nil?
         variants
       rescue StandardError => e
         @logger.error("[Experiment] Failed to fetch variants: #{e.message}")
@@ -82,14 +83,15 @@ module AmplitudeExperiment
     private
 
     # @param [User] user
-    def fetch_internal(user)
+    # @param [FetchOptions] fetch_options
+    def fetch_internal(user, fetch_options)
       @logger.debug("[Experiment] Fetching variants for user: #{user.as_json}")
-      do_fetch(user, @config.connect_timeout_millis, @config.fetch_timeout_millis)
+      do_fetch(user, fetch_options, @config.connect_timeout_millis, @config.fetch_timeout_millis)
     rescue StandardError => e
       @logger.error("[Experiment] Fetch failed: #{e.message}")
       if should_retry_fetch?(e)
         begin
-          retry_fetch(user)
+          retry_fetch(user, fetch_options)
         rescue StandardError => err
           @logger.error("[Experiment] Retry Fetch failed: #{err.message}")
         end
@@ -98,7 +100,8 @@ module AmplitudeExperiment
     end
 
     # @param [User] user
-    def retry_fetch(user)
+    # @param [FetchOptions] fetch_options
+    def retry_fetch(user, fetch_options)
       return {} if @config.fetch_retries.zero?
 
       @logger.debug('[Experiment] Retrying fetch')
@@ -107,7 +110,7 @@ module AmplitudeExperiment
       @config.fetch_retries.times do
         sleep(delay_millis.to_f / 1000.0)
         begin
-          return do_fetch(user, @config.connect_timeout_millis, @config.fetch_retry_timeout_millis)
+          return do_fetch(user, fetch_options, @config.connect_timeout_millis, @config.fetch_retry_timeout_millis)
         rescue StandardError => e
           @logger.error("[Experiment] Retry failed: #{e.message}")
           err = e
@@ -118,15 +121,24 @@ module AmplitudeExperiment
     end
 
     # @param [User] user
+    # @param [FetchOptions] fetch_options
     # @param [Integer] connect_timeout_millis
     # @param [Integer] fetch_timeout_millis
-    def do_fetch(user, connect_timeout_millis, fetch_timeout_millis)
+    def do_fetch(user, fetch_options, connect_timeout_millis, fetch_timeout_millis)
       start_time = Time.now
       user_context = add_context(user)
       headers = {
         'Authorization' => "Api-Key #{@api_key}",
         'Content-Type' => 'application/json;charset=utf-8'
       }
+      unless fetch_options.nil?
+        unless fetch_options.tracks_assignment.nil?
+          headers['X-Amp-Exp-Track'] = fetch_options.tracks_assignment ? 'track' : 'no-track'
+        end
+        unless fetch_options.tracks_exposure.nil?
+          headers['X-Amp-Exp-Exposure-Track'] = fetch_options.tracks_exposure ? 'track' : 'no-track'
+        end
+      end
       connect_timeout = connect_timeout_millis.to_f / 1000 if (connect_timeout_millis.to_f / 1000) > 0
       read_timeout = fetch_timeout_millis.to_f / 1000 if (fetch_timeout_millis.to_f / 1000) > 0
       http = PersistentHttpClient.get(@uri, { open_timeout: connect_timeout, read_timeout: read_timeout }, @api_key)
