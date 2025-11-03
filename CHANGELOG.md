@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.6.0...v1.7.0) (2025-11-03)
+
+
+### Features
+
+* allow configs to take in user provided logger instances for client logging behavior ([#74](https://github.com/amplitude/experiment-ruby-server/issues/74)) ([9d3167d](https://github.com/amplitude/experiment-ruby-server/commit/9d3167df2372ee2b4bb8bc972b603e3de9fd0be6))
+
 # [1.6.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.5.0...v1.6.0) (2025-06-10)
 
 
