@@ -1,6 +1,8 @@
 module AmplitudeExperiment
   # ExposureFilter
   class ExposureFilter
+    attr_accessor :ttl_millis
+
     def initialize(size, ttl_millis = DAY_MILLIS)
       @cache = LRUCache.new(size, ttl_millis)
       @ttl_millis = ttl_millis

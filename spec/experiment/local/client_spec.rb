@@ -1,3 +1,4 @@
+require 'set'
 module AmplitudeExperiment
   describe LocalEvaluationClient do
     let(:api_key) { 'client-DvWljIjiiuqLbyjqdvBaLFfEBrAvGuA3' }
@@ -108,6 +109,55 @@ module AmplitudeExperiment
         local_evaluation_client.start
         result = local_evaluation_client.evaluate(test_user2)
         expect(result['sdk-ci-local-dependencies-test-holdout']).to eq(nil)
+      end
+
+      it 'evaluate_v2 with tracks_exposure tracks non-default variants' do
+        setup_stub
+
+        local_evaluation_client = LocalEvaluationClient.new(api_key)
+        local_evaluation_client.start
+
+        # Mock the amplitude client's track method
+        mock_amplitude = local_evaluation_client.instance_variable_get(:@exposure_service).instance_variable_get(:@amplitude)
+        tracked_events = []
+        allow(mock_amplitude).to receive(:track) do |event|
+          tracked_events << event
+        end
+
+        # Perform evaluation with tracks_exposure=true
+        options = EvaluateOptions.new(tracks_exposure: true)
+        variants = local_evaluation_client.evaluate_v2(test_user, ['sdk-local-evaluation-ci-test'], options)
+
+        # Verify that track was called
+        expect(tracked_events.length).to be > 0, 'Amplitude track should be called when tracks_exposure is true'
+
+        # Count non-default variants
+        non_default_variants = variants.reject do |_flag_key, variant|
+          (variant.metadata && variant.metadata['default'])
+        end
+
+        # Verify that we have one event per non-default variant
+        expect(tracked_events.length).to eq(non_default_variants.length),
+                                         "Expected #{non_default_variants.length} exposure events, got #{tracked_events.length}"
+
+        # Verify each event has the correct structure
+        tracked_flag_keys = Set.new
+        tracked_events.each do |event|
+          expect(event.event_type).to eq('[Experiment] Exposure')
+          expect(event.user_id).to eq(test_user.user_id)
+          flag_key = event.event_properties['[Experiment] Flag Key']
+          expect(flag_key).not_to be_nil, 'Event should have flag key'
+          tracked_flag_keys.add(flag_key)
+          # Verify the variant is not default
+          variant = variants[flag_key]
+          expect(variant).not_to be_nil, "Variant for #{flag_key} should exist"
+          expect(variant.metadata && variant.metadata['default']).to be_falsy,
+                                                                     "Variant for #{flag_key} should not be default"
+        end
+
+        # Verify all non-default variants were tracked
+        expect(tracked_flag_keys).to eq(Set.new(non_default_variants.keys)),
+                                     'All non-default variants should be tracked'
       end
     end
   end
