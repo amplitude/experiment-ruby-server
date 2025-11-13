@@ -33,9 +33,7 @@ module AmplitudeExperiment
         unset_props = {}
         flag_type = variant.metadata['flagType'] if variant.metadata
         if flag_type != 'mutual-exclusion-group'
-          if is_default
-            unset_props["[Experiment] #{flag_key}"] = '-'
-          elsif variant.key
+          if variant.key
             set_props["[Experiment] #{flag_key}"] = variant.key
           elsif variant.value
             set_props["[Experiment] #{flag_key}"] = variant.value
@@ -44,15 +42,13 @@ module AmplitudeExperiment
 
         # Build event properties.
         event_properties = {}
-        unless is_default
-          event_properties['[Experiment] Flag Key'] = flag_key
-          if variant.key
-            event_properties['[Experiment] Variant'] = variant.key
-          elsif variant.value
-            event_properties['[Experiment] Variant'] = variant.value
-          end
-          event_properties['metadata'] = variant.metadata if variant.metadata
+        event_properties['[Experiment] Flag Key'] = flag_key
+        if variant.key
+          event_properties['[Experiment] Variant'] = variant.key
+        elsif variant.value
+          event_properties['[Experiment] Variant'] = variant.value
         end
+        event_properties['metadata'] = variant.metadata if variant.metadata
 
         # Build event.
         event = AmplitudeAnalytics::BaseEvent.new(
