@@ -24,6 +24,11 @@ module AmplitudeExperiment
       @assignment_service = nil
       @assignment_service = AssignmentService.new(AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config), AssignmentFilter.new(config.assignment_config.cache_capacity)) if config&.assignment_config
 
+      # Exposure service is always instantiated, using deployment key if no api key provided
+      exposure_config = @config.exposure_config
+      exposure_config.api_key ||= @api_key
+      @exposure_service = ExposureService.new(AmplitudeAnalytics::Amplitude.new(exposure_config.api_key, configuration: exposure_config), ExposureFilter.new(exposure_config.cache_capacity))
+
       @cohort_storage = InMemoryCohortStorage.new
       @flag_config_storage = InMemoryFlagConfigStorage.new
       @flag_config_fetcher = LocalEvaluationFetcher.new(@api_key, @logger, @config.server_url)
@@ -51,6 +56,7 @@ module AmplitudeExperiment
       AmplitudeExperiment.filter_default_variants(variants)
     end
 
+    # TODO: ruby backwards compatibility for evaluate_v2 to be looked at again
     # Locally evaluates flag variants for a user.
     #  This function will only evaluate flags for the keys specified in the flag_keys argument. If flag_keys is
     #  missing or None, all flags are evaluated. This function differs from evaluate as it will return a default
@@ -58,12 +64,18 @@ module AmplitudeExperiment
     #
     # @param [User] user The user to evaluate
     # @param [String[]] flag_keys The flags to evaluate with the user, if empty all flags are evaluated
+    # @param [EvaluateOptions] options Optional evaluation options
     # @return [Hash[String, Variant]] The evaluated variants
-    def evaluate_v2(user, flag_keys = [])
+    def evaluate_v2(user, flag_keys = [], options = nil)
+      # Handle backwards compatibility: if options is nil, create default
+      options = EvaluateOptions.new(flag_keys: flag_keys) if options.nil?
+      # Use flag_keys from options if provided, otherwise fall back to parameter
+      flag_keys_to_use = options.flag_keys || flag_keys
+
       flags = @flag_config_storage.flag_configs
       return {} if flags.nil?
 
-      sorted_flags = TopologicalSort.sort(flags, flag_keys)
+      sorted_flags = TopologicalSort.sort(flags, flag_keys_to_use)
       required_cohorts_in_storage(sorted_flags)
       user = enrich_user_with_cohorts(user, flags) if @config.cohort_sync_config
       context = AmplitudeExperiment.user_to_evaluation_context(user)
@@ -72,6 +84,8 @@ module AmplitudeExperiment
       result = @engine.evaluate(context, sorted_flags)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
       variants = AmplitudeExperiment.evaluation_variants_json_to_variants(result)
+      @exposure_service.track(Exposure.new(user, variants)) if options.tracks_exposure == true
+      # @deprecated Assignment tracking is deprecated. Use ExposureService with Exposure tracking instead.
       @assignment_service&.track(Assignment.new(user, variants))
       variants
     end

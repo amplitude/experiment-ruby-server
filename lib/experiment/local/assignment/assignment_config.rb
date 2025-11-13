@@ -1,5 +1,6 @@
 module AmplitudeExperiment
   # AssignmentConfig
+  # @deprecated Assignment tracking is deprecated. Use ExposureConfig with ExposureService instead.
   class AssignmentConfig < AmplitudeAnalytics::Config
     attr_accessor :api_key, :cache_capacity
 

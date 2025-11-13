@@ -1,5 +1,6 @@
 module AmplitudeExperiment
   # AssignmentFilter
+  # @deprecated Assignment tracking is deprecated. Use ExposureFilter with ExposureService instead.
   class AssignmentFilter
     def initialize(size, ttl_millis = DAY_MILLIS)
       @cache = LRUCache.new(size, ttl_millis)
