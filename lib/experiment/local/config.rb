@@ -35,8 +35,13 @@ module AmplitudeExperiment
     attr_accessor :flag_config_polling_interval_millis
 
     # Configuration for automatically tracking assignment events after an evaluation.
+    # @deprecated use exposure_config instead
     # @return [AssignmentConfig] the config instance
     attr_accessor :assignment_config
+
+    # Configuration for automatically tracking exposure events after an evaluation.
+    # @return [ExposureConfig] the config instance
+    attr_accessor :exposure_config
 
     # Configuration for downloading cohorts required for flag evaluation
     # @return [CohortSyncConfig] the config instance
@@ -48,7 +53,8 @@ module AmplitudeExperiment
     # @param [String] server_zone Location of the Amplitude data center to get flags and cohorts from, US or EU
     # @param [Hash] bootstrap The value of bootstrap.
     # @param [long] flag_config_polling_interval_millis The value of flag config polling interval in million seconds.
-    # @param [AssignmentConfig] assignment_config Configuration for automatically tracking assignment events after an evaluation.
+    # @param [AssignmentConfig] assignment_config Configuration for automatically tracking assignment events after an evaluation. @deprecated use exposure_config instead
+    # @param [ExposureConfig] exposure_config Configuration for automatically tracking exposure events after an evaluation.
     # @param [CohortSyncConfig] cohort_sync_config Configuration for downloading cohorts required for flag evaluation
     def initialize(server_url: DEFAULT_SERVER_URL,
                    server_zone: ServerZone::US,
@@ -57,6 +63,7 @@ module AmplitudeExperiment
                    debug: false,
                    logger: nil,
                    assignment_config: nil,
+                   exposure_config: nil,
                    cohort_sync_config: nil)
       @logger = logger
       if logger.nil?
@@ -73,6 +80,7 @@ module AmplitudeExperiment
       @bootstrap = bootstrap
       @flag_config_polling_interval_millis = flag_config_polling_interval_millis
       @assignment_config = assignment_config
+      @exposure_config = exposure_config || ExposureConfig.new
     end
   end
 end

@@ -1,8 +1,6 @@
 module AmplitudeExperiment
-  DAY_MILLIS = 86_400_000
-  # Assignment
-  # @deprecated Assignment tracking is deprecated. Use Exposure with ExposureService instead.
-  class Assignment
+  # Exposure is a class that represents a user's exposure to a set of flags.
+  class Exposure
     attr_accessor :user, :results, :timestamp
 
     def initialize(user, results)
