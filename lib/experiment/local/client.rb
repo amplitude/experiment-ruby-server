@@ -84,9 +84,7 @@ module AmplitudeExperiment
       result = @engine.evaluate(context, sorted_flags)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
       variants = AmplitudeExperiment.evaluation_variants_json_to_variants(result)
-      if options.tracks_exposure == true
-        @exposure_service.track(Exposure.new(user, variants))
-      end
+      @exposure_service.track(Exposure.new(user, variants)) if options.tracks_exposure == true
       # @deprecated Assignment tracking is deprecated. Use ExposureService with Exposure tracking instead.
       @assignment_service&.track(Assignment.new(user, variants))
       variants
