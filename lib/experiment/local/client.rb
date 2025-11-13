@@ -67,15 +67,10 @@ module AmplitudeExperiment
     # @param [EvaluateOptions] options Optional evaluation options
     # @return [Hash[String, Variant]] The evaluated variants
     def evaluate_v2(user, flag_keys = [], options = nil)
-      # Handle backwards compatibility: if options is nil, create default
-      options = EvaluateOptions.new(flag_keys: flag_keys) if options.nil?
-      # Use flag_keys from options if provided, otherwise fall back to parameter
-      flag_keys_to_use = options.flag_keys || flag_keys
-
       flags = @flag_config_storage.flag_configs
       return {} if flags.nil?
 
-      sorted_flags = TopologicalSort.sort(flags, flag_keys_to_use)
+      sorted_flags = TopologicalSort.sort(flags, flag_keys)
       required_cohorts_in_storage(sorted_flags)
       user = enrich_user_with_cohorts(user, flags) if @config.cohort_sync_config
       context = AmplitudeExperiment.user_to_evaluation_context(user)
@@ -84,7 +79,7 @@ module AmplitudeExperiment
       result = @engine.evaluate(context, sorted_flags)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
       variants = AmplitudeExperiment.evaluation_variants_json_to_variants(result)
-      @exposure_service.track(Exposure.new(user, variants)) if options.tracks_exposure == true
+      @exposure_service.track(Exposure.new(user, variants)) if options&.tracks_exposure == true
       # @deprecated Assignment tracking is deprecated. Use ExposureService with Exposure tracking instead.
       @assignment_service&.track(Assignment.new(user, variants))
       variants

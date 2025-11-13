@@ -1,10 +1,9 @@
 module AmplitudeExperiment
   # Options for evaluating variants for a user.
   class EvaluateOptions
-    attr_accessor :flag_keys, :tracks_exposure
+    attr_accessor :tracks_exposure
 
-    def initialize(flag_keys: nil, tracks_exposure: nil)
-      @flag_keys = flag_keys
+    def initialize(tracks_exposure: nil)
       @tracks_exposure = tracks_exposure
     end
   end
