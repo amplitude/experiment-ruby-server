@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Evaluation do
+RSpec.describe AmplitudeAnalytics::Evaluation do
   let(:primitive_object) do
     {
       'null' => nil,

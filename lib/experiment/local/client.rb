@@ -19,7 +19,7 @@ module AmplitudeExperiment
       @flags_mutex = Mutex.new
       raise ArgumentError, 'Experiment API key is empty' if @api_key.nil? || @api_key.empty?
 
-      @engine = Evaluation::Engine.new
+      @engine = AmplitudeAnalytics::Evaluation::Engine.new
 
       @assignment_service = nil
       @assignment_service = AssignmentService.new(AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config), AssignmentFilter.new(config.assignment_config.cache_capacity)) if config&.assignment_config
@@ -63,7 +63,7 @@ module AmplitudeExperiment
       flags = @flag_config_storage.flag_configs
       return {} if flags.nil?
 
-      sorted_flags = TopologicalSort.sort(flags, flag_keys)
+      sorted_flags = AmplitudeAnalytics::TopologicalSort.sort(flags, flag_keys)
       required_cohorts_in_storage(sorted_flags)
       user = enrich_user_with_cohorts(user, flags) if @config.cohort_sync_config
       context = AmplitudeExperiment.user_to_evaluation_context(user)

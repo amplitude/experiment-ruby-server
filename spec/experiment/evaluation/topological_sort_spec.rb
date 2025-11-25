@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe TopologicalSort do
+RSpec.describe AmplitudeAnalytics::TopologicalSort do
   def create_flag(key, dependencies = nil)
-    Evaluation::Flag.from_hash({
+    AmplitudeAnalytics::Evaluation::Flag.from_hash({
                                  'key' => key.to_s,
                                  'variants' => {},
                                  'segments' => [],
@@ -12,22 +12,22 @@ RSpec.describe TopologicalSort do
 
   describe '.sort' do
     it 'handles empty flag list' do
-      expect(TopologicalSort.sort({})).to eq([])
-      expect(TopologicalSort.sort({}, ['1'])).to eq([])
+      expect(AmplitudeAnalytics::TopologicalSort.sort({})).to eq([])
+      expect(AmplitudeAnalytics::TopologicalSort.sort({}, ['1'])).to eq([])
     end
 
     it 'handles single flag without dependencies' do
       flags = { '1' => create_flag(1) }
-      expect(TopologicalSort.sort(flags)).to eq([create_flag(1)])
-      expect(TopologicalSort.sort(flags, ['1'])).to eq([create_flag(1)])
-      expect(TopologicalSort.sort(flags, ['999'])).to eq([])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags)).to eq([create_flag(1)])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags, ['1'])).to eq([create_flag(1)])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags, ['999'])).to eq([])
     end
 
     it 'handles single flag with dependencies' do
       flags = { '1' => create_flag(1, [2]) }
-      expect(TopologicalSort.sort(flags)).to eq([create_flag(1, [2])])
-      expect(TopologicalSort.sort(flags, ['1'])).to eq([create_flag(1, [2])])
-      expect(TopologicalSort.sort(flags, ['999'])).to eq([])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags)).to eq([create_flag(1, [2])])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags, ['1'])).to eq([create_flag(1, [2])])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags, ['999'])).to eq([])
     end
 
     it 'handles multiple flags without dependencies' do
@@ -35,9 +35,9 @@ RSpec.describe TopologicalSort do
         '1' => create_flag(1),
         '2' => create_flag(2)
       }
-      expect(TopologicalSort.sort(flags)).to eq([create_flag(1), create_flag(2)])
-      expect(TopologicalSort.sort(flags, %w[1 2])).to eq([create_flag(1), create_flag(2)])
-      expect(TopologicalSort.sort(flags, %w[99 999])).to eq([])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags)).to eq([create_flag(1), create_flag(2)])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags, %w[1 2])).to eq([create_flag(1), create_flag(2)])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags, %w[99 999])).to eq([])
     end
 
     it 'handles multiple flags with dependencies' do
@@ -47,16 +47,16 @@ RSpec.describe TopologicalSort do
         '3' => create_flag(3)
       }
       expected = [create_flag(3), create_flag(2, [3]), create_flag(1, [2])]
-      expect(TopologicalSort.sort(flags)).to eq(expected)
-      expect(TopologicalSort.sort(flags, %w[1 2])).to eq(expected)
-      expect(TopologicalSort.sort(flags, %w[99 999])).to eq([])
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags)).to eq(expected)
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags, %w[1 2])).to eq(expected)
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags, %w[99 999])).to eq([])
     end
 
     it 'detects single flag cycle' do
       flags = { '1' => create_flag(1, [1]) }
-      expect { TopologicalSort.sort(flags) }.to raise_error(CycleError) { |e| expect(e.path).to eq ['1'] }
-      expect { TopologicalSort.sort(flags, ['1']) }.to raise_error(CycleError) { |e| expect(e.path).to eq ['1'] }
-      expect { TopologicalSort.sort(flags, ['999']) }.not_to raise_error
+      expect { AmplitudeAnalytics::TopologicalSort.sort(flags) }.to raise_error(AmplitudeAnalytics::CycleError) { |e| expect(e.path).to eq ['1'] }
+      expect { AmplitudeAnalytics::TopologicalSort.sort(flags, ['1']) }.to raise_error(AmplitudeAnalytics::CycleError) { |e| expect(e.path).to eq ['1'] }
+      expect { AmplitudeAnalytics::TopologicalSort.sort(flags, ['999']) }.not_to raise_error
     end
 
     it 'detects cycles between two flags' do
@@ -64,9 +64,9 @@ RSpec.describe TopologicalSort do
         '1' => create_flag(1, [2]),
         '2' => create_flag(2, [1])
       }
-      expect { TopologicalSort.sort(flags) }.to raise_error(CycleError) { |e| expect(e.path).to eq %w[1 2] }
-      expect { TopologicalSort.sort(flags, ['2']) }.to raise_error(CycleError) { |e| expect(e.path).to eq %w[2 1] }
-      expect { TopologicalSort.sort(flags, ['999']) }.not_to raise_error
+      expect { AmplitudeAnalytics::TopologicalSort.sort(flags) }.to raise_error(AmplitudeAnalytics::CycleError) { |e| expect(e.path).to eq %w[1 2] }
+      expect { AmplitudeAnalytics::TopologicalSort.sort(flags, ['2']) }.to raise_error(AmplitudeAnalytics::CycleError) { |e| expect(e.path).to eq %w[2 1] }
+      expect { AmplitudeAnalytics::TopologicalSort.sort(flags, ['999']) }.not_to raise_error
     end
 
     it 'handles complex dependencies without cycles' do
@@ -90,7 +90,7 @@ RSpec.describe TopologicalSort do
         create_flag(2, [1])
       ]
 
-      expect(TopologicalSort.sort(flags)).to eq(expected)
+      expect(AmplitudeAnalytics::TopologicalSort.sort(flags)).to eq(expected)
     end
   end
 end

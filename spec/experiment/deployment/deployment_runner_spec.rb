@@ -3,7 +3,7 @@ module AmplitudeExperiment
   describe DeploymentRunner do
     let(:cohort_id) { '1234' }
     before(:each) do
-      @flag = Evaluation::Flag.from_hash(
+      @flag = AmplitudeAnalytics::Evaluation::Flag.from_hash(
         {
           'key' => 'flag',
           'variants' => {},

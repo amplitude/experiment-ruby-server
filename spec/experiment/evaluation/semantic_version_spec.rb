@@ -1,15 +1,15 @@
-describe SemanticVersion do
+describe AmplitudeAnalytics::SemanticVersion do
   def assert_invalid_version(version)
-    expect(SemanticVersion.parse(version)).to be_nil
+    expect(AmplitudeAnalytics::SemanticVersion.parse(version)).to be_nil
   end
 
   def assert_valid_version(version)
-    expect(SemanticVersion.parse(version)).not_to be_nil
+    expect(AmplitudeAnalytics::SemanticVersion.parse(version)).not_to be_nil
   end
 
   def assert_version_comparison(v1, op, v2)
-    sv1 = SemanticVersion.parse(v1)
-    sv2 = SemanticVersion.parse(v2)
+    sv1 = AmplitudeAnalytics::SemanticVersion.parse(v1)
+    sv2 = AmplitudeAnalytics::SemanticVersion.parse(v2)
     expect(sv1).not_to be_nil
     expect(sv2).not_to be_nil
     return if sv1.nil? || sv2.nil?

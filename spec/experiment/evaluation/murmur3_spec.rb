@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Murmur3 do
+RSpec.describe AmplitudeAnalytics::Murmur3 do
   let(:murmur_seed) { 0x7f3a21ea }
 
   describe '.hash32x86' do

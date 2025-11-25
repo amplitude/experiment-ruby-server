@@ -3,9 +3,9 @@
 require 'net/http'
 require 'json'
 
-describe Evaluation::Engine do
+describe AmplitudeAnalytics::Evaluation::Engine do
   let(:deployment_key) { 'server-NgJxxvg8OGwwBsWVXqyxQbdiflbhvugy' }
-  let(:engine) { Evaluation::Engine.new }
+  let(:engine) { AmplitudeAnalytics::Evaluation::Engine.new }
   let(:flags) { get_flags(deployment_key) }
 
   describe 'basic tests' do
@@ -490,6 +490,6 @@ describe Evaluation::Engine do
 
     raise "Response error #{response.code}" unless response.code == '200'
 
-    JSON.parse(response.body).map { |flag| Evaluation::Flag.from_hash(flag) }
+    JSON.parse(response.body).map { |flag| AmplitudeAnalytics::Evaluation::Flag.from_hash(flag) }
   end
 end
