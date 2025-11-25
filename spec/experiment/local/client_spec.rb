@@ -114,7 +114,7 @@ module AmplitudeExperiment
       it 'evaluate_v2 with tracks_exposure tracks non-default variants' do
         setup_stub
 
-        local_evaluation_client = LocalEvaluationClient.new(api_key)
+        local_evaluation_client = LocalEvaluationClient.new(api_key, LocalEvaluationConfig.new(exposure_config: ExposureConfig.new('api_key')))
         local_evaluation_client.start
 
         # Mock the amplitude client's track method

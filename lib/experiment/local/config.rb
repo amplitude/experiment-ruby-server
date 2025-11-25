@@ -80,7 +80,7 @@ module AmplitudeExperiment
       @bootstrap = bootstrap
       @flag_config_polling_interval_millis = flag_config_polling_interval_millis
       @assignment_config = assignment_config
-      @exposure_config = exposure_config || ExposureConfig.new
+      @exposure_config = exposure_config
     end
   end
 end

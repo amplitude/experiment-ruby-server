@@ -20,7 +20,6 @@ module AmplitudeExperiment
       events = []
       canonicalized = exposure.canonicalize
       exposure.results.each do |flag_key, variant|
-        # TODO: We don't seem to use trackExposure metadata.
         track_exposure = variant.metadata ? variant.metadata.fetch('trackExposure', true) : true
         next unless track_exposure
 

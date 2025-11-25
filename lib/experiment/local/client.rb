@@ -25,9 +25,8 @@ module AmplitudeExperiment
       @assignment_service = AssignmentService.new(AmplitudeAnalytics::Amplitude.new(config.assignment_config.api_key, configuration: config.assignment_config), AssignmentFilter.new(config.assignment_config.cache_capacity)) if config&.assignment_config
 
       # Exposure service is always instantiated, using deployment key if no api key provided
-      exposure_config = @config.exposure_config
-      exposure_config.api_key ||= @api_key
-      @exposure_service = ExposureService.new(AmplitudeAnalytics::Amplitude.new(exposure_config.api_key, configuration: exposure_config), ExposureFilter.new(exposure_config.cache_capacity))
+      @exposure_service = nil
+      @exposure_service = ExposureService.new(AmplitudeAnalytics::Amplitude.new(config.exposure_config.api_key, configuration: config.exposure_config), ExposureFilter.new(config.exposure_config.cache_capacity)) if config&.exposure_config
 
       @cohort_storage = InMemoryCohortStorage.new
       @flag_config_storage = InMemoryFlagConfigStorage.new
@@ -79,7 +78,7 @@ module AmplitudeExperiment
       result = @engine.evaluate(context, sorted_flags)
       @logger.debug("[Experiment] evaluate - result: #{result}") if @config.debug
       variants = AmplitudeExperiment.evaluation_variants_json_to_variants(result)
-      @exposure_service.track(Exposure.new(user, variants)) if options&.tracks_exposure == true
+      @exposure_service&.track(Exposure.new(user, variants)) if options&.tracks_exposure == true
       # @deprecated Assignment tracking is deprecated. Use ExposureService with Exposure tracking instead.
       @assignment_service&.track(Assignment.new(user, variants))
       variants
