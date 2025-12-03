@@ -1,6 +1,8 @@
 require 'uri'
 require 'logger'
+
 require_relative '../../amplitude'
+require_relative '../evaluation'
 
 module AmplitudeExperiment
   FLAG_TYPE_MUTUAL_EXCLUSION_GROUP = 'mutual-exclusion-group'.freeze
@@ -63,7 +65,7 @@ module AmplitudeExperiment
       flags = @flag_config_storage.flag_configs
       return {} if flags.nil?
 
-      sorted_flags = TopologicalSort.sort(flags, flag_keys)
+      sorted_flags = Evaluation::TopologicalSort.sort(flags, flag_keys)
       required_cohorts_in_storage(sorted_flags)
       user = enrich_user_with_cohorts(user, flags) if @config.cohort_sync_config
       context = AmplitudeExperiment.user_to_evaluation_context(user)

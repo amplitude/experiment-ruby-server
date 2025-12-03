@@ -27,12 +27,7 @@ require 'experiment/cohort/cohort_storage'
 require 'experiment/cohort/cohort_sync_config'
 require 'experiment/deployment/deployment_runner'
 require 'experiment/util/poller'
-require 'experiment/evaluation/evaluation'
-require 'experiment/evaluation/flag'
-require 'experiment/evaluation/murmur3'
-require 'experiment/evaluation/select'
-require 'experiment/evaluation/semantic_version'
-require 'experiment/evaluation/topological_sort'
+require 'experiment/evaluation'
 
 # Amplitude Experiment Module
 module AmplitudeExperiment
