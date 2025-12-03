@@ -1,14 +1,15 @@
 # frozen_string_literal: true
+
 module AmplitudeExperiment
   module Evaluation
     RSpec.describe TopologicalSort do
       def create_flag(key, dependencies = nil)
         Flag.from_hash({
-                        'key' => key.to_s,
-                        'variants' => {},
-                        'segments' => [],
-                        'dependencies' => dependencies&.map(&:to_s)
-                      })
+                         'key' => key.to_s,
+                         'variants' => {},
+                         'segments' => [],
+                         'dependencies' => dependencies&.map(&:to_s)
+                       })
       end
 
       describe '.sort' do
