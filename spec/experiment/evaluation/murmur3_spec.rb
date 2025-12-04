@@ -1,29 +1,33 @@
 # frozen_string_literal: true
 
-RSpec.describe Murmur3 do
-  let(:murmur_seed) { 0x7f3a21ea }
+module AmplitudeExperiment
+  module Evaluation
+    RSpec.describe Murmur3 do
+      let(:murmur_seed) { 0x7f3a21ea }
 
-  describe '.hash32x86' do
-    it 'handles simple input' do
-      input = 'brian'
-      result = described_class.hash32x86(input, murmur_seed)
-      expect(result).to eq(3_948_467_465)
-    end
+      describe '.hash32x86' do
+        it 'handles simple input' do
+          input = 'brian'
+          result = described_class.hash32x86(input, murmur_seed)
+          expect(result).to eq(3_948_467_465)
+        end
 
-    it 'matches reference output for english words' do
-      inputs = ENGLISH_WORDS.split("\n")
-      outputs = MURMUR3_X86_32.split("\n")
+        it 'matches reference output for english words' do
+          inputs = ENGLISH_WORDS.split("\n")
+          outputs = MURMUR3_X86_32.split("\n")
 
-      inputs.zip(outputs).each do |input, output|
-        result = described_class.hash32x86(input, murmur_seed)
-        expect(result).to eq(output.to_i)
+          inputs.zip(outputs).each do |input, output|
+            result = described_class.hash32x86(input, murmur_seed)
+            expect(result).to eq(output.to_i)
+          end
+        end
+
+        it 'handles unicode strings' do
+          expect(described_class.hash32x86('My hovercraft is full of eels.')).to eq(2_953_494_853)
+          expect(described_class.hash32x86('My 🚀 is full of 🦎.')).to eq(1_818_098_979)
+          expect(described_class.hash32x86('吉 星 高 照')).to eq(3_435_142_074)
+        end
       end
-    end
-
-    it 'handles unicode strings' do
-      expect(described_class.hash32x86('My hovercraft is full of eels.')).to eq(2_953_494_853)
-      expect(described_class.hash32x86('My 🚀 is full of 🦎.')).to eq(1_818_098_979)
-      expect(described_class.hash32x86('吉 星 高 照')).to eq(3_435_142_074)
     end
   end
 end
