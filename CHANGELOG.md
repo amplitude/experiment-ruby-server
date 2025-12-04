@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.7.0...v1.7.1) (2025-12-04)
+
+
+### Bug Fixes
+
+* package evaluation code into AmplitudeExperiment::Evaluation module ([#77](https://github.com/amplitude/experiment-ruby-server/issues/77)) ([6ed539a](https://github.com/amplitude/experiment-ruby-server/commit/6ed539a9dea38e4aa3b04db6e3f8b3939b7d7bf7))
+
 # [1.7.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.6.0...v1.7.0) (2025-11-03)
 
 
