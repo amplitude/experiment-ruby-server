@@ -126,7 +126,7 @@ module AmplitudeExperiment
 
         # Perform evaluation with tracks_exposure=true
         options = EvaluateOptions.new(tracks_exposure: true)
-        variants = local_evaluation_client.evaluate_v2(test_user, ['sdk-local-evaluation-ci-test'], options)
+        variants = local_evaluation_client.evaluate_v2(test_user2, [], options)
 
         # Verify that track was called
         expect(tracked_events.length).to be > 0, 'Amplitude track should be called when tracks_exposure is true'
@@ -144,7 +144,7 @@ module AmplitudeExperiment
         tracked_flag_keys = Set.new
         tracked_events.each do |event|
           expect(event.event_type).to eq('[Experiment] Exposure')
-          expect(event.user_id).to eq(test_user.user_id)
+          expect(event.user_id).to eq(test_user2.user_id)
           flag_key = event.event_properties['[Experiment] Flag Key']
           expect(flag_key).not_to be_nil, 'Event should have flag key'
           tracked_flag_keys.add(flag_key)
