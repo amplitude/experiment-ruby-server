@@ -1,6 +1,7 @@
 require_relative '../../../amplitude'
 module AmplitudeExperiment
   # AssignmentService
+  # @deprecated Assignment tracking is deprecated. Use ExposureService with Exposure tracking instead.
   class AssignmentService
     def initialize(amplitude, assignment_filter)
       @amplitude = amplitude
