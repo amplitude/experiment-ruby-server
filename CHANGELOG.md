@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.7.1...v1.8.0) (2025-12-15)
+
+
+### Features
+
+* add assignment and exposure events tracking options ([#73](https://github.com/amplitude/experiment-ruby-server/issues/73)) ([6b6bb2c](https://github.com/amplitude/experiment-ruby-server/commit/6b6bb2c3478f579e0f184a23ebdc08e6e0e95e69))
+
 ## [1.7.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.7.0...v1.7.1) (2025-12-04)
 
 
