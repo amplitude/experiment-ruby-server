@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.8.0...v1.9.0) (2026-01-07)
+
+
+### Features
+
+* add exposure service ([#75](https://github.com/amplitude/experiment-ruby-server/issues/75)) ([632a0f4](https://github.com/amplitude/experiment-ruby-server/commit/632a0f4fc52ca017b9338229416885fc5f4d84b4))
+
 # [1.8.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.7.1...v1.8.0) (2025-12-15)
 
 
