@@ -55,10 +55,11 @@ module AmplitudeAnalytics
 
     it 'pushes events with multithreading and pulls them' do
       event_set = Set.new
+      set_mutex = Mutex.new
       expect(@storage.workers).to receive(:start).exactly(100).times
       threads = []
       10.times do
-        t = Thread.new { push_event(@storage, event_set, 10) }
+        t = Thread.new { push_event(@storage, event_set, 10, mutex: set_mutex) }
         threads << t
       end
 
@@ -132,11 +133,15 @@ module AmplitudeAnalytics
 
     private
 
-    def push_event(storage, event_set, count)
+    def push_event(storage, event_set, count, mutex: nil)
       count.times do |i|
         event = BaseEvent.new("test_event_#{i}", user_id: 'test_user')
         storage.push(event, rand(101))
-        event_set.add(event)
+        if mutex
+          mutex.synchronize { event_set.add(event) }
+        else
+          event_set.add(event)
+        end
       end
     end
   end
