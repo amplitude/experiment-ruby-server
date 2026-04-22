@@ -66,22 +66,23 @@ module AmplitudeExperiment
 
       def match_condition(target, condition)
         prop_value = Evaluation.select(target, condition.selector)
-        # Special matching for null properties and set type prop values and operators
-        if !prop_value
-          match_null(condition.op, condition.values)
-        elsif set_operator?(condition.op)
-          prop_value_string_list = coerce_string_array(prop_value)
+        return match_null(condition.op, condition.values) unless prop_value
+
+        prop_value_string_list = coerce_string_array(prop_value)
+        if set_operator?(condition.op)
           return false unless prop_value_string_list
 
           match_set(prop_value_string_list, condition.op, condition.values)
+        elsif prop_value_string_list
+          match_strings_non_set(prop_value_string_list, condition.op, condition.values)
         else
           prop_value_string = coerce_string(prop_value)
-          if prop_value_string
-            match_string(prop_value_string, condition.op, condition.values)
-          else
-            false
-          end
+          prop_value_string ? match_string(prop_value_string, condition.op, condition.values) : false
         end
+      end
+
+      def match_strings_non_set(prop_values, op, filter_values)
+        prop_values.any? { |v| match_string(v, op, filter_values) }
       end
 
       def get_hash(key)
@@ -263,23 +264,19 @@ module AmplitudeExperiment
       end
 
       def coerce_string_array(value)
-        if value.is_a?(Array)
-          value.map { |e| coerce_string(e) }.compact
-        else
-          string_value = value.to_s
-          begin
-            parsed_value = JSON.parse(string_value)
-            if parsed_value.is_a?(Array)
-              parsed_value.map { |e| coerce_string(e) }.compact
-            else
-              s = coerce_string(string_value)
-              s ? [s] : nil
-            end
-          rescue JSON::ParserError
-            s = coerce_string(string_value)
-            s ? [s] : nil
-          end
+        return value.map { |e| coerce_string(e) }.compact if value.is_a?(Array)
+
+        string_value = value.to_s
+        return nil unless string_value.start_with?('[')
+
+        begin
+          parsed_value = JSON.parse(string_value)
+        rescue JSON::ParserError
+          return nil
         end
+        return nil unless parsed_value.is_a?(Array)
+
+        parsed_value.map { |e| coerce_string(e) }.compact
       end
 
       def set_operator?(op)

@@ -5,7 +5,7 @@ require 'json'
 
 module AmplitudeExperiment
   describe Evaluation::Engine do
-    let(:deployment_key) { 'server-NgJxxvg8OGwwBsWVXqyxQbdiflbhvugy' }
+    let(:deployment_key) { 'server-VVhLULXCxxY0xqmszXouXxiEzoeJWmSh' }
     let(:engine) { Evaluation::Engine.new }
     let(:flags) { get_flags(deployment_key) }
 
@@ -418,6 +418,48 @@ module AmplitudeExperiment
       it 'tests glob does not match' do
         user = user_context(nil, nil, nil, { 'key' => '/path/1/2/3' })
         result = engine.evaluate(user, flags)['test-glob-does-not-match']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests set is with json array string' do
+        user = user_context(nil, nil, nil, { 'key' => '["1", "2", "3"]' })
+        result = engine.evaluate(user, flags)['test-set-is']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests is with array' do
+        user = user_context(nil, nil, nil, { 'key' => %w[value1 value2] })
+        result = engine.evaluate(user, flags)['test-is-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests is with json array string' do
+        user = user_context(nil, nil, nil, { 'key' => '["value1", "value2"]' })
+        result = engine.evaluate(user, flags)['test-is-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests is not with array' do
+        user = user_context(nil, nil, nil, { 'key' => %w[value3 value4] })
+        result = engine.evaluate(user, flags)['test-is-not-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests contains with array' do
+        user = user_context(nil, nil, nil, { 'key' => %w[has-target-value has value] })
+        result = engine.evaluate(user, flags)['test-contains-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests does not contain with array' do
+        user = user_context(nil, nil, nil, { 'key' => %w[has-value has value] })
+        result = engine.evaluate(user, flags)['test-does-not-contain-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests does not contain with json array string' do
+        user = user_context(nil, nil, nil, { 'key' => '["has-value", "has", "value"]' })
+        result = engine.evaluate(user, flags)['test-does-not-contain-array']
         expect(result.key).to eq('on')
       end
 
