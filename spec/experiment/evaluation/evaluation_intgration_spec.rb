@@ -4,6 +4,10 @@ require 'net/http'
 require 'json'
 
 module AmplitudeExperiment
+  # Cached once to work around a JRuby 10.x issue where repeated URI() parsing
+  # under sustained string allocation spuriously raises "URI must be ascii only".
+  FLAGS_URI = URI('https://api.lab.amplitude.com/sdk/v2/flags?eval_mode=remote').freeze
+
   describe Evaluation::Engine do
     let(:deployment_key) { 'server-VVhLULXCxxY0xqmszXouXxiEzoeJWmSh' }
     let(:engine) { Evaluation::Engine.new }
@@ -521,13 +525,10 @@ module AmplitudeExperiment
     end
 
     def get_flags(deployment_key)
-      server_url = 'https://api.lab.amplitude.com'
-      uri = URI("#{server_url}/sdk/v2/flags?eval_mode=remote")
-
-      request = Net::HTTP::Get.new(uri)
+      request = Net::HTTP::Get.new(FLAGS_URI)
       request['Authorization'] = "Api-Key #{deployment_key}"
 
-      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+      response = Net::HTTP.start(FLAGS_URI.hostname, FLAGS_URI.port, use_ssl: true) do |http|
         http.request(request)
       end
 
