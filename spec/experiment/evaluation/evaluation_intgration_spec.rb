@@ -4,8 +4,12 @@ require 'net/http'
 require 'json'
 
 module AmplitudeExperiment
+  # Cached once to work around a JRuby 10.x issue where repeated URI() parsing
+  # under sustained string allocation spuriously raises "URI must be ascii only".
+  FLAGS_URI = URI('https://api.lab.amplitude.com/sdk/v2/flags?eval_mode=remote').freeze
+
   describe Evaluation::Engine do
-    let(:deployment_key) { 'server-NgJxxvg8OGwwBsWVXqyxQbdiflbhvugy' }
+    let(:deployment_key) { 'server-VVhLULXCxxY0xqmszXouXxiEzoeJWmSh' }
     let(:engine) { Evaluation::Engine.new }
     let(:flags) { get_flags(deployment_key) }
 
@@ -421,6 +425,48 @@ module AmplitudeExperiment
         expect(result.key).to eq('on')
       end
 
+      it 'tests set is with json array string' do
+        user = user_context(nil, nil, nil, { 'key' => '["1", "2", "3"]' })
+        result = engine.evaluate(user, flags)['test-set-is']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests is with array' do
+        user = user_context(nil, nil, nil, { 'key' => %w[value1 value2] })
+        result = engine.evaluate(user, flags)['test-is-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests is with json array string' do
+        user = user_context(nil, nil, nil, { 'key' => '["value1", "value2"]' })
+        result = engine.evaluate(user, flags)['test-is-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests is not with array' do
+        user = user_context(nil, nil, nil, { 'key' => %w[value3 value4] })
+        result = engine.evaluate(user, flags)['test-is-not-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests contains with array' do
+        user = user_context(nil, nil, nil, { 'key' => %w[has-target-value has value] })
+        result = engine.evaluate(user, flags)['test-contains-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests does not contain with array' do
+        user = user_context(nil, nil, nil, { 'key' => %w[has-value has value] })
+        result = engine.evaluate(user, flags)['test-does-not-contain-array']
+        expect(result.key).to eq('on')
+      end
+
+      it 'tests does not contain with json array string' do
+        user = user_context(nil, nil, nil, { 'key' => '["has-value", "has", "value"]' })
+        result = engine.evaluate(user, flags)['test-does-not-contain-array']
+        expect(result.key).to eq('on')
+      end
+
       it 'tests is with booleans' do
         # Test with uppercase TRUE/FALSE
         user = user_context(nil, nil, nil, {
@@ -479,13 +525,10 @@ module AmplitudeExperiment
     end
 
     def get_flags(deployment_key)
-      server_url = 'https://api.lab.amplitude.com'
-      uri = URI("#{server_url}/sdk/v2/flags?eval_mode=remote")
-
-      request = Net::HTTP::Get.new(uri)
+      request = Net::HTTP::Get.new(FLAGS_URI)
       request['Authorization'] = "Api-Key #{deployment_key}"
 
-      response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+      response = Net::HTTP.start(FLAGS_URI.hostname, FLAGS_URI.port, use_ssl: true) do |http|
         http.request(request)
       end
 
