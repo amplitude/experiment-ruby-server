@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.9.0...v1.10.0) (2026-04-29)
+
+
+### Features
+
+* match array properties element-wise for non-set operators ([#92](https://github.com/amplitude/experiment-ruby-server/issues/92)) ([51a9738](https://github.com/amplitude/experiment-ruby-server/commit/51a9738d6ef3407c5a06337c1e6e5c81bba8b7e2))
+
 # [1.9.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.8.0...v1.9.0) (2026-01-07)
 
 
