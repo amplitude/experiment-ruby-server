@@ -47,6 +47,8 @@ module AmplitudeExperiment
         elsif variant.value
           event_properties['[Experiment] Variant'] = variant.value
         end
+        experiment_key = variant.metadata ? variant.metadata['experimentKey'] : nil
+        event_properties['[Experiment] Experiment Key'] = experiment_key if experiment_key
         event_properties['metadata'] = variant.metadata if variant.metadata
 
         # Build event.
