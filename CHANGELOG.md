@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/amplitude/experiment-ruby-server/compare/v1.10.0...v1.10.1) (2026-05-08)
+
+
+### Bug Fixes
+
+* include experiment key on local-eval exposure events ([#93](https://github.com/amplitude/experiment-ruby-server/issues/93)) ([f821d35](https://github.com/amplitude/experiment-ruby-server/commit/f821d35bf93e16ee7ace7fa33a67cc17025f69a7)), closes [amplitude/experiment-node-server#83](https://github.com/amplitude/experiment-node-server/issues/83)
+
 # [1.10.0](https://github.com/amplitude/experiment-ruby-server/compare/v1.9.0...v1.10.0) (2026-04-29)
 
 
