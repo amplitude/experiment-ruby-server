@@ -97,6 +97,17 @@ describe AmplitudeExperiment::ExposureService do
         value: 'on'
       )
       empty_variant = AmplitudeExperiment::Variant.new
+      with_experiment_key = AmplitudeExperiment::Variant.new(
+        key: 'treatment',
+        value: 'treatment',
+        metadata: {
+          'segmentName' => 'All Other Users',
+          'flagType' => 'experiment',
+          'flagVersion' => 10,
+          'default' => false,
+          'experimentKey' => 'exp-1'
+        }
+      )
       results = {
         'basic' => basic,
         'different_value' => different_value,
@@ -105,13 +116,14 @@ describe AmplitudeExperiment::ExposureService do
         'holdout' => holdout,
         'partial_metadata' => partial_metadata,
         'empty_metadata' => empty_metadata,
-        'empty_variant' => empty_variant
+        'empty_variant' => empty_variant,
+        'with_experiment_key' => with_experiment_key
       }
       exposure = AmplitudeExperiment::Exposure.new(user, results)
       events = AmplitudeExperiment::ExposureService.to_exposure_events(exposure, AmplitudeExperiment::DAY_MILLIS)
       # Should exclude default (default=true) only
-      # basic, different_value, mutex, holdout, partial_metadata, empty_metadata, empty_variant = 7 events
-      expect(events.length).to eq(7)
+      # basic, different_value, mutex, holdout, partial_metadata, empty_metadata, empty_variant, with_experiment_key = 8 events
+      expect(events.length).to eq(8)
 
       events.each do |event|
         expect(event.event_type).to eq('[Experiment] Exposure')
@@ -129,6 +141,13 @@ describe AmplitudeExperiment::ExposureService do
           expect(event.event_properties['[Experiment] Variant']).to eq(variant.value)
         end
         expect(event.event_properties['metadata']).to eq(variant.metadata) if variant.metadata
+
+        # Validate experiment key is lifted to top-level event property when present
+        if flag_key == 'with_experiment_key'
+          expect(event.event_properties['[Experiment] Experiment Key']).to eq('exp-1')
+        else
+          expect(event.event_properties).not_to have_key('[Experiment] Experiment Key')
+        end
 
         # Validate user properties
         flag_type = variant.metadata ? variant.metadata['flagType'] : nil
